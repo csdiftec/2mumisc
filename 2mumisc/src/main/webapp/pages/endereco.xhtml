@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Cadastro de Endereços</title>
+</h:head>
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+<h:body>
+
+	<h:form id="formListagem">
+		<p:panel header="Listagem de endereços">
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+						paginator="true" value="#{enderecoBean.enderecos}" var="endereco"
+						rows="5">
+				<f:facet name="header">
+					<p:commandButton value="Novo" oncomplete="PF('dialogo').show();" 
+					actionListener="#{enderecoBean.novo}" update=" :formCadastroEndereco:painel" />
+				</f:facet>
+
+				<p:column headerText="Código">
+							<h:outputText value="#{endereco.codigo}" />
+				</p:column>
+
+				<p:column headerText="Logradouro">
+				<h:outputText value="#{endereco.rua}" />
+				</p:column>
+
+				<p:column headerText="Numero">
+				<h:outputText value="#{endereco.numero}" />
+				</p:column>
+
+				<p:column headerText="cidade">
+				<h:outputText value="#{endereco.cidade.nome}" />
+				</p:column>
+
+				<p:column headerText="estado">
+				<h:outputText value="#{endereco.cidade.estado.nome}" />
+				</p:column>
+
+				<p:column headerText="Opções">
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</h:form>
+
+	<p:dialog header="Cadastro de endereços" widgetVar="dialogo"
+		draggable="true" resizable="false" modal="true" closable="false">
+	
+		<h:form id="formCadastroEndereco">
+			<h:panelGrid columns="2" id="painel">
+
+				<p:outputLabel value="Código:" />
+				<p:inputText value="#{enderecoBean.endereco.codigo}" maxlength="60" size="50" />
+
+				<p:outputLabel value="Logradouro:" />
+				<p:inputText value="#{enderecoBean.endereco.rua}"
+							maxlength="60" size="55" />
+
+				<p:outputLabel value="Numero:" />
+				<p:inputText value="#{enderecoBean.endereco.numero}" maxlength="4" size="25" />
+
+				<p:outputLabel value="Complemento" />
+				<p:inputText value="#{enderecoBean.endereco.complemento}"  maxlength="50" size="75" />
+
+				<p:outputLabel value="Bairro" />
+				<p:inputText value="#{enderecoBean.endereco.bairro}" maxlength="60" size="75" />
+
+		<p:outputLabel for="estado" value="Estado:" />
+						<p:selectOneMenu id="estado" filter="true"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{enderecoBean.estado}">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Selecione um estado" />
+							<f:selectItems value="#{enderecoBean.estados}" var="estado"
+								itemValue="#{estado}" itemLabel="#{estado.nome}" />
+							<p:ajax listener="#{enderecoBean.popular}"
+								update=":formCadastroEndereco:cidadeEndereco" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="cidadeEndereco" value="Cidade:" />
+						<p:selectOneMenu id="cidadeEndereco" filter="true" required="true"
+							requiredMessage="O campo 'Cidade' é obrigatório"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{enderecoBean.endereco.cidade}">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Selecione uma cidade" />
+							<f:selectItems value="#{enderecoBean.cidades}" var="cidade"
+								itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
+						</p:selectOneMenu>
+
+				<p:outputLabel value="CEP:" />
+				<p:inputMask size="9" mask="99999-999">
+					<f:validateBean />
+				</p:inputMask>
+
+			</h:panelGrid>
+
+			<h:panelGrid columns="2">
+				<p:commandButton value="Salvar" 	actionListener="#{enderecoBean.salvar}" update=":formListagem:tabela"/>
+				<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+</h:body>
+	</ui:define>
+</ui:composition>
+</html>

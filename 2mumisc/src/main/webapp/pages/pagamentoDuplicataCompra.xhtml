@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+		xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Pagamento de duplicatas</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+				
+				<h:outputText style="color: red; font-size: 12px;" value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+			<h:form id="formulario"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+
+
+		<p:panel header="Duplicatas">
+			<p:dataTable id="tabelaDuplicatas"
+				emptyMessage="Nenhum registro encontrado." paginator="true"
+				value="#{vendaBean.produtos}" var="produto" rows="5">
+
+				<f:facet name="header">
+					<p:commandButton value="Testar botão"
+						oncomplete="PF('dialogo').show();" />
+				</f:facet>
+
+				<p:column headerText="Código da Venda"
+					filterBy="#{produto.descricao}" sortBy="#{produto.descricao}">
+					<h:outputText value="#{produto.descricao}" />
+				</p:column>
+
+				<p:column headerText="Cliente" filterBy="#{produto.descricao}"
+					sortBy="#{produto.descricao}">
+					<h:outputText value="#{produto.descricao}" />
+				</p:column>
+
+				<p:column headerText="Numero da parcela"
+					filterBy="#{produto.descricao}" sortBy="#{produto.descricao}">
+					<h:outputText value="#{produto.descricao}" />
+				</p:column>
+
+				<p:column headerText="Data do vencimento"
+					sortBy="#{produto.quantidade}">
+					<h:outputText value="#{produto.quantidade}" />
+				</p:column>
+
+				<p:column headerText="Preço" sortBy="#{produto.preco}">
+					<h:outputText value="#{produto.preco}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Opções">
+					<p:commandButton icon="ui-icon-plus"
+						actionListener="#{vendaBean.adicionar}"
+						update=":formulario:tabelaCesta :formulario:painelFinalizacao">
+						<f:attribute name="produtoSelecionado" value="#{produto}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</h:form>
+
+
+	<p:dialog header="Pagamento de Parcela" widgetVar="dialogo"
+		draggable="false" resizable="false" modal="true" closable="false">
+		<h:form id="formularioFinalizar">
+
+			<h:panelGrid id="painelFinalizar" columns="2">
+ 				<p:outputLabel value="Situação da parcela:" />
+				<p:inputText maxlength="20" size="20" />
+
+				<p:outputLabel value="Código da venda:" />
+				<p:inputText maxlength="4" size="20" />
+				
+				<p:outputLabel value="Cliente:" />
+				<p:inputText maxlength="60" size="50" />
+
+				<p:outputLabel value="Numero da parcela:" />
+				<p:inputText maxlength="60" size="25" />
+
+				<p:outputLabel value="Total de parcelas:" />
+				<p:inputText maxlength="60" size="25" />
+
+				<p:outputLabel value="Data do pagamento:" />
+				<p:calendar/>
+
+				<p:outputLabel value="Data do vencimento:" />
+				<p:calendar/>
+
+				<p:outputLabel value="Valor da Parcela:" />
+				<p:inputText maxlength="4" size="10" />
+								
+				<p:outputLabel value="Desconto:" />
+				<p:inputText maxlength="4" size="10" />
+
+				<p:outputLabel value="Juros:" />
+				<p:inputText maxlength="4" size="10" />
+
+				<p:outputLabel value="Valor Pago:" />
+				<p:inputText maxlength="4" size="10" />
+
+				<p:outputLabel value="Valor total atual:" />
+				<p:inputText maxlength="4" size="10" />
+
+			</h:panelGrid>
+
+			<h:panelGrid columns="3">
+				
+				<p:commandButton value="Salvar" icon="fa fa-fw fa-save" />
+				<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				<p:commandButton value="Calcular" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+	
+	</ui:define>
+</ui:composition>
+
+</html>

@@ -1,0 +1,9 @@
+2016-11-21 14:52:33,148 [Worker-9] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: br.com.diftecnologia.2mumisc:2mumisc:victoria - 2.0.0 @ C:\Users\Ewerthon\git\2mumisc\2mumisc\pom.xml.
+2016-11-21 14:52:46,247 [Worker-8] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-11-21 14:52:46,271 [Worker-8] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-11-21 14:52:46,274 [Worker-8] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-11-21 14:52:46,274 [Worker-8] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-11-21 14:53:34,249 [Worker-14] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-11-21 14:53:34,260 [Worker-14] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2016-11-21 14:53:34,261 [Worker-14] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-11-21 14:53:34,262 [Worker-14] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource

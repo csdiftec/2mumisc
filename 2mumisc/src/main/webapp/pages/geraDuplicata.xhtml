@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Gerar duplicatas</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+				
+				<h:outputText style="color: red; font-size: 12px;" value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+			<h:form id="formulario"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+
+
+		<p:panel header="Duplicatas">
+			<p:dataTable id="tabelaDuplicatas"
+				emptyMessage="Nenhum registro encontrado." paginator="true"
+				value="#{vendaBean.produtos}" var="duplicata" rows="5">
+
+				<p:column headerText="Código da Venda"
+					filterBy="#{duplicata.venda.codigo}" sortBy="#{duplicata.venda.codigo}">
+					<h:outputText value="#{duplicata.venda.codigo}" />
+				</p:column>
+
+				<p:column headerText="Cliente" filterBy="#{duplicata.descricao}"
+					sortBy="#{duplicata.descricao}">
+					<h:outputText value="#{duplicata.descricao}" />
+				</p:column>
+
+				<p:column headerText="Numero da parcela"
+					filterBy="#{duplicata.descricao}" sortBy="#{duplicata.descricao}">
+					<h:outputText value="#{duplicata.descricao}" />
+				</p:column>
+
+				<p:column headerText="Data do vencimento"
+					sortBy="#{duplicata.quantidade}">
+					<h:outputText value="#{duplicata.quantidade}" />
+				</p:column>
+
+				<p:column headerText="Valor da parcela" sortBy="#{duplicata.preco}">
+					<h:outputText value="#{duplicata.preco}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Data da emissão da duplicata"
+					sortBy="#{duplicata.preco}">
+					<h:outputText value="#{duplicata.preco}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Opções">
+				<p:commandButton value="Imprimir" 	
+				actionListener="#{duplicataBean.imprimirDuplicataPorCodigo}" >
+				<f:attribute name="duplicataSelecionada" value="#{duplicata}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+				<p:commandButton value="Imprimir Lista Por Venda" 
+				actionListener="#{duplicataBean.imprimirListaDuplicatasPorCodigoVenda}" >
+				<f:attribute name="duplicataSelecionada" value="#{duplicata}" />
+					</p:commandButton>
+		</p:panel>
+	</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

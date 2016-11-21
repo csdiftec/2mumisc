@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Relação de compras</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+		<h:body>
+			<h:form id="formulario">
+
+
+				<p:panel header="Relatórios de compras por periodo"  id="panelPesquisa"  style="border-color: darkgreen ;border-width: 2px">
+								<center>
+					<h:panelGrid columns="6">
+						<p:outputLabel value="Data inicial:" />
+						<p:calendar value="#{compraBean.compra.dataInicial}" />
+						<p:outputLabel value="Data final:" />
+						<p:calendar value="#{compraBean.compra.dataFinal}" />
+						<p:commandButton value="Pesquisar" icon="ui-icon-search"
+							actionListener="#{compraBean.buscaPorPeriodo}"
+							update=":formulario:tabelaRelCompras" />
+							
+						<p:commandButton icon="ui-icon-plus" value="Imprimir  por periodo"
+							style="width: 150px;" actionListener="#{compraBean.imprimirCompraPeriodo}" />
+
+					</h:panelGrid>
+				</center>
+					</p:panel>
+					<p:panel>
+					<p:dataTable id="tabelaRelCompras"  style="text-align: center;font: 11px "
+						emptyMessage="Nenhum registro encontrado." paginator="true"
+						rows="10" value="#{compraBean.listaCompras}" var="compra">
+
+						<p:column headerText="Código da compra" style="text-align: center;width: 130px;"
+						filterBy="#{compra.codigo}"
+							sortBy="#{compra.codigo}">
+							<h:outputText value="#{compra.codigo}" />
+						</p:column>
+
+						<p:column headerText=" Fornecedor"  style="text-align:left;width: 380px;"
+							filterBy="#{compra.fornecedor.nomeFantasia}">
+							<h:outputText
+								value="#{compra.fornecedor.nomeFantasia}" />
+						</p:column>
+
+						<p:column headerText="Numero da Nota" style="text-align: center;width: 400px;"
+							filterBy="#{compra.numeroDocumentoFiscal}"
+							sortBy="#{compra.numeroDocumentoFiscal}">
+							<h:outputText value="#{compra.numeroDocumentoFiscal}" />
+						</p:column>
+
+						<p:column headerText="Valor Total" style="text-align: center;width: 900px;"
+						sortBy="#{compravalorTotal}">
+							<h:outputText value="R$ #{compra.valorTotal}">
+								<f:convertNumber pattern="#,##0.00" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Data da Compra" style="text-align: center;width: 100px;"
+						 sortBy="#{venda.dataCompra}">
+							<h:outputText value="#{compra.dataCompra}">
+								<f:convertDateTime locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Opções" style="text-align: center;width: 60px;"
+						 exportable="false">
+							<p:commandButton icon="ui-icon-plus" style="width: 40px;" 
+								actionListener="#{compraBean.imprimirCompraCodigo}" update=":formulario">
+								<f:attribute name="compraSelecionada" value="#{compra}" />
+							</p:commandButton>
+						</p:column>
+  <f:facet name="footer">
+            <h:commandLink>
+                <p:graphicImage library="images"   name="icon_pdf.png"  width="24"/>
+                <p:dataExporter  type="pdf" target="tabelaRelCompras" fileName="ComprasPorPeriodoEmPDF" />
+            </h:commandLink>
+ 
+            <h:commandLink>
+                <p:graphicImage library="images"   name="icon_excel.png" width="24"/>
+                <p:dataExporter type="xls" target="tabelaRelCompras" fileName="ComprasPorPeriodoEmXLS"/>
+            </h:commandLink>
+ 
+        </f:facet>
+					</p:dataTable>
+
+
+				</p:panel>
+
+			</h:form>
+
+		</h:body>
+	</ui:define>
+</ui:composition>
+</html>

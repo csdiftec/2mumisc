@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Finalização de Ocorrências</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+		<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+
+				<h:outputText style="color: red; font-size: 12px;"
+					value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+		<h:form id="formulario"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+
+			<p:panel header="Ocorrências Abertas">
+				<p:dataTable id="tabelaOcorrencias"
+					emptyMessage="Nenhum registro encontrado." paginator="true"
+					value="#{ocorrenciaBean.listaOcorrenciasAberta}" var="ocorrencia"
+					rows="25">
+
+					<p:column headerText="Código">
+						<h:outputText value="#{ocorrencia.codigo}" />
+					</p:column>
+					<p:column headerText="Testemunha"
+						filterBy="#{ocorrencia.funcionario_testemunha.pessoa.nome}"
+						sortBy="#{ocorrencia.funcionario_testemunha.pessoa.nome}">
+						<h:outputText
+							value="#{ocorrencia.funcionario_testemunha.pessoa.nome}" />
+					</p:column>
+
+					<p:column headerText="Data da Ocorrência"
+						filterBy="#{ocorrencia.dataAbertura}"
+						sortBy="#{ocorrencia.dataAbertura}">
+						<h:outputText value="#{ocorrencia.dataAbertura}" />
+					</p:column>
+
+
+
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-plus"
+							actionListener="#{ocorrenciaBean.editar}"
+							update=":formFinalizacao:painelFinalizacao"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="ocorrenciaSelecionada" value="#{ocorrencia}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+						
+					</p:column>
+
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+
+
+
+		<p:dialog header="Finalizar Ocorrência" widgetVar="dialogo"
+			closeOnEscape="true" draggable="false" resizable="true" modal="true"
+			closable="true" showEffect="fade" appendTo="@(body)">
+			<h:form id="formFinalizacao">
+				<h:panelGrid columns="2" id="painelFinalizacao">
+
+					<p:outputLabel value="Código:" />
+					<p:inputText value="#{ocorrenciaBean.ocorrencia.codigo}"
+						readonly="true" />
+
+					<p:outputLabel value="Data da Abertura:" />
+					<p:inputText value="#{ocorrenciaBean.ocorrencia.dataAbertura}"
+						readonly="true">
+						<f:convertDateTime locale="pt_BR" />
+					</p:inputText>
+
+
+
+					<p:outputLabel value="Numero do Terminal:" />
+					<p:inputText maxlength="100" size="20" readonly="true"
+						value="#{ocorrenciaBean.ocorrencia.caixa.terminalAtendimento.numeroTerminal}" />
+
+					<p:outputLabel value="Diferença Registrada:" />
+					<p:inputText maxlength="5" size="20" readonly="true"
+						value="#{ocorrenciaBean.ocorrencia.diferencaRegistrada}" />
+
+
+					<p:outputLabel value="Testemunha:" />
+					<p:inputText maxlength="100" size="50" readonly="true"
+						value="#{ocorrenciaBean.ocorrencia.funcionario_testemunha.pessoa.nome}" />
+
+
+					<p:outputLabel value="Observação:" />
+					<p:inputText maxlength="100" size="50" readonly="true"
+						value="#{ocorrenciaBean.ocorrencia.observacaoAbertura}" />
+					<p:separator />
+					<p:separator />
+					<p:outputLabel value="Data do Fechamento:" />
+					<p:inputText
+						value="#{ocorrenciaBean.fecharOcorrencia.dataFechamento}"
+						readonly="true">
+						<f:convertDateTime locale="pt_BR" />
+					</p:inputText>
+
+					<p:outputLabel value="Observação do Fechamento:" />
+					<p:inputText maxlength="100" size="50"
+						value="#{ocorrenciaBean.fecharOcorrencia.observacaoFechamento}" />
+
+				</h:panelGrid>
+				<p:separator />
+				<center>
+					<h:panelGrid columns="2">
+						<p:commandButton value="Finalizar" icon="fa fa-fw fa-save"
+							actionListener="#{ocorrenciaBean.salvar}"
+							update=":formulario:tabelaOcorrencias :formFinalizacao:painelFinalizacao">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</h:panelGrid>
+				</center>
+			</h:form>
+		</p:dialog>
+		
+		<h:form>
+<p:dialog header="Imprimir Ocorrência Finalizada" widgetVar="dialogoImpressao"
+			closeOnEscape="true" draggable="false" resizable="true" modal="true"
+			closable="true" showEffect="fade" appendTo="@(body)">
+			<center>
+			<p:commandButton  value="Imprimir"  icon="ui-icon-print" 
+							actionListener="#{ocorrenciaBean.imprimirOcorrenciaPorCodigo}"
+						update=":formulario:tabelaOcorrencias :formFinalizacao:painelFinalizacao">
+					</p:commandButton>
+		</center>
+				</p:dialog>
+				</h:form>
+	</ui:define>
+</ui:composition>
+</html>

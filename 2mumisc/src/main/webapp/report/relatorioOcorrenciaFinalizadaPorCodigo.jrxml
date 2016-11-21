@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-10-14T19:44:48 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorioOcorrenciaFinalizadaPorCodigo" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="714f652d-c17d-4823-9e9a-d58ee2fea5e4">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CSIMUM-Adapter "/>
+	<parameter name="CODIGO_OCORRENCIA" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT testemunha.codigo AS codigo_funcionario,
+	caixa.valor_inicial,
+	caixa.data_abertura,
+	caixa.data_fechamento,
+	caixa.valor_total_fechamento,
+	caixa.valor_total_venda,
+	caixa.codigo as codigo_caixa,
+	pTestemunha.codigo as codigo_testemunha,
+	caixa.valor_inicial,
+	testemunha.senha,
+	abertura_ocorrencia.codigo AS codigo_ocorrencia,
+	abertura_ocorrencia.diferenca_registrada,
+	abertura_ocorrencia.data_abertura,
+	abertura_ocorrencia.observacao_abertura,
+		pTestemunha.nome as nome_testemunha,
+	pFuncCaixa.nome as nome_caixa,
+	fechar_ocorrencia.codigo as codigo_fechamento,
+	fechar_ocorrencia.data_fechamento,
+	fechar_ocorrencia.observacao_fechamento
+FROM abertura_ocorrencia
+INNER JOIN caixa ON abertura_ocorrencia.caixa_codigo = caixa.codigo 
+INNER JOIN funcionario testemunha ON  abertura_ocorrencia.funcionario_testemunha_codigo = testemunha.codigo 
+INNER JOIN funcionario funcCaixa ON caixa.funcionario_codigo = funcCaixa.codigo 
+INNER JOIN pessoa pTestemunha ON  testemunha.pessoa_codigo = pTestemunha.codigo
+INNER JOIN pessoa pFuncCaixa ON  funcCaixa.pessoa_codigo = funcCaixa.codigo
+Inner join fechar_ocorrencia on aberturaOcorrencia_codigo = abertura_ocorrencia.codigo
+WHERE 
+	 abertura_ocorrencia.codigo = $P{CODIGO_OCORRENCIA}]]>
+	</queryString>
+	<field name="codigo_funcionario" class="java.lang.Long"/>
+	<field name="valor_inicial" class="java.math.BigDecimal"/>
+	<field name="data_abertura" class="java.sql.Timestamp"/>
+	<field name="data_fechamento" class="java.sql.Timestamp"/>
+	<field name="valor_total_fechamento" class="java.math.BigDecimal"/>
+	<field name="valor_total_venda" class="java.math.BigDecimal"/>
+	<field name="codigo_caixa" class="java.lang.Long"/>
+	<field name="codigo_testemunha" class="java.lang.Long"/>
+	<field name="COLUMN_9" class="java.math.BigDecimal"/>
+	<field name="senha" class="java.lang.String"/>
+	<field name="codigo_ocorrencia" class="java.lang.Long"/>
+	<field name="diferenca_registrada" class="java.math.BigDecimal"/>
+	<field name="COLUMN_13" class="java.sql.Date"/>
+	<field name="observacao_abertura" class="java.lang.String"/>
+	<field name="nome_testemunha" class="java.lang.String"/>
+	<field name="nome_caixa" class="java.lang.String"/>
+	<field name="codigo_fechamento" class="java.lang.Long"/>
+	<field name="COLUMN_18" class="java.sql.Timestamp"/>
+	<field name="observacao_fechamento" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="46" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Opaque" x="70" y="13" width="485" height="19" backcolor="#37D469" uuid="1be4c3c3-d7d1-46e4-9438-f2c6d1656231"/>
+			</rectangle>
+			<image hAlign="Center">
+				<reportElement x="5" y="3" width="59" height="40" uuid="66ca45dc-8019-419a-a265-ea8f57bb7a7e"/>
+				<imageExpression><![CDATA["invoice_logo.png"]]></imageExpression>
+			</image>
+			<line>
+				<reportElement x="4" y="43" width="555" height="1" uuid="0ca6fb37-865c-44b4-adbc-c974211a6559">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="70" y="14" width="485" height="19" forecolor="#FFFFFF" backcolor="#37D469" uuid="9602f99a-81c0-467e-b428-c647bfc7b2cc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Sistema CSimum - Ocorrência]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="277" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="Float" x="0" y="54" width="73" height="22" forecolor="#000000" uuid="d443b8b2-535a-4910-b2b6-adf4e86dc6d4"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[D. Abertura]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="10" width="74" height="22" forecolor="#000000" uuid="64bd3a8d-7351-47a5-abdf-c43071b980b0"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ocorrência:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="161" y="32" width="74" height="17" forecolor="#000000" uuid="531c1644-3879-42f5-b546-d8f6f6fe732e">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Operador:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="161" y="10" width="75" height="22" forecolor="#000000" uuid="d69513c6-0880-4928-b793-a24b192e7a97"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Testemunha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="76" width="73" height="22" forecolor="#000000" uuid="8b971fa6-8e8c-4b40-a140-b03adda1533f"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Observação:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="161" y="50" width="124" height="25" forecolor="#000000" uuid="d5162338-b3ed-4815-8d7f-c1f4b25cde74"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor Inicial do Caixa:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="360" y="50" width="115" height="26" forecolor="#000000" uuid="e146b15e-d52a-4ea1-89ae-165a1eeaeca0"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor da Diferença:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="-40" y="120" width="615" height="3" uuid="9ec3ed72-88d0-4b7d-ab94-98217ae281da">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement x="74" y="33" width="87" height="22" uuid="167ece72-823a-45c7-b169-9f80d8d37e10"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_caixa}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="74" y="54" width="62" height="22" uuid="a2fa30fd-6fc4-4b59-9072-2f8ff81e7ba7">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{data_abertura}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤#,##0.00;¤-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="285" y="50" width="74" height="17" uuid="5097c60c-2766-4c2f-9da7-68f6ee3426bb"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_inicial}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="74" y="76" width="470" height="22" uuid="01d88ae7-ebdf-43d5-a1b2-14a30a70e634"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observacao_abertura}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="276" y="10" width="279" height="22" uuid="db4e5e86-2429-456e-a8e2-6ea773b92fbd"/>
+				<textFieldExpression><![CDATA[$F{nome_testemunha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="276" y="32" width="279" height="22" uuid="8c7a9037-ef7e-4539-9e85-4e3f8ef7d0fc"/>
+				<textFieldExpression><![CDATA[$F{nome_caixa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="236" y="32" width="40" height="18" uuid="c4cbf2e8-21f0-4939-98bd-509ecdb788d5"/>
+				<textFieldExpression><![CDATA[$F{codigo_funcionario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="236" y="10" width="40" height="22" uuid="f5ea13a4-f00e-40b7-93bb-bb2966ec478e"/>
+				<textFieldExpression><![CDATA[$F{codigo_testemunha}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="32" width="74" height="22" forecolor="#000000" uuid="7e3bb7c4-7703-46e7-ba24-f99e8642189d"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Caixa:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="75" y="10" width="86" height="22" uuid="849c7014-79ec-4a3d-a2cd-809ab623f490"/>
+				<textFieldExpression><![CDATA[$F{codigo_ocorrencia}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="-1" y="182" width="110" height="22" forecolor="#000000" uuid="bf60f6c4-6279-49dd-8152-57b1ed0e5ae6"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data do fechamento:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="160" width="110" height="22" forecolor="#000000" uuid="3fdc2258-652d-41a3-ac3b-a49ea5c6c9f0"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fechamento:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="-2" y="204" width="112" height="22" forecolor="#000000" uuid="a6945c6d-6f64-4571-b72b-74faae9b97a2"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Obseervação:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement mode="Opaque" x="-2" y="130" width="556" height="19" backcolor="#37D469" uuid="4c2381d7-00c5-41a0-810a-e6671f6960a5"/>
+			</rectangle>
+			<textField isBlankWhenNull="true">
+				<reportElement x="110" y="204" width="370" height="22" uuid="aeb84563-ae7c-454b-afc6-5c0d59993c54"/>
+				<textElement textAlignment="Left">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observacao_fechamento}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="110" y="182" width="166" height="20" uuid="1e91301b-ded6-4a9c-95a6-446d8c87f01e"/>
+				<textElement textAlignment="Left">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COLUMN_18}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="110" y="160" width="166" height="22" uuid="4f32c1b3-b348-4b9b-81ab-60be32813904"/>
+				<textElement textAlignment="Left">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_fechamento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="130" width="553" height="19" forecolor="#FFFFFF" backcolor="#37D469" uuid="5276d801-3549-4a87-ba36-e4b78562bcf2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Sistema CSimum - Comprovante de Finalização da Ocorrência]]></text>
+			</staticText>
+			<line>
+				<reportElement x="-30" y="230" width="615" height="3" uuid="da9b89c6-2bdd-4f74-a6c4-fdddd73a482b">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+		</band>
+	</columnHeader>
+</jasperReport>

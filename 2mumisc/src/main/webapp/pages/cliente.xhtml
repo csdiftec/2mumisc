@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Cadastro de Clientes</title>
+		<h:outputStylesheet library="css" name="estilos.css" />
+</h:head>
+
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+				
+				<h:outputText style="color: red; font-size: 12px;" value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+			<h:form id="formListagem"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+
+				<p:panel header="Cadastro de Clientes">
+					<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+						paginator="true" value="#{clienteBean.clientes}" var="cliente"
+						rows="25">
+						<f:facet name="header">
+							<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+								actionListener="#{clienteBean.novo}" icon="fa fa-fw fa-plus-square"
+								update=":formCadastro:painel">
+								<f:actionListener
+									type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+							</p:commandButton>
+						</f:facet>
+
+						<p:column headerText="Nome"
+						   style="width: 300px" 
+						 filterBy="#{cliente.pessoa.nome}"
+							sortBy="#{cliente.pessoa.nome}">
+							<h:outputText value="#{cliente.pessoa.nome}" />
+						</p:column>
+
+						<p:column headerText="CPF" 
+							style="width: 120px;text-align: center"
+						filterBy="#{cliente.pessoa.cpf}"
+							sortBy="#{cliente.pessoa.cpf}">
+							<h:outputText value="#{cliente.pessoa.cpf}" />
+						</p:column>
+
+						<p:column headerText="Data de Cadastro"
+							style="width: 120px;text-align: center"
+							sortBy="#{cliente.dataCadastro}">
+							<h:outputText value="#{cliente.dataCadastro}">
+								<f:convertDateTime locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Liberado" 
+							style="width: 80px;text-align: center"
+						sortBy="#{cliente.status}">
+							<p:selectBooleanCheckbox value="#{cliente.status}"
+								disabled="true" />
+						</p:column>
+
+						<p:column headerText="Opções"  	style="width: 60px;text-align: center">
+						<center>
+										<p:commandButton icon="ui-icon-pencil"
+											actionListener="#{clienteBean.editar}"
+											update="formCadastroEdit"
+											oncomplete="PF('dialogoEdit').show();">
+									 <f:attribute name="clienteSelecionado" value="#{cliente}" />
+									 <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						 	 	</p:commandButton>
+						 	 		<p:commandButton icon="ui-icon-print"
+											actionListener="#{clienteBean.imprimirClientePorCodigo}">
+									 <f:attribute name="clienteSelecionado" value="#{cliente}" />
+						 	 	</p:commandButton>
+						</center>
+						
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+	 			<p:dialog header="Cadastro de clientes" widgetVar="dialogo"
+				closeOnEscape="true" draggable="false" resizable="true"
+				modal="true" closable="true" showEffect="fade" appendTo="@(body)">
+				<h:form id="formCadastro">
+					<h:panelGrid id="painel" columns="2">
+						<p:outputLabel value="Pessoa:" />
+						<p:selectOneMenu id="pessoa" filter="true"
+							value="#{clienteBean.cliente.pessoa}" required="true"
+							requiredMessage="O campo 'Pessoa' é obrigatório!"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Selecione uma pessoa" />
+							<f:selectItems value="#{clienteBean.pessoas}" var="pessoa"
+								itemValue="#{pessoa}" itemLabel="#{pessoa.nome} - #{pessoa.cpf}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Data de cadastro:" />
+						<p:calendar id="dataCadastro"
+							value="#{clienteBean.cliente.dataCadastro}"
+							placeholder="Automático" disabled="true" size="10" locale="pt_BR" />
+
+						<p:outputLabel value="Ativo:" />
+						<p:selectBooleanCheckbox id="liberado"
+							value="#{clienteBean.cliente.liberado}" required="true"
+							requiredMessage="O campo 'Liberado' é obrigatório" />
+					</h:panelGrid>
+<p:separator/>
+	<center>
+					<h:panelGrid columns="1">
+								<p:commandButton value="Salvar" icon="fa fa-fw fa-save"
+							actionListener="#{clienteBean.salvar}"
+							update=":formCadastro:painel :formListagem:tabela" />
+							</h:panelGrid>
+						</center>
+				</h:form>
+			</p:dialog>
+			
+			
+					<p:dialog header="Editar" widgetVar="dialogoEdit"
+				closeOnEscape="true" draggable="false" resizable="true"
+				modal="true" closable="true" showEffect="fade" appendTo="@(body)">
+			
+				<h:form id="formCadastroEdit">
+					<h:panelGrid id="painelEdit" columns="2" >
+						<p:outputLabel value="Pessoa:" />
+						<p:selectOneMenu id="pessoa" filter="true" disabled="true"
+							value="#{clienteBean.cliente.pessoa}" required="false"
+							requiredMessage="O campo 'Pessoa' é obrigatório!"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"  itemDisabled="true"
+								itemLabel="Selecione uma pessoa" />
+							<f:selectItems value="#{clienteBean.pessoas}" var="pessoa"  
+							itemDisabled="true"
+								itemValue="#{pessoa}" itemLabel="#{pessoa.nome} - #{pessoa.cpf}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Data de cadastro:" />
+						<p:calendar id="dataCadastro"
+							value="#{clienteBean.cliente.dataCadastro}"
+							placeholder="Automático" disabled="true" size="10" locale="pt_BR" />
+
+						<p:outputLabel value="Ativo:" />
+						<p:selectBooleanCheckbox id="liberado"
+							value="#{clienteBean.cliente.liberado}" required="true"
+							requiredMessage="O campo 'Liberado' é obrigatório" />
+					</h:panelGrid>
+<p:separator/>
+<center>
+					<h:panelGrid columns="1">
+							<p:commandButton value="Salvar" icon="fa fa-fw fa-save"
+							actionListener="#{clienteBean.salvarEdicao}"
+							update=":formCadastroEdit:painelEdit :formListagem:tabela" />
+							</h:panelGrid>
+				</center>
+				</h:form>
+			</p:dialog>
+
+	</ui:define>
+</ui:composition>
+</html>

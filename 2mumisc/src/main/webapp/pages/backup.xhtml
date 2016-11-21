@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+   xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Importar Nota Fiscal</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+				
+				<h:outputText style="color: red; font-size: 12px;" value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+			<h:form id="formularioImportacao"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+</h:form>
+		<h:form enctype="multipart/form-data">
+			<p:growl id="messages" showDetail="true" />
+
+	
+		<h:panelGrid columns="4">
+			<p:commandButton value="Confirmar" actionListener="#{backupBean.backup}" />
+		
+
+		</h:panelGrid>
+	</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

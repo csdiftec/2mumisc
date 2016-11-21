@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+				
+				<h:outputText style="color: red; font-size: 12px;" value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+			<h:form id="formularioListagem"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+
+
+			<p:panel header="Relatórios">
+				<f:facet name="header" style="text-align:center;">
+					<center>
+						<h:outputLabel value="Relatórios" />
+					</center>
+				</f:facet>
+			
+				<p:accordionPanel header="Relatórios">
+					<p:tab title="Relatórios de Vendas" 
+					rendered="#{autenticacaoBean.funcionarioLogado.tipo == 'Administrador' 
+						 or autenticacaoBean.funcionarioLogado.tipo == 'Gerente' 
+							or (autenticacaoBean.funcionarioLogado.tipo =='Financeiro')
+							or (autenticacaoBean.funcionarioLogado.tipo =='Caixa') }"
+							url="/pages/pessoa.xhtml" icon="ui-icon-document" >
+							
+						<h:panelGrid columns="2" cellpadding="4">
+
+							<h:outputText value="0010 - Relatorio de venda por periodo" />
+							<p:commandButton  value="Pesquisar"  icon="ui-icon-search" 	action="/pages/relatorios/relVendasPorPeriodo.xhtml" />
+							
+							<h:outputText value="0020 - Relatorio de venda por vendedor"  />
+							<p:commandButton value="Pesquisar"   icon="ui-icon-search"  action="/pages/relatorios/relVendasPorVendedor.xhtml" />
+							
+							<h:outputText value="0030 - Relatorio de venda por profissional"  />
+							<p:commandButton value="Pesquisar"   icon="ui-icon-search"  action="/pages/relatorios/relVendasPorProfissionalLog.xhtml" />
+							
+							<h:outputText value="0040 - Relatório de venda por forma de pagamento" />
+							<p:commandButton value="Pesquisar"   icon="ui-icon-search"  action="/pages/relatorios/relVendasPorFormaPagamento.xhtml" />
+					
+							<h:outputText value="0050 - Relatório de venda por Tipo de pagamento" />
+							<p:commandButton value="Pesquisar"   icon="ui-icon-search"  action="/pages/relatorios/relVendasPorTipoPagamento.xhtml" />
+					
+		
+						</h:panelGrid>
+					</p:tab>
+					<p:tab title="Relatórios de Compras"
+					rendered="#{autenticacaoBean.funcionarioLogado.tipo == 'Administrador' 
+						 or autenticacaoBean.funcionarioLogado.tipo == 'Gerente' 
+							or (autenticacaoBean.funcionarioLogado.tipo =='Estoquista') 
+							or (autenticacaoBean.funcionarioLogado.tipo =='Financeiro') }"
+							url="/pages/pessoa.xhtml" icon="ui-icon-document" >
+						<h:panelGrid columns="2" cellpadding="4">
+
+							<h:outputText value="0010 - Relatorio de compra por periodo" />
+							<p:commandButton  value="Pesquisar"  icon="ui-icon-search" 
+								action="/pages/relatorios/relComprasPorPeriodo.xhtml" />
+													
+							<h:outputText value="0020 - Relatorio de compra por fornecedor" />		
+							<p:commandButton  value="Pesquisar"  icon="ui-icon-search" 
+							action="/pages/relatorios/relComprasPorFornecedor.xhtml" />
+						
+						</h:panelGrid>
+					</p:tab>
+					
+					<p:tab title="Relatórios de Contas Pagas" 
+					rendered="#{autenticacaoBean.funcionarioLogado.tipo == 'Administrador' 
+						 or autenticacaoBean.funcionarioLogado.tipo == 'Gerente' 
+						or (autenticacaoBean.funcionarioLogado.tipo =='Financeiro') }"
+							url="/pages/pessoa.xhtml" icon="ui-icon-document" >
+						<h:panelGrid columns="2" cellpadding="4">
+						
+	                     <h:outputText value="0010 - Relatorio de contas a pagar "/>		
+							<p:commandButton  value="Pesquisar"  icon="ui-icon-search" 	action="/pages/relatorios/relContasPagarPorPeriodo.xhtml" />
+						
+						 <h:outputText value="0020- Relatorio de contas a pagar por tipo de despesa "/>		
+							<p:commandButton  value="Pesquisar"  icon="ui-icon-search" 		action="/pages/relatorios/relContasPagarPorPeriodoTipoDespesa.xhtml" />
+							
+					<h:outputText value="0030- Relatorio de pagamentos por periodo "/>		
+						<p:commandButton  value="Pesquisar"  icon="ui-icon-search" 		action="/pages/relatorios/relPagamentoPorPeriodo.xhtml" />
+						
+					
+						 <h:outputText value="0040- Relatorio de pagamentos da despesa "/>		
+							<p:commandButton  value="Pesquisar"  icon="ui-icon-search" 		action="/pages/relatorios/relPagamentoPorRegistroDespesa.xhtml" />
+						</h:panelGrid>
+					</p:tab>
+					<p:tab title="Relatórios de Duplicatas"
+					 rendered="#{autenticacaoBean.funcionarioLogado.tipo == 'Administrador' 
+						 or autenticacaoBean.funcionarioLogado.tipo == 'Gerente' 
+							or (autenticacaoBean.funcionarioLogado.tipo =='Financeiro')
+							or (autenticacaoBean.funcionarioLogado.tipo =='Caixa') }"
+							url="/pages/pessoa.xhtml" icon="ui-icon-document" >
+						<h:panelGrid columns="2" cellpadding="4">
+						
+				         <h:outputText value="0010 - Relatorio de duplicatas por periodo "/>		
+							<p:commandButton  value="Pesquisar"  icon="ui-icon-search"
+							 		action="/pages/relatorios/relDuplicatasPorCodVenda.xhtml" />
+	
+								         <h:outputText value="0020 - Relatorio de duplicatas em atraso "/>		
+							<p:commandButton  value="Pesquisar"  icon="ui-icon-search" 		action="/pages/relatorios/relDuplicatasEmAtraso.xhtml" />
+				
+<!-- 					         <h:outputText value="0020 - Relatorio de duplicatas por cliente "/>		 -->
+<!-- 							<p:commandButton  value="Pesquisar"  icon="ui-icon-search" 		action="/pages/relatorios/relDuplicatasPorCliente.xhtml" /> -->
+				
+</h:panelGrid> 
+					</p:tab>
+								<p:tab title="Relatórios de Produtos" >
+						<h:panelGrid columns="2" cellpadding="4">
+				         <h:outputText value="0010 - Relatorio de produtos  vendidos por periodo "/>		
+							<p:commandButton  value="Pesquisar"  icon="ui-icon-search" 		action="/pages/relatorios/relProdutosVendidosPorPeriodo.xhtml" />
+						
+					         <h:outputText value="0020 - Relatorio de produtos vendidos por vendedor "  />		
+							<p:commandButton  value="Pesquisar"  icon="ui-icon-search" 		action="/pages/relatorios/relProdutosVendidosPorVendedor.xhtml" />
+							
+							      <h:outputText value="0030 - Relatorio de produtos em quantidade critica "/>		
+							<p:commandButton  value="Pesquisar"  icon="ui-icon-search" 		action="/pages/relatorios/relProdutosNaQuantidadeCritica.xhtml" />
+						</h:panelGrid>
+					</p:tab>
+				</p:accordionPanel>
+			</p:panel>
+			<br id="topoSpaco" />
+			<center>
+				<div id="imgFixa" />
+			</center>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+</html>

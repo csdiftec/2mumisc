@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Inventário de Produtos</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+				
+				<h:outputText style="color: red; font-size: 12px;" value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+			<h:form id="formularioProdutos"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+
+		<p:panel header="Produtos - Listagem">
+			<p:dataTable id="tabela"
+				emptyMessage="Nenhum registro encontrado." paginator="true" rows="20"
+				var="produto" value="#{inventarioBean.produtos}">
+				<f:facet name="header">
+
+				</f:facet>
+
+				<p:column headerText="Código barras"
+				rowKey="#{produto.codigoBarras}"
+					sortBy="#{produto.codigoBarras}" filterBy="#{produto.codigoBarras}">
+					<h:outputText value="#{produto.codigoBarras}" />
+				</p:column>
+
+				<p:column headerText="Descrição" sortBy="#{produto.descricao}"
+					filterBy="#{produto.descricao}">
+					<h:outputText value="#{produto.descricao}" />
+				</p:column>
+
+				<p:column headerText="Quantidade Critica">
+					<h:outputText value="#{produto.quantidadeCritica}" />
+				</p:column>
+
+				<p:column headerText="Quantidade">
+					<h:outputText value="#{produto.quantidadeEstoque}" />
+				</p:column>
+
+				<p:column headerText="Opções">
+
+					<p:commandButton icon="ui-icon-pencil"
+						actionListener="#{inventarioBean.editar}"
+						update=":formAlteracao:painel" oncomplete="PF('dialogo').show();">
+						<f:attribute name="produtoSelecionado" value="#{produto}" />
+					</p:commandButton>
+
+				</p:column>
+			</p:dataTable>
+</p:panel>
+
+	</h:form>
+		
+	<p:dialog header="Inventário" widgetVar="dialogo" draggable="true"
+		resizable="false" modal="true" closable="false">
+		<h:form id="formAlteracao">
+			<h:panelGrid id="painel" columns="2">
+
+				<p:outputLabel value="Código de barras:" />
+				<p:inputText value="#{inventarioBean.produto.codigoBarras}"
+					maxlength="14" size="20" />
+
+				<p:outputLabel value="Descrição:" />
+				<p:inputText value="#{inventarioBean.produto.descricao}"
+					maxlength="60" size="50" />
+
+				<p:outputLabel value="Unidade de Medida:" />
+				<p:inputText
+					value="#{inventarioBean.produto.unidadeMedida.descricao}"
+					maxlength="60" size="25" />
+
+				<p:outputLabel value="Quantidade no estoque:" />
+				<p:inputText value="#{inventarioBean.produto.quantidadeEstoque}"
+					maxlength="7" size="10" />
+
+				<p:separator />
+				<p:separator />
+
+				<p:outputLabel value="Quantidade conferida:" />
+				<p:inputText value="#{inventarioBean.quantidadeAtualizada}"
+					maxlength="7" size="10" />
+
+				<p:outputLabel value="Observação:" />
+				<p:inputText value="#{inventarioBean.observacao}" maxlength="100"
+					size="70" />
+
+			</h:panelGrid>
+
+			<h:panelGrid columns="2">
+				<p:commandButton value="Salvar" icon="fa fa-fw fa-save"
+					actionListener="#{inventarioBean.salvar}"
+					 	update=":mensagem :formularioProdutos:tabela" >
+					  </p:commandButton>
+					  
+				<p:commandButton value="Fechar" 
+					update="formularioProdutos"
+				 oncomplete="PF('dialogo').hide();" >
+				 </p:commandButton>
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+	
+	</ui:define>
+</ui:composition>
+
+
+</html>

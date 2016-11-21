@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Cadastro de Usuario</title>
+</h:head>
+<h:body>
+	<h:form>
+		<p:panel header="Listagem de usuários">
+			<p:dataTable emptyMessage="Nenhum registro encontrado."
+				paginator="true">
+				<f:facet name="header">
+					<p:commandButton value="Novo" oncomplete="PF('dialogo').show();" />
+				</f:facet>
+
+				<p:column headerText="Nome">
+				</p:column>
+
+				<p:column headerText="CPF">
+				</p:column>
+				
+				<p:column headerText="Tipo">
+				</p:column>
+				
+				<p:column headerText="Ativo">
+				</p:column>
+
+				<p:column headerText="Opções">
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</h:form>
+
+	<p:dialog header="Cadastro de usuarios" widgetVar="dialogo"
+		draggable="false" resizable="false" modal="true" closable="false">
+		<h:form>
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Pessoa:" />
+				<p:selectOneMenu filter="true">
+					<f:selectItem itemValue="" itemLabel="Selecione uma pessoa" />
+				</p:selectOneMenu>
+				
+				<p:outputLabel value="Senha:" />
+				<p:password maxlength="8" size="10" />
+				
+				<p:outputLabel value="Tipo:" />
+				<p:selectOneRadio>
+					<f:selectItem itemValue="A" itemLabel="Administrador" />
+					<f:selectItem itemValue="B" itemLabel="Balconista" />
+					<f:selectItem itemValue="E" itemLabel="Estoquista" />
+					<f:selectItem itemValue="F" itemLabel="Financeiro" />
+					<f:selectItem itemValue="G" itemLabel="Gerente" />
+				</p:selectOneRadio>
+				
+				<p:outputLabel value="Ativo:" />
+				<p:selectBooleanCheckbox />
+	
+			</h:panelGrid>
+
+			<h:panelGrid columns="2">
+				<p:commandButton value="Salvar" icon="fa fa-fw fa-save"/>
+				<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+</h:body>
+</html>

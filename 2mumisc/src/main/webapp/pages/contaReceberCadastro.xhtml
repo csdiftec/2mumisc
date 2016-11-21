@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+		xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Cadastro Contas a Receber</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+				
+				<h:outputText style="color: red; font-size: 12px;" value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+			<h:form id="frmDespCad"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+
+		<p:toolbar>
+			<f:facet name="left">
+				<h:outputText value="Despesas a Receber" />
+			</f:facet>
+		</p:toolbar>
+
+		<p:dataTable emptyMessage="Nenhum registro encontrado."
+			value="#{contaPagarBean.listaContasPagar}"
+			filterValue="#{contaPagarBean.listaContasPagarFiltrados}" var="cpc"
+			rows="10" paginator="true">
+
+			<f:facet name="footer">
+				<p:commandButton value="Novo" oncomplete="PF('dialogo').show();" />
+			</f:facet>
+
+			<p:column headerText="Código" style="width:20%; text-align:center;">
+				<h:outputText value="#{cpc.id_conta_pagar}" />
+			</p:column>
+
+			<p:column headerText="Tipo da Despesa" filterBy="#{cpc.tipoDespesas}"
+				sortBy="#{cpc.tipoDespesas}">
+				<h:outputText value="#{cpc.tipoDespesas.descricao}" />
+			</p:column>
+
+			<p:column headerText="Total" style="width:20%; text-align:center;"
+				filterBy="#{cpc.valorTotal}" sortBy="#{cpc.valorTotal}">
+				<h:outputText value="#{cpc.valorTotal}" />
+			</p:column>
+
+			<p:column headerText="Opções" exportable="false"
+				style="width: 20%; text-align: center;">
+
+				<p:button value="Excluir" outcome="/pages/contaPagarCadastro.xhtml"
+					icon="ui-icon-trash">
+					<f:param name="ConPgAcao" value="Excluir" />
+					<f:param name="ConPgCod" value="#{cpc.id_conta_pagar}" />
+				</p:button>
+
+				<p:button value="Editar" outcome="/pages/contaPagarCadastro.xhtml"
+					icon="ui-icon-pencil">
+					<f:param name="ConPgAcao" value="Editar" />
+					<f:param name="ConPgCod" value="#{cpc.id_conta_pagar}" />
+				</p:button>
+			</p:column>
+		</p:dataTable>
+	</h:form>
+
+	<p:dialog header="Cadastro de conta a receber" widgetVar="dialogo"
+		draggable="false" resizable="false" modal="true" closable="false">
+		<h:form>
+			<h:panelGrid id="pnlDespCadDados" columns="2">
+
+				<p:outputLabel value="Funcionario:" />
+				<p:inputText size="30" readonly="true"
+					value="#{contaReceberBean.logPagamentoCadastro.funcionario.nome_funcionario}" />
+
+				<p:outputLabel value="Código:" />
+				<p:inputText size="20" readonly="#{contaReceberBean.acao == 'Editar'}"
+					value="#{contaReceberBean.contaPagarCadastro.codigoConta}" />
+
+				<p:outputLabel value="Observação:" />
+				<p:inputText maxlength="15" size="50"
+					value="#{contaReceberBean.contaReceberCadastro.observacao}"
+					readonly="#{contaReceberBean.acao == 'Excluir'}"
+					title="Campo Obrigatorio">
+				</p:inputText>
+
+				<p:outputLabel value="Data de Lançamento:" />
+				<p:calendar
+					value="#{contaReceberBean.contaReceberCadastro.dataLancamento}" />
+				<p:outputLabel value="Data de Vencimento:" />
+				<p:calendar
+					value="#{contaReceberBean.contaReceberCadastro.dataVencimento}" />
+
+				<h:outputText value="Data de Atualização:" />
+				<h:outputText
+					value="#{contaReceberBean.contaReceberCadastro.dataAtualizacao}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+						timeZone="America/Sao_Paulo" />
+				</h:outputText>
+
+				<p:outputLabel value="Tipo de Despesas" />
+				<p:selectOneMenu
+					value="#{contaReceberBean.contaReceberCadastro.tipoDespesas}">
+					<f:selectItem itemValue=""
+						itemLabel="Selecione um Tipo de Despesas" />
+					<f:selectItems value="#{contaReceberBean.listaTiposDespesas}"
+						var="contaPagar" itemValue="#{contaReceber}"
+						itemLabel="#{contaReceber.descricao}" />
+
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Valor Total:" />
+				<p:inputText maxlength="15" size="50" id="total"
+					value="#{contaReceberBean.contaPagarCadastro.valorTotal}"
+					readonly="#{contaReceberBean.acao == 'Editar'}"
+					title="Campo Obrigatorio">
+					<f:validateBean />
+				</p:inputText>
+
+				<p:outputLabel value="Valor Total Pago:"
+					rendered="#{contaReceberBean.acao != 'Novo'}" />
+
+				<p:inputText maxlength="15" id="totalPago" size="50"
+					value="#{contaReceberBean.contaPagarCadastro.valorTotalPago}"
+					readonly="#{contaReceberBean.acao == 'Editar'}"
+					rendered="#{contaReceberBean.acao != 'Novo'}"
+					title="Campo Obrigatorio">
+					<f:validateBean />
+				</p:inputText>
+
+				<p:outputLabel value="Valor a pagar:"
+					rendered="#{contaReceberBean.acao != 'Novo'}" />
+
+				<p:inputText maxlength="15" id="total_pagar" size="50"
+					value="#{contaReceberBean.contaPagarCadastro.valorApagar}"
+					readonly="#{contaReceberBean.acao == 'Excluir'}"
+					rendered="#{contaReceberBean.acao != 'Novo'}"
+					title="Campo Obrigatorio">
+
+					<f:validateBean />
+				</p:inputText>
+
+				<p:outputLabel value="Valor Atual:"
+					rendered="#{contaReceberBean.acao != 'Novo'}" />
+				<p:inputText maxlength="15" id="atual" size="25"
+					value="#{contaReceberBean.contaPagar.valorAtualConta}"
+					readonly="#{contaReceberBean.acao == 'Editar' }"
+					rendered="#{contaReceberBean.acao != 'Novo'}"
+					title="Campo Obrigatorio">
+					<f:validateBean />
+				</p:inputText>
+
+			</h:panelGrid>
+			<h:panelGrid columns="4">
+
+				<p:button value="Novo" icon="ui-icon-plus"
+					actionListener="#{contaReceberBean.novo}"
+					update=":msgGlobal :frmDespCad:pnlDespCadDados" />
+
+				<p:button value="Salvar" icon="ui-icon-save"
+					actionListener="#{contaPagarBean.salvar}"
+					update=":msgGlobal :frmDespCad:pnlDespCadDados" />
+
+				<p:button value="Excluir" icon="ui-icon-trash"
+					actionListener="#{contaReceberBean.excluir}" update=":msgGlobal"
+					rendered="#{contaPagarBean.acao != 'Excluir'}" />
+
+				<p:button value="Calcular" icon="ui-icon-calculator"
+					actionListener="#{contaReceberBean.calcular}"
+					update=":msgGlobal  atual totalPago" />
+
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+	
+	</ui:define>
+</ui:composition>
+
+</html>

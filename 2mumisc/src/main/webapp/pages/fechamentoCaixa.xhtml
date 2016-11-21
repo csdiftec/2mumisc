@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Caixa</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+				
+				<h:outputText style="color: red; font-size: 12px;" value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+			<h:form id="formListagem"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+
+
+				<p:panel header="Finalização">
+					<h:panelGrid id="painelFinalizacao" columns="2">
+						<p:outputLabel value="Valor Inicial........:" />
+						<h:outputText
+							value="#{fechamentoCaixaBean.fechamentoCaixa.valorInicial}">
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</h:outputText>
+
+						<p:outputLabel value="Data da abertura:" />
+						<h:outputText
+							value="#{fechamentoCaixaBean.fechamentoCaixa.dataAbertura}">
+							<f:convertDateTime locale="pt_BR" />
+						</h:outputText>
+						<p:outputLabel value="Terminal ............:" />
+						<h:outputText
+							value="#{fechamentoCaixaBean.fechamentoCaixa.terminalAtendimento.numeroTerminal}" />
+					
+						<p:outputLabel value="Total.............: R$" />
+							<h:outputText
+							value="#{fechamentoCaixaBean.fechamentoCaixa.valorTotalFechamento}" />
+
+						<p:commandButton value="Finalizar Caixa" icon="fa fa-fw fa-check-square"
+							actionListener="#{fechamentoCaixaBean.salvar}"
+							update=":formMenu"/>
+		
+						<p:commandButton value="Abrir Ocorrência" icon="ui-icon-pencil"
+							oncomplete="PF('dialogo').show();">
+						</p:commandButton>
+
+					</h:panelGrid>
+				</p:panel>
+			</h:form>
+			
+							<p:panel>
+					<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+						paginator="true" rows="5" value="#{fechamentoCaixaBean.vendas}"
+						var="venda">
+
+						<p:column headerText="Código da Venda">
+
+							<h:outputText value="#{venda.codigo}" />
+						</p:column>
+
+						<p:column headerText="CPF -  Cliente">
+
+							<h:outputText
+								value="#{venda.cliente.pessoa.cpf} - #{venda.cliente.pessoa.nome}" />
+						</p:column>
+
+						<p:column headerText="Numero da Nota">
+							<h:outputText value="#{venda.numeroDocumentoFiscal}" />
+						</p:column>
+
+						<p:column headerText="Valor Total">
+							<h:outputText value="R$ #{venda.valorTotal}">
+								<f:convertNumber pattern="#,##0.00" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Data da Venda">
+							<h:outputText value="#{venda.dataVenda}">
+								<f:convertDateTime locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+
+	</ui:define>
+</ui:composition>
+</html>

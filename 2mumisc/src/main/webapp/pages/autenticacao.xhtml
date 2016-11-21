@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:insert name="metadata" />
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Autenticação</title>
+
+<!-- 		<h:outputStylesheet library="CSS" name="/estilos.css" /> -->
+
+</h:head>
+
+<h:body style="background: url('../images/verdeBrasil.png') ">
+
+
+	<p:growl id="msgGlobal" />
+
+	<h:form rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+		id="form_login" >
+
+<!-- 		<p:toolbar> -->
+<!-- 			<f:facet name="top" > -->
+<!-- 				<marquee> -->
+<!-- 					<h:outputText style="font-size:15px;" value="Softwarer C. Simum - Controle de Estoque e Vendas - DifTecnologia" /> -->
+<!-- 				</marquee> -->
+<!-- 			</f:facet> -->
+<!-- 		</p:toolbar> -->
+
+		<p:dialog closable="false" draggable="false"
+		height="252" width="360"
+					resizable="false" modal="true" visible="true">
+			<h:form id="formLogin">
+			<center>
+
+				<h:panelGrid columns="1">
+
+					<h:outputText style="margin-top: 10px;font-size:15px;text-decoration: underline;font-weight: bold; color: green;" 
+						value="Use seu CPF e senha para acesso ao sistema!" />
+
+				</h:panelGrid>
+
+				<h:panelGrid border="0" columns="2" cellpadding="08" cellspacing="10">
+				
+					<p:outputLabel value="CPF:" />
+					<p:inputMask size="14" mask="999.999.999-99"
+						value="#{autenticacaoBean.funcionario.pessoa.cpf}">
+						<f:validateBean />
+					</p:inputMask>
+
+					<p:outputLabel for="senha" value="Senha:" />
+					<p:password id="senha" maxlength="8" size="14"
+						value="#{autenticacaoBean.funcionario.senha}" autocomplete="false">
+						<f:validateBean />
+					</p:password>
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Acessar" title="Digite os dados acima e clique aqui para acessar o sistema" 
+					icon="fa fa-fw fa-unlock"
+					 style="width:290px"	update=":msgGlobal" action="#{autenticacaoBean.autenticar}" />
+				</h:panelGrid>
+				
+ 				<p:ajaxStatus style="display:block;margin-bottom:2em;height:24px;"> 
+
+     <f:facet name="default"> 
+         <h:outputText style="margin-top: 10px;font-size:15px;text-decoration: underline;font-weight: bold; color: green;"  value="Software CSimum - Seja bem vindo!" /> 
+     </f:facet> 
+ 
+<!--     <f:facet name="start"> --> 
+<!--          <p:graphicImage name="/images/ajax-loader.gif" /> --> 
+<!--      </f:facet> --> 
+ 
+     <f:facet name="complete"> 
+         <h:outputText value="Mantenha sua senha em sigilo." /> 
+     </f:facet> 
+    
+ </p:ajaxStatus> 
+				
+ 			</center> 
+ 			</h:form>
+ 		</p:dialog> 
+		
+
+
+ 		<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" /> 
+		
+ 		<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false"> 
+    <p:graphicImage name="/images/ajax-loader.gif" /> 
+ </p:dialog> 
+
+	</h:form>
+
+</h:body>
+</html>

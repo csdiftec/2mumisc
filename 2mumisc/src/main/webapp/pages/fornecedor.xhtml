@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Cadastro de Fornecedor</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+	
+		<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+				
+				<h:outputText style="color: red; font-size: 12px;" value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+			<h:form id="formListagem"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+	
+		
+				<p:panel header="Listagem de Fornecedores">
+					<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+						paginator="true" rows="10" value="#{fornecedorBean.fornecedores}"
+						var="fornecedor">
+						<f:facet name="header">
+							<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+								actionListener="#{fornecedorBean.novo}" update="formCadastro"
+							icon="fa fa-fw fa-plus-square">
+								<f:actionListener
+									type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+							</p:commandButton>
+						</f:facet>
+
+						<p:column headerText="Código" sortBy="#{fornecedor.codigo}"
+							style="width: 75px" filterBy="#{fornecedor.codigo}">
+							<h:outputText value="#{fornecedor.codigo}" />
+						</p:column>
+
+						<p:column headerText="Nome Fantasia"
+							style="width: 220px;text-align: left"
+							sortBy="#{fornecedor.nomeFantasia}"
+							filterBy="#{fornecedor.nomeFantasia}">
+							<h:outputText value="#{fornecedor.nomeFantasia}" />
+						</p:column>
+
+						<p:column id="tblCampoCNPJ" headerText="CNPJ"
+							sortBy="#{fornecedor.cnpj}" filterBy="#{fornecedor.cnpj}"
+							style="width: 100px;text-align: center">
+							<h:outputText value="#{fornecedor.cnpj}" />
+						</p:column>
+
+						<p:column headerText="Status"
+							style="width: 20px;text-align: center">
+							<p:selectBooleanCheckbox value="#{fornecedor.status}"
+								disabled="true" />
+						</p:column>
+
+						<p:column headerText="Opções"
+							style="width: 70px;text-align: center">
+							<center>
+								<p:commandButton icon="ui-icon-trash"
+									actionListener="#{fornecedorBean.excluir}"
+									update=":formListagem:tabela">
+									<p:confirm header="Confirmação"
+										message="Deseja excluir o fornecedor #{fornecedor.nomeFantasia}?"
+										icon="ui-icon-alert" />
+									<f:attribute name="fornecedorSelecionado" value="#{fornecedor}" />
+								</p:commandButton>
+					
+								<p:commandButton icon="ui-icon-pencil"
+									actionListener="#{fornecedorBean.editar}"
+									update="formCadastroEdit"
+									oncomplete="PF('dialogoEdit').show();">
+									<f:attribute name="fornecedorSelecionado" value="#{fornecedor}" />
+									<f:actionListener	type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
+						
+											<p:commandButton icon="ui-icon-print"
+									actionListener="#{fornecedorBean.imprimirFornecedorPorCodigo}">
+									<f:attribute name="fornecedorSelecionado" value="#{fornecedor}" />
+								</p:commandButton>
+				
+							</center>
+						</p:column>
+					</p:dataTable>
+					<!--xxx -->
+					<p:confirmDialog global="true" closeOnEscape="true">
+						<p:commandButton value="Sim" type="button"
+							styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="Não" type="button"
+							styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+
+				</p:panel>
+			</h:form>
+
+			<p:dialog header="Cadastro de Fornecedores" widgetVar="dialogo"
+				closeOnEscape="true" draggable="false" resizable="true"
+				modal="true" closable="true" appendTo="@(body)"	>
+				<h:form id="formCadastro">
+					<h:panelGrid columns="2">
+
+						<p:outputLabel value="Código:" for="codigo"  />
+						<p:inputText id="codigo"
+							value="#{fornecedorBean.fornecedor.codigo}"
+							placeholder="preenchimento automático!" readonly="true" size="23" />
+
+						<p:outputLabel value="Razão Social:"  for="razaoSocial"  />
+						<p:inputText id="razaoSocial" required="true"  requiredMessage="O campo 'Razao Social' é obrigatório"
+							value="#{fornecedorBean.fornecedor.razaoSocial}" maxlength="60"
+							size="55" />
+
+					<p:outputLabel value="Nome Fantasia:"  for="nomeF"  />
+						<p:inputText id="nomeF" required="true"  requiredMessage="O campo 'Nome Fantasia' é obrigatório"
+							value="#{fornecedorBean.fornecedor.nomeFantasia}" maxlength="60"
+							size="55" />
+
+						<p:outputLabel  value="Responsável Legal:"  for="responsavelLegal" />
+						<p:inputText id="responsavelLegal"
+							value="#{fornecedorBean.fornecedor.responsavelLegal}"
+							maxlength="60" size="55" />
+
+						<p:outputLabel  value="CNPJ:"  for="cnpj" />
+						<p:inputMask id="cnpj" required="true"  requiredMessage="O campo 'CNPJ' é obrigatório"
+						value="#{fornecedorBean.fornecedor.cnpj}"
+							size="20" mask="99.999.999/9999-99">
+							<f:validateBean />
+						</p:inputMask>
+
+						<p:outputLabel value="E-mail" />
+						<p:inputText value="#{fornecedorBean.fornecedor.email}"
+							maxlength="60" size="50">
+							<f:validateBean />
+						</p:inputText>
+
+						<p:separator />
+						<p:separator />
+
+						<p:outputLabel value="Logradouro:*"   for="logradouro" />
+						<p:inputText 	id="logradouro"  value="#{fornecedorBean.endereco.rua}" maxlength="60"
+					required=" true" requiredMessage="O campo 'Logradouro'é obrigatório"
+							size="55" />
+
+						<p:outputLabel value="Número:" />
+						<p:inputText value="#{fornecedorBean.endereco.numero}"
+							maxlength="4" size="5"  />
+
+						<p:outputLabel value="Bairro:*"  for="bairro" />
+						<p:inputText id="bairro"  required=" true" 
+							requiredMessage="O campo 'Bairro' é obrigatório" 
+						 value="#{fornecedorBean.endereco.bairro}"
+							maxlength="60" size="30"  
+							/>
+
+						<p:outputLabel value="CEP:" />
+						<p:inputMask value="#{fornecedorBean.endereco.cep}" size="9"
+							mask="99999-999">
+							<f:validateBean />
+						</p:inputMask>
+
+						<p:outputLabel value="Complemento:" />
+						<p:inputText value="#{fornecedorBean.endereco.complemento}"
+							maxlength="50" size="50" />
+
+
+						<p:outputLabel value="Estado: "  for="estado"/>
+						<p:selectOneMenu id="estado" filter="true"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{fornecedorBean.estado}" required="true"
+							requiredMessage="O campo 'Estado' é Obrigatório">							
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Selecione um estado" />
+							<f:selectItems value="#{fornecedorBean.estados}" var="estado"
+								itemValue="#{estado}" itemLabel="#{estado.nome}" />
+							<p:ajax listener="#{fornecedorBean.popular}"
+								update=":formCadastro:cidade" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="cidade" value="Cidade:" />
+						<p:selectOneMenu id="cidade" filter="true" required="true"
+							requiredMessage="O campo 'Cidade' é obrigatório"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{fornecedorBean.endereco.cidade}">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Selecione uma cidade" />
+							<f:selectItems value="#{fornecedorBean.cidades}" var="cidade"
+								itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
+						</p:selectOneMenu>
+				
+						<p:separator />
+						<p:separator />
+						
+						<p:outputLabel value="Ativo:" />
+						<p:selectBooleanCheckbox id="liberado"
+							value="#{fornecedorBean.fornecedor.status}" required="true"
+							requiredMessage="O campo 'Liberado' é obrigatório" />
+					</h:panelGrid>
+					<p:separator />
+
+					<center>
+						<h:panelGrid columns="2">
+
+							<p:commandButton value="Salvar" icon="fa fa-fw fa-save"
+								actionListener="#{fornecedorBean.salvar}"
+								update=":formListagem:tabela :formListagem:tabela:tblCampoCNPJ">
+							</p:commandButton>
+
+						</h:panelGrid>
+					</center>
+				</h:form>
+			</p:dialog>
+			<!-- 			EDITAR -->
+			<p:dialog header="Cadastro de Fornecedores" widgetVar="dialogoEdit"
+				closeOnEscape="true" draggable="false" resizable="true"
+				modal="true" closable="true"  appendTo="@(body)"
+				>
+				<h:form id="formCadastroEdit">
+					<h:panelGrid columns="2">
+
+						<p:outputLabel for="codigo" value="Código:" />
+						<p:inputText id="codigo"
+							value="#{fornecedorBean.fornecedor.codigo}"
+							placeholder="preenchimento automático!" readonly="true" size="23" />
+
+									<p:outputLabel value="Razão Social:"   for="razaoSocial" />
+						<p:inputText id="razaoSocial"  required="true" requiredMessage="O campo 'Razao Social' é obrigatório"
+							value="#{fornecedorBean.fornecedor.razaoSocial}" maxlength="60"
+							size="55" />
+
+						<p:outputLabel value="Nome Fantasia:"  for="nomeFantasia"  />
+						<p:inputText id="nomeFantasia" required=" true" requiredMessage="O campo 'Nome Fantasia' é obrigatório"
+							value="#{fornecedorBean.fornecedor.nomeFantasia}" maxlength="60"
+							size="55" />
+
+						<p:outputLabel value="Responsável Legal:"   for="responsavelLegal"/>
+						<p:inputText id="responsavelLegal"
+							value="#{fornecedorBean.fornecedor.responsavelLegal}"
+							maxlength="60" size="55" />
+
+									<p:outputLabel  value="CNPJ:" for="cnpj" />
+						<p:inputMask id="cnpj"  required=" true" requiredMessage="O campo 'CNPJ' é obrigatório"
+						value="#{fornecedorBean.fornecedor.cnpj}"
+							size="20" mask="99.999.999/9999-99">
+							<f:validateBean />
+						</p:inputMask>
+
+						<p:outputLabel value="E-mail" />
+						<p:inputText value="#{fornecedorBean.fornecedor.email}"
+							maxlength="60" size="50">
+							<f:validateBean />
+						</p:inputText>
+
+						<p:separator />
+						<p:separator />
+
+						<p:outputLabel value="Logradouro:"  for="logradouro" />
+						<p:inputText id="logradouro"  value="#{fornecedorBean.endereco.rua}" maxlength="60"
+							size="55"  required="O campo 'Logradouro' é obrigatório" />
+
+						<p:outputLabel value="Número:" />
+						<p:inputText value="#{fornecedorBean.endereco.numero}"
+							maxlength="4" size="5" />
+
+	
+						<p:outputLabel  value="Bairro:"  for="bairro"/>
+						<p:inputText id="bairro"  value="#{fornecedorBean.endereco.bairro}"
+							maxlength="60" size="30"  required="O campo 'Bairro' é obrigatório" />
+
+						<p:outputLabel value="CEP:" />
+						<p:inputMask value="#{fornecedorBean.endereco.cep}" size="9"
+							mask="99999-999">
+							<f:validateBean />
+						</p:inputMask>
+
+						<p:outputLabel value="Complemento:" />
+						<p:inputText value="#{fornecedorBean.endereco.complemento}"
+							maxlength="50" size="50" />
+
+
+
+
+						<p:outputLabel value="Estado: " for ="estado"/>
+						<p:selectOneMenu id="estado" filter="true"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{fornecedorBean.estado}"  required="true"
+							requiredMessage="O campo 'Estado' é Obrigatório.">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Selecione um estado" />
+							<f:selectItems value="#{fornecedorBean.estados}" var="estado"
+								itemValue="#{estado}" itemLabel="#{estado.nome}" />
+							<p:ajax listener="#{fornecedorBean.popular}"
+								update=":formCadastroEdit:cidade" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="cidade" value="Cidade:" />
+						<p:selectOneMenu id="cidade" filter="true" required="true"
+							requiredMessage="O campo 'Cidade' é obrigatório."
+							converter="omnifaces.SelectItemsConverter"
+							value="#{fornecedorBean.endereco.cidade}">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Selecione uma cidade" />
+							<f:selectItems value="#{fornecedorBean.cidades}" var="cidade"
+								itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
+						</p:selectOneMenu>
+
+						<p:separator />
+						<p:separator />
+
+						<p:outputLabel value="Ativo:" />
+						<p:selectBooleanCheckbox id="liberado"
+							value="#{fornecedorBean.fornecedor.status}" required="true"
+							requiredMessage="O campo 'Liberado' é obrigatório" />
+					</h:panelGrid>
+					<p:separator />
+	
+
+					<center>
+						<h:panelGrid columns="2">
+
+							<p:commandButton value="Salvar" icon="fa fa-fw fa-save"
+								actionListener="#{fornecedorBean.salvar}"
+								update=":formListagem  :formCadastroEdit:cidade   formListagem:tabela:tblCampoCNPJ">
+							</p:commandButton>
+
+<!-- 							<p:commandButton value="Fechar" -->
+<!-- 								oncomplete="PF('dialogoEdit').hide();" /> -->
+
+						</h:panelGrid>
+					</center>
+				</h:form>
+			</p:dialog>
+
+	</ui:define>
+</ui:composition>
+
+</html>

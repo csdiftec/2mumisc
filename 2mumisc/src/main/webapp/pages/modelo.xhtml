@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>DIF tecnologia</title>
+	<h:outputStylesheet library="css" name="estilos.css" />
+
+	<!-- 	<link rel="shortcut icon" type="image/x-ico" href="./imagens/icone.ico" /> -->
+	<!-- 	<link rel="shortcut icon" type="image/x-ico" -->
+	<!-- 		href="../imagens/icone.ico" /> -->
+
+</h:head>
+<h:body>
+	<p:growl id="mensagem" autoUpdate="true" />
+<script>
+PrimeFaces.locales['pt'] = {  
+        closeText: 'Fechar',  
+        prevText: 'Anterior',  
+        nextText: 'Próximo',  
+        currentText: 'Começo',  
+        monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],  
+        monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun', 'Jul','Ago','Set','Out','Nov','Dez'],  
+        dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],  
+        dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],  
+        dayNamesMin: ['D','S','T','Q','Q','S','S'],  
+        weekHeader: 'Semana',  
+        firstDay: 1,  
+        isRTL: false,  
+        showMonthAfterYear: false,  
+        yearSuffix: '',  
+        timeOnlyTitle: 'Só Horas',  
+        timeText: 'Tempo',  
+        hourText: 'Hora',  
+        minuteText: 'Minuto',  
+        secondText: 'Segundo',  
+        currentText: 'Data Atual',  
+        ampm: false,  
+        month: 'Mês',  
+        week: 'Semana',  
+        day: 'Dia',  
+        allDayText : 'Todo Dia'  
+    };
+</script>
+	<p:layout id="geral" fullPage="true">
+
+		<p:layoutUnit position="north" size="40"
+			style="text-align: center;width:10px"
+			header="DIF Tecnologia - Funcionário: #{autenticacaoBean.funcionarioLogado.pessoa.nome}."
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}"
+			resizable="false" closable="false">
+
+		</p:layoutUnit>
+
+		<p:layoutUnit id="layoutMenu"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}"
+			position="west" size="170" header="Menu" resizable="false"
+			closable="false" collapsible="false">
+
+			<h:form id="frmMenuPrincipal">
+				<p:growl autoUpdate="true" />
+
+				<p:panelMenu resizable="false" id="plnMenuPrincipal"
+					style="width:160px;font-size:13px;">
+
+					<p:submenu label="Cadastros">
+											<p:menuitem value="Pessoa" ajax="false"
+							url="/pages/pessoa.xhtml" icon="ui-icon-document" />
+					
+						<p:menuitem value="Fornecedores" ajax="false"
+							url="/pages/fornecedor.xhtml" icon="ui-icon-document" />
+					
+						<p:menuitem value="Funcionarios" ajax="false"
+							url="/pages/funcionario.xhtml" icon="ui-icon-document" />
+					
+						<p:menuitem value="Clientes" url="/pages/cliente.xhtml"
+							icon="ui-icon-document" />
+						<p:menuitem value="Produtos" ajax="false"
+							url="/pages/produto.xhtml" icon="ui-icon-document" />
+				
+								<p:menuitem value="Unidade de Medida" ajax="false"
+							url="/pages/unidadeMedida.xhtml" icon="ui-icon-document" />
+					
+						<p:menuitem value="Tipos de despesas" ajax="false"
+							url="/pages/despesas.xhtml" icon="ui-icon-gear" />
+				
+					</p:submenu>
+
+					<p:submenu label="Movimentações">
+						<p:menuitem value="Conta a Pagar"  url="/pages/contaPagarCadastro.xhtml"
+						icon="ui-icon-calculator" />
+					
+						
+						<p:menuitem value="Entrada Produto" ajax="false"
+							url="/pages/compra.xhtml"  icon="ui-icon-cart" />
+						<p:menuitem value="Importar Produto" ajax="false"
+							url="/pages/importarNFE.xhtml" icon="ui-icon-cart" />
+							<p:menuitem value="Pagar duplicata" url="/pages/pagamentoDuplicataVenda.xhtml"
+							icon="ui-icon-cart"/>
+							
+												</p:submenu>
+
+					<p:submenu label="Fechamentos">
+				
+							
+						<p:menuitem value=" Caixa/Venda" ajax="false" 
+							url="/pages/caixa.xhtml" icon="ui-icon-calculator"  />
+														
+							<p:menuitem value="Finalizar Ocorrência"  ajax="false"
+							url="/pages/finalizacaoOcorrencia.xhtml"
+							icon="ui-icon-calculator" />
+					</p:submenu>
+
+					<p:submenu label="Pesquisas">
+						<p:menuitem value="Relatorios" ajax="false"
+						url="/pages/listaRelatorios.xhtml"
+							icon="ui-icon-search" />
+					
+					</p:submenu>
+
+		
+
+					<p:submenu label="Controle de Sessão" expanded="true">
+						<p:menuitem value="Lista de acessos" ajax="false"
+							url="/pages/registroLogin.xhtml" icon="ui-icon-search" />
+
+						<p:menuitem value="Tela Principal" url="/pages/principal.xhtml"
+							icon="ui-icon-home" />
+
+						<p:menuitem value="Sair" action="#{autenticacaoBean.sair}"
+							icon="ui-icon-power" />
+					</p:submenu>
+					<p:submenu label="Ferramentas">
+						<p:menuitem value="Calendário" ajax="false"
+							url="/pages/calendario.xhtml" icon="ui-icon-calendar" />
+						<p:menuitem value="calculadora" ajax="false"
+							icon="ui-icon-calculator" />
+						<p:menuitem value="Backup" ajax="false"
+							url="/pages/backup.xhtml"	icon="ui-icon-file" />
+											<p:menuitem value="Cadastrar o Serial" ajax="false"
+							url="/pages/cadastroSerial.xhtml"	icon="ui-icon-file" />
+						
+				</p:submenu>
+
+					<p:separator />
+
+				</p:panelMenu>
+			</h:form>
+		</p:layoutUnit>
+
+		<p:layoutUnit position="center">
+			<ui:insert name="conteudo" />
+		</p:layoutUnit>
+
+		<p:layoutUnit position="south" size="41" style="text-align: center;"
+			header="DIF Tecnologia - C. Simum"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}"
+			resizable="false" closable="false">
+
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

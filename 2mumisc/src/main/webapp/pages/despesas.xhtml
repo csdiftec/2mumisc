@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Cadastro de despesas</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+				
+				<h:outputText style="color: red; font-size: 12px;" value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+			<h:form id="formListagem"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+
+				<p:panel header="Listagem  dos tipos de despesas">
+					<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+						paginator="true" rows="5" value="#{despesasBean.despesass}"
+						var="tipoDespesa">
+						<f:facet name="header">
+							<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+								actionListener="#{despesasBean.novo}" icon="fa fa-fw fa-plus-square"
+								update="formCadastro:painel" >
+									<f:actionListener
+										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
+						</f:facet>
+
+						<p:column headerText="Descrição" 
+							style="text-align: center"
+						filterStyle="width: 50%"
+							sortBy="#{tipoDespesa.descricao}"
+							filterBy="#{tipoDespesa.descricao}">
+							<h:outputText value="#{tipoDespesa.descricao}" />
+						</p:column>
+
+						<p:column headerText="Opções" style="width:15%">
+							<center>
+								<p:commandButton icon="ui-icon-trash"
+									actionListener="#{despesasBean.excluir}"
+									update=":formListagem:tabela">
+									<p:confirm header="Confirmação"
+										message="Deseja excluir o tipo de despesa '#{tipoDespesa.descricao}'?"
+										icon="ui-icon-alert" />
+									<f:attribute name="despesaSelecionada" value="#{tipoDespesa}" />
+								</p:commandButton>
+
+								<p:commandButton icon="ui-icon-pencil"
+									actionListener="#{despesasBean.editar}"
+									update=":formCadastro:painel"
+									oncomplete="PF('dialogo').show();">
+									<f:attribute name="despesaSelecionada" value="#{tipoDespesa}" />
+									<f:actionListener
+										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
+							</center>
+						</p:column>
+
+					</p:dataTable>
+
+					<p:confirmDialog global="true" closeOnEscape="true">
+						<center>
+							<p:commandButton value="Sim" type="button"
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+							<p:commandButton value="Não" type="button"
+								styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+						</center>
+					</p:confirmDialog>
+
+				</p:panel>
+			</h:form>
+
+			<p:dialog header="Cadastro de tipos de despesa" widgetVar="dialogo"
+				closeOnEscape="true" draggable="false" resizable="false"
+				modal="true" closable="true" showEffect="fade" appendTo="@(body)"	>
+				<h:form id="formCadastro">
+					<h:panelGrid id="painel" columns="2">
+
+						<p:outputLabel for="codigo" value="Código:" />
+						<p:inputText id="codigo" value="#{despesasBean.despesas.codigo}"
+							placeholder="preenchimento automático!" readonly="true" size="23" />
+
+						<p:outputLabel for="descricao" value="Descrição:" />
+						<p:inputText id="descricao" required="true" requiredMessage="O campo 'Descrição' é obrigatório" 
+							value="#{despesasBean.despesas.descricao}" maxlength="60" size="23" />
+
+					</h:panelGrid>
+		<p:separator/>
+					<center>
+						<h:panelGrid columns="2">
+							<p:commandButton value="Salvar" icon="fa fa-fw fa-save"
+								actionListener="#{despesasBean.salvar}"
+							 update=":formListagem:tabela" />
+							</h:panelGrid>
+					</center>
+				</h:form>
+			</p:dialog>
+
+	</ui:define>
+</ui:composition>
+</html>

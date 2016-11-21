@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Duplicatas</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+				
+				<h:outputText style="color: red; font-size: 12px;" value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+			<h:form id="formularioDuplicatas"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+
+				<p:panel header="Duplicatas">
+					<p:dataTable id="tabelaDuplicatas" style="text-align: center"
+						emptyMessage="Nenhum registro encontrado." paginator="true"
+						value="#{duplicataBean.duplicatas}" var="duplicata" rows="15"
+						paginatorPosition="bottom">
+
+						<p:column headerText="Código " style="width: 60px">
+							<h:outputText value="#{duplicata.codigo}" />
+						</p:column>
+
+						<p:column headerText="N° da Parcela"
+							style="width: 60px;white-space:nomrap;text-align: center ">
+							<h:outputText value="#{duplicata.numeroParcela}" />
+						</p:column>
+
+						<p:column headerText="Cliente"
+							style="width: 300px;white-space:nomrap;text-align: center ">
+							<h:outputText
+								value="#{duplicata.venda.cliente.pessoa.codigo} - #{duplicata.venda.cliente.pessoa.nome}" />
+						</p:column>
+
+
+						<p:column headerText="Data do Vencimento" style="width: 60px">
+
+							<h:outputLabel value="#{duplicata.dataVencimento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR"
+									timeZone="America/Sao_Paulo" />
+							</h:outputLabel>
+						</p:column>
+
+						<p:column headerText="Data da Emissão" style="width: 80px">
+							<h:outputLabel value="#{duplicata.dataEmissao}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR"
+									timeZone="America/Sao_Paulo" />
+							</h:outputLabel>
+						</p:column>
+
+						<p:column headerText="Valor da Parcela" style="width: 60px">
+							<h:outputLabel value="#{duplicata.valorParcela}">
+								<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+							</h:outputLabel>
+						</p:column>
+						<p:column headerText="Total da Compra" style="width: 70px">
+							<h:outputLabel value="#{duplicata.venda.valorTotal}">
+								<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+							</h:outputLabel>
+						</p:column>
+			
+						<p:column headerText="Opções" style="width: 120px">
+							<p:commandButton icon="ui-icon-print" style="width: 60px;"
+								actionListener="#{vendaBean.adicionar}">
+								<f:attribute name="duplicataSelecionado" value="#{produto}" />
+							</p:commandButton>
+
+							<p:commandButton icon="ui-icon-pencil" style="width:60px"
+								actionListener="#{duplicataBean.editar}"
+								update=":formCadastro:painelDuplicata"
+								oncomplete="PF('dialogo').show();">
+								<f:attribute name="duplicataSelecionada" value="#{duplicata}" />
+								<f:actionListener
+									type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+							</p:commandButton>
+
+						</p:column>
+
+						<f:facet name="footer">
+							<p:panelGrid columns="1">
+								<p:commandButton icon="ui-icon-print" value="Imprimir lista"
+									style="width: 200px;" actionListener="#{vendaBean.adicionar}">
+								</p:commandButton>
+
+
+							</p:panelGrid>
+						</f:facet>
+
+					</p:dataTable>
+
+				</p:panel>
+
+
+			</h:form>
+
+			<p:dialog header="Pagamento de Parcela" widgetVar="dialogo"
+				closeOnEscape="true" draggable="false" resizable="true"
+				modal="true" closable="true" showEffect="fade" appendTo="@(body)">
+				<h:form id="formCadastro">
+
+					<h:panelGrid id="painelDuplicata" columns="2">
+					
+						<p:outputLabel value="Cliente:" />
+						<p:inputText
+							value="#{duplicataBean.duplicata.venda.cliente.pessoa.nome}"
+							maxlength="60" size="50"   	readonly="true">
+							</p:inputText>
+<p:separator/><p:separator/>
+
+	<p:outputLabel value="Situação da parcela:" />
+						<p:inputText value="#{duplicataBean.duplicata.status}"
+							maxlength="20" size="20"  	placeholder="0,00" readonly="true"> 
+							</p:inputText>
+
+						<p:outputLabel value="Código da venda:" />
+						<p:inputText value="#{duplicataBean.duplicata.venda.codigo}"
+							maxlength="4" size="20"   readonly="true">
+							</p:inputText>
+
+
+						<p:outputLabel value="Numero da parcela:" />
+						<p:inputText value="#{duplicataBean.duplicata.numeroParcela}"
+							maxlength="60" size="20"	readonly="true">
+</p:inputText>
+
+						<p:outputLabel value="Total das parcelas:" />
+						<p:inputText value="#{duplicataBean.duplicata.venda.valorTotal}"
+							maxlength="60" size="20" readonly="true">
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</p:inputText>
+
+						<p:outputLabel value="Data do pagamento:" />
+						<p:inputText value="#{duplicataBean.duplicata.dataUltimoPagamento}"
+						readonly="true">
+							<f:convertDateTime pattern="dd/MM/YYYY" locale="pt_BR"
+								timeZone="America/Sao_Paulo" />
+						</p:inputText>
+
+						<p:outputLabel value="Data do vencimento:" />
+						<p:inputText value="#{duplicataBean.duplicata.dataVencimento}" 
+						readonly="true">
+							<f:convertDateTime pattern="dd/MM/YYYY" locale="pt_BR"
+								timeZone="America/Sao_Paulo" />
+						</p:inputText>
+
+						<p:outputLabel value="Valor da Parcela:" for="valorParcela" />
+						<p:inputText id="valorParcela" readonly="true"
+							value="#{duplicataBean.duplicata.valorParcela}" maxlength="8"
+							size="10"  >
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+
+						</p:inputText>
+
+						<p:outputLabel for="desconto" value="Desconto:" />
+						<p:inputText  id="desconto"  value="#{duplicataBean.duplicata.valorDesconto}"
+							maxlength="4" size="10"  onfocus="this.value=' ';" required="true"  
+								requiredMessage="O campo ''Valor Pago' é obrigatório">
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</p:inputText>
+
+						<p:outputLabel value="Juros:"  for="juros" />
+						<p:inputText id="juros"  value="#{duplicataBean.duplicata.valorJuros}"
+							 onfocus="this.value=' ';" maxlength="4" size="10" required="true"  
+							requiredMessage="O campo 'Juros' é obrigatório" >
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</p:inputText>
+
+						<p:outputLabel  for="valorPago" value="Valor Pago:" />
+						<p:inputText id="valorPago"  value="#{duplicataBean.duplicata.valorPago}"
+							maxlength="15" size="10"  onfocus="this.value=' ';"
+							required="true"  requiredMessage="O campo ''Valor Pago' é obrigatório">	
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</p:inputText>
+
+						<p:outputLabel value="Valor total atual:" for="valorTotalAtual" />
+						<p:inputText id="valorTotalAtual" 
+							value="#{duplicataBean.duplicata.valorTotalAtual}" maxlength="4"
+							size="10"  	placeholder="0,00" readonly="true">
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</p:inputText>
+
+					</h:panelGrid>
+<p:separator/>
+<center>
+					<h:panelGrid columns="3">
+
+						<p:commandButton value="Salvar" icon="fa fa-fw fa-save"
+							actionListener="#{duplicataBean.salvar}"
+							update="formularioDuplicatas:tabelaDuplicatas" >
+							</p:commandButton>
+							
+						<p:commandButton value="Cancelar"
+							actionListener="#{duplicataBean.zerarValores}"
+							oncomplete="PF('dialogo').hide();"
+							update=":formCadastro:painelDuplicata">
+							<f:attribute name="duplicataSelecionada" value="#{duplicata}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+						
+						<p:commandButton value="Calcular"
+							actionListener="#{duplicataBean.calcular}"
+							update="valorTotalAtual" />
+					
+					</h:panelGrid>
+				</center>
+				</h:form>
+			</p:dialog>
+
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Cadastro de Fabricantes</title>
+</h:head>
+
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+				
+				<h:outputText style="color: red; font-size: 12px;" value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+			<h:form id="formListagem"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+
+				<p:panel header="Listagem de Fabricantes">
+					<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+						paginator="true" rows="5" value="#{fabricanteBean.fabricantes}"
+						var="fabricante">
+						<f:facet name="header">
+							<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+								actionListener="#{fabricanteBean.novo}" update="formCadastro">
+								<f:actionListener
+									type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+							</p:commandButton>
+						</f:facet>
+
+						<p:column headerText="Código" sortBy="#{fabricante.codigo}"
+							filterBy="#{fabricante.codigo}">
+							<h:outputText value="#{fabricante.codigo}" />
+						</p:column>
+
+						<p:column headerText="Nome fantasia"
+							sortBy="#{fabricante.nomeFantasia}"
+							filterBy="#{fabricante.nomeFantasia}">
+							<h:outputText value="#{fabricante.nomeFantasia}" />
+						</p:column>
+
+						<p:column headerText="CNPJ" sortBy="#{fabricante.cnpj}"
+							filterBy="#{fabricante.cnpj}">
+							<h:outputText value="#{fabricante.cnpj}" />
+						</p:column>
+
+						<p:column headerText="Contato">
+							<h:outputText value="#{fabricante.email}" />
+						</p:column>
+
+						<p:column headerText="Opções">
+							<center>
+								<p:commandButton icon="ui-icon-trash"
+									actionListener="#{fabricanteBean.excluir}"
+									update=":formListagem:tabela">
+									<p:confirm header="Confirmação"
+										message="Deseja excluir o fabricante #{fabricante.nomeFantasia}?"
+										icon="ui-icon-alert" />
+									<f:attribute name="fabricanteSelecionado" value="#{fabricante}" />
+								</p:commandButton>
+
+								<p:commandButton icon="ui-icon-pencil"
+									actionListener="#{fabricanteBean.editar}"
+									update=":formCadastro" oncomplete="PF('dialogo').show();">
+									<f:attribute name="fabricanteSelecionado" value="#{fabricante}" />
+									<f:actionListener
+										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
+							</center>
+						</p:column>
+					</p:dataTable>
+
+					<p:confirmDialog global="true" closeOnEscape="true">
+						<p:commandButton value="Sim" type="button"
+							styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="Não" type="button"
+							styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+
+				</p:panel>
+			</h:form>
+
+			<p:dialog header="Cadastro de Fabricante" widgetVar="dialogo"
+				closeOnEscape="true" draggable="false" resizable="false"
+				modal="true" closable="true" showEffect="fade" appendTo="@(body)"
+				showHeader="fade">
+				<h:form id="formCadastro">
+					<h:panelGrid columns="2">
+
+						<p:outputLabel for="codigo" value="Código:" />
+						<p:inputText id="codigo"
+							value="#{fabricanteBean.fabricante.codigo}"
+							placeholder="preenchimento automático!" readonly="true" size="23" />
+
+						<p:outputLabel for="razaoSocial" value="Razão Social:" />
+						<p:inputText id="razaoSocial"
+							value="#{fabricanteBean.fabricante.razaoSocial}" maxlength="60"
+							size="55" />
+
+						<p:outputLabel for="nomeFantasia" value="Nome Fantasia:" />
+						<p:inputText id="nomeFantasia"
+							value="#{fabricanteBean.fabricante.nomeFantasia}" maxlength="60"
+							size="55" />
+
+						<p:outputLabel for="cnpj" value="CNPJ:" />
+						<p:inputMask id="cnpj" value="#{fabricanteBean.fabricante.cnpj}"
+							size="20" mask="99.999.999/9999-99">
+							<f:validateBean />
+						</p:inputMask>
+
+						<p:outputLabel value="E-mail" />
+						<p:inputText value="#{fabricanteBean.fabricante.email}"
+							maxlength="60" size="50" />
+
+						<p:outputLabel for="telefone" value="Telefone:" size="25" />
+
+						<h:panelGrid columns="2">
+							<p:inputMask id="telefone"
+								value="#{fabricanteBean.fabricante.telefone}" size="20"
+								mask="(99)99999999?9" />
+
+							<p:commandButton immediate="true" icon="ui-icon-plus"
+								actionListener="#{fabricanteBean}"
+								update=":formCadastro:tblTelefones">
+								<f:attribute name="telefoneSelecionado"
+									value="#{fabricanteBean.fabricante}" />
+							</p:commandButton>
+						</h:panelGrid>
+					</h:panelGrid>
+					<h:panelGrid columns="1">
+						<center>
+							<p:dataTable id="tblTelefones" style="width:650px"
+								emptyMessage="Adicione um telefone."
+								value="#{fabricanteBean.telefones}"
+								filteredValue="#{fabricanteBean.telefones}" var="telefones"
+								rows="3" paginator="false" resizableColumns="true"
+								liveResize="true" chunkSize="5">
+
+								<p:column headerText="Número" resizable="true">
+									<h:outputText value="#{telefones.numeroTelefone}">
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Opções" style="width:15%">
+									<center>
+										<p:commandButton icon="ui-icon-minus"
+											actionListener="#{fabricanteBean}"
+											update=":formCadastro:tblTelefones">
+											<f:attribute name="itemSelecionado" value="#{telefones}" />
+										</p:commandButton>
+									</center>
+								</p:column>
+							</p:dataTable>
+						</center>
+					</h:panelGrid>
+
+
+					<h:panelGrid columns="2">
+
+						<p:separator />
+						<p:separator />
+
+						<p:outputLabel value="Logradouro:" />
+						<p:inputText value="#{fabricanteBean.fabricante.endereco.rua}"
+							maxlength="60" size="55" />
+
+						<p:outputLabel value="Número:" />
+						<p:inputText value="#{fabricanteBean.fabricante.endereco.numero}"
+							maxlength="4" size="5" />
+
+						<p:outputLabel value="Bairro:" />
+						<p:inputText value="#{fabricanteBean.fabricante.endereco.bairro}"
+							maxlength="60" size="30" />
+
+						<p:outputLabel value="CEP:" />
+						<p:inputMask value="#{fabricanteBean.fabricante.endereco.cep}"
+							size="9" mask="99999-999">
+							<f:validateBean />
+						</p:inputMask>
+
+						<p:outputLabel value="Complemento:" />
+						<p:inputText
+							value="#{fabricanteBean.fabricante.endereco.complemento}"
+							maxlength="50" size="50" />
+
+					</h:panelGrid>
+					<h:panelGrid columns="4">
+
+						<p:outputLabel value="Estado:" />
+						<p:selectOneMenu id="estado" filter="true"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{fabricanteBean.estado}">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Selecione um estado" />
+							<f:selectItems value="#{fabricanteBean.estados}" var="estado"
+								itemValue="#{estado}" itemLabel="#{estado.nome}" />
+							<p:ajax listener="#{fabricanteBean.popular}"
+								update=":formCadastro:cidade" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="cidade" value="Cidade:" />
+						<p:selectOneMenu id="cidade" filter="true" required="true"
+							requiredMessage="O campo 'Cidade' é obrigatório"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{fabricanteBean.fabricante.endereco.cidade}">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Selecione uma cidade" />
+							<f:selectItems value="#{pessoaBean.cidades}" var="cidade"
+								itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
+						</p:selectOneMenu>
+
+					</h:panelGrid>
+					<h:panelGrid columns="2">
+
+						<p:separator />
+						<p:separator style="width:485px" />
+
+						<p:outputLabel value="Autorização Anvisa:" />
+						<p:inputText
+							value="#{fabricanteBean.fabricante.autorizacaoAnvisa}"
+							maxlength="7" size="25" />
+					</h:panelGrid>
+
+					<center>
+						<h:panelGrid columns="2">
+							<p:commandButton value="Salvar"
+								actionListener="#{fabricanteBean.salvar}"
+								oncomplete="PF('dialogo').hide();" update=":formListagem:tabela" />
+							<p:commandButton value="Fechar"
+								oncomplete="PF('dialogo').hide();" />
+						</h:panelGrid>
+					</center>
+				</h:form>
+			</p:dialog>
+
+	</ui:define>
+</ui:composition>
+</html>

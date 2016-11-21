@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema elementFormDefault="qualified" version="1.0" targetNamespace="http://www.w3.org/2000/09/xmldsig#" xmlns:tns="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="Signature" type="tns:SignatureType"/>
+
+  <xs:complexType name="KeyInfoType">
+    <xs:sequence>
+      <xs:element name="X509Data" type="tns:X509DataType"/>
+    </xs:sequence>
+    <xs:attribute name="Id" type="xs:ID"/>
+  </xs:complexType>
+
+  <xs:complexType name="X509DataType">
+    <xs:sequence>
+      <xs:element name="X509Certificate" type="xs:base64Binary"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TransformType">
+    <xs:sequence>
+      <xs:element name="XPath" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Algorithm" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="SignatureType">
+    <xs:sequence>
+      <xs:element name="SignedInfo" type="tns:SignedInfoType"/>
+      <xs:element name="SignatureValue" type="tns:SignatureValueType"/>
+      <xs:element name="KeyInfo" type="tns:KeyInfoType"/>
+    </xs:sequence>
+    <xs:attribute name="Id" type="xs:ID"/>
+  </xs:complexType>
+
+  <xs:complexType name="SignedInfoType">
+    <xs:sequence>
+      <xs:element name="CanonicalizationMethod">
+        <xs:complexType>
+          <xs:sequence/>
+          <xs:attribute name="Algorithm" type="xs:anyURI" use="required"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SignatureMethod">
+        <xs:complexType>
+          <xs:sequence/>
+          <xs:attribute name="Algorithm" type="xs:anyURI" use="required"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Reference" type="tns:ReferenceType"/>
+    </xs:sequence>
+    <xs:attribute name="Id" type="xs:ID"/>
+  </xs:complexType>
+
+  <xs:complexType name="ReferenceType">
+    <xs:sequence>
+      <xs:element name="Transforms" type="tns:TransformsType"/>
+      <xs:element name="DigestMethod">
+        <xs:complexType>
+          <xs:sequence/>
+          <xs:attribute name="Algorithm" type="xs:anyURI" use="required"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="DigestValue" type="xs:base64Binary"/>
+    </xs:sequence>
+    <xs:attribute name="Id" type="xs:ID"/>
+    <xs:attribute name="URI" type="xs:string" use="required"/>
+    <xs:attribute name="Type" type="xs:anyURI"/>
+  </xs:complexType>
+
+  <xs:complexType name="TransformsType">
+    <xs:sequence>
+      <xs:element name="Transform" type="tns:TransformType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SignatureValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:base64Binary">
+        <xs:attribute name="Id" type="xs:ID"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:schema>
+
