@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+		xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Vendas</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+	<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+				
+				<h:outputText style="color: red; font-size: 12px;" value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+			<h:form id="formulario"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+	
+		
+		<p:panel header="Produtos">
+			<p:dataTable id="tabelaProduto" style="text-align: center"
+				emptyMessage="Nenhum registro encontrado." paginator="true"
+				value="#{vendaBean.produtos}" var="produto" rows="5"
+				paginatorPosition="bottom">
+
+				<p:column headerText="Código de Barras" style="width: 110px"
+					filterBy="#{produto.codigoBarras}" sortBy="#{produto.codigoBarras}">
+					<h:outputText value="#{produto.codigoBarras}" />
+				</p:column>
+
+				<p:column headerText="Descrição" filterBy="#{produto.descricao}"
+					style="width: 300px;white-space:nomrap;text-align: left "
+					sortBy="#{produto.descricao}">
+					<h:outputText value="#{produto.descricao}" />
+				</p:column>
+
+				<p:column headerText="Quantidade" style="width: 80px"
+					sortBy="#{produto.quantidadeEstoque}">
+					<h:outputText value="#{produto.quantidadeEstoque}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="0" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Unidade de Medida" style="width: 80px">
+					<h:outputText value="#{produto.unidadeMedida.descricao}" />
+				</p:column>
+
+				<p:column headerText="Preço" sortBy="#{produto.valor}" style="width: 80px">
+					<h:outputText value="#{produto.valor}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Opções" style="width: 60px">
+					<p:commandButton icon="ui-icon-plus" style="width: 40px;"
+						actionListener="#{vendaBean.adicionar}"
+						update=":formulario:tabelaCesta :formulario:painelFinalizacao :formulario:tabelaProduto">
+						<f:attribute name="produtoSelecionado" value="#{produto}" />
+					</p:commandButton>
+				</p:column>
+
+				<f:facet name="footer">
+					<p:panelGrid columns="2">
+
+						<p:outputLabel value="Desconto em Porcentagem:"
+							Style="float:right" />
+						<p:inputText value="#{vendaBean.porcentagemDesconto}"
+							style="width: 100px;white-space: normal" />
+					</p:panelGrid>
+				</f:facet>
+			</p:dataTable>
+
+
+		</p:panel>
+
+
+
+		<p:panel header="Cesta de Compras">
+			<p:dataTable id="tabelaCesta"
+				emptyMessage="Nenhum registro encontrado." paginator="true"
+				value="#{vendaBean.itensVenda}" var="itemVenda" rows="5"
+				paginatorPosition="bottom" style="text-align: center;font: 14px ">
+
+				<p:column headerText="Código de Barras" style="width: 80px"
+					filterBy="#{itemVenda.produto.codigoBarras}"
+					sortBy="#{itemVenda.produto.codigoBarras}">
+					<h:outputText value="#{itemVenda.produto.codigoBarras}" />
+				</p:column>
+
+				<p:column headerText="Descrição"
+					style="width: 250px;white-space:nomrap;text-align: left ">
+					<h:outputText value="#{itemVenda.produto.descricao}" />
+				</p:column>
+
+				<p:column headerText="Preço Unitário" style="width: 50px">
+					<h:outputText value="#{itemVenda.produto.valor}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Qtde." style="width: 30px">
+					<h:outputLabel value="#{itemVenda.quantidade}" />
+				</p:column>
+
+				<p:column headerText="Preço Parcial" style="width: 50px">
+					<h:outputLabel value="#{itemVenda.valorParcial}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputLabel>
+				</p:column>
+				<p:column headerText="Porcentagem Desconto" style="width: 70px">
+					<h:outputLabel value="#{itemVenda.porcentagemDoDesconto}" />
+				</p:column>
+
+
+				<p:column headerText="Valor do Desconto" style="width: 60px">
+					<h:outputLabel value="#{itemVenda.valorDoDesconto}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputLabel>
+				</p:column>
+
+				<p:column headerText="Preço com Desconto" style="width: 60px">
+					<h:outputLabel value="#{itemVenda.valorComDesconto}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputLabel>
+
+				</p:column>
+
+
+				<p:column headerText="Opções" style="width: 60px">
+					<p:commandButton icon="ui-icon-plus" style="width:30px"
+						actionListener="#{vendaBean.remover}"
+						update=":formulario:tabelaCesta :formulario:painelFinalizacao">
+						<f:attribute name="itemSelecionado" value="#{itemVenda}" />
+					</p:commandButton>
+
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+
+
+		<p:panel header="Finalização">
+		<center>
+			<h:panelGrid id="painelFinalizacao" columns="5">
+
+				<p:outputLabel value="Tipo do Pagamento:" />
+				<p:selectOneMenu id="tipoP" value="#{vendaBean.venda.tipoPagamento}"
+					converter="omnifaces.SelectItemsConverter" filter="true">
+					<f:selectItems value="#{vendaBean.tiposPagamentos}" var="tipoPgto"
+						itemValue="#{tipoPgto}" itemLabel="#{tipoPgto.descricao}" />
+					<p:ajax event="change" process="@this"
+						update=":formularioFinalizar " />
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Total: R$" />
+				<h:outputText value="#{vendaBean.venda.valorTotal}">
+					<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+				</h:outputText>
+				<p:commandButton value="Finalizar"
+					actionListener="#{vendaBean.finalizar}"
+					update=":mensagem :formularioFinalizar:painelFinalizar"
+					oncomplete="PF('dialogo').show();">
+					<f:actionListener
+						type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+				</p:commandButton>
+
+			</h:panelGrid>
+			</center>
+		</p:panel>
+	</h:form>
+
+	<p:dialog header="Finalizar Venda  " widgetVar="dialogo"
+						closeOnEscape="true" draggable="false" resizable="true"
+				modal="true" closable="true" showEffect="fade" appendTo="@(body)">
+		<h:form id="formularioFinalizar">
+			<h:panelGrid id="painelFinalizar" columns="2">
+
+				<p:outputLabel value="Quantidade de Parcelas: " for="qtdParcela"
+					rendered="#{vendaBean.venda.tipoPagamento.descricao != 'A vista'}" />
+				<p:inputText id="qtdParcela"
+					value="#{vendaBean.duplicata.totalParcelas}"
+					rendered="#{vendaBean.venda.tipoPagamento.descricao != 'A vista'}"
+					required="true" requiredMessage="O campo 'Quantidade de Parcelas' é obrigatório">
+					<p:ajax event="blur" process="@this,qtdParcela"
+						listener="#{vendaBean.dividirTotalPorQtdParcela}"
+						update="vlrParc" />
+				</p:inputText>
+		<p:outputLabel value="Numero da Nota: " />
+				<h:inputText value="#{vendaBean.venda.numeroDocumentoFiscal}"  readonly="true"/>
+				<p:outputLabel value="Valor da Parcela: R$"
+					rendered="#{vendaBean.venda.tipoPagamento.descricao != 'A vista'}" />
+				<h:outputText id="vlrParc"
+					value="#{vendaBean.duplicata.valorParcela}"
+					rendered="#{vendaBean.venda.tipoPagamento.descricao != 'A vista'}">
+					<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+				</h:outputText>
+
+				<p:outputLabel value="Data 1° Parcela: "   for="dataParcela" 
+					rendered="#{vendaBean.venda.tipoPagamento.descricao != 'A vista'}" />
+				<p:calendar id= "dataParcela"  value="#{vendaBean.duplicata.dataVencimento}"
+					rendered="#{vendaBean.venda.tipoPagamento.descricao != 'A vista'}"
+					mindate="#{now}" required="true" requiredMessage="O campo 'Data 1° Parcela' é obrigatório" 
+					readonlyInput="true">
+				</p:calendar>
+
+				<p:outputLabel value="Horário da venda: " />
+				<h:outputText value="#{vendaBean.venda.dataVenda}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm" locale="pt_BR"
+						timeZone="America/Sao_Paulo" />
+				</h:outputText>
+
+				<p:outputLabel value="Total: R$" />
+				<h:outputText value="#{vendaBean.venda.valorTotal}">
+					<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+				</h:outputText>
+
+				<p:outputLabel for="funcionario" value="Atendente:" />
+				<p:selectOneMenu id="funcionario"
+					value="#{vendaBean.venda.funcionarioVenda}"
+					converter="omnifaces.SelectItemsConverter" filter="true"
+					filterMatchMode="contains" required="true"
+					requiredMessage="O campo Funcionário é obrigatório">
+					<f:selectItem noSelectionOption="true"
+						itemLabel="Selecione um funcionário" />
+					<f:selectItems value="#{vendaBean.funcionarios}" var="funcionario"
+						itemValue="#{funcionario}"
+						itemLabel="#{funcionario.codigo}  - #{funcionario.pessoa.nome}" />
+				</p:selectOneMenu>
+
+				<p:outputLabel for="cliente" value="Cliente:" />
+				<p:selectOneMenu id="cliente" value="#{vendaBean.venda.cliente}"
+					converter="omnifaces.SelectItemsConverter" filter="true"
+					filterMatchMode="contains" required="true"
+					requiredMessage="O campo Cliente é obrigatório">
+					<f:selectItem noSelectionOption="true"
+						itemLabel="Selecione um cliente" />
+					<f:selectItems value="#{vendaBean.clientes}" var="cliente"
+						itemValue="#{cliente}"
+						itemLabel="#{cliente.pessoa.codigo} - #{cliente.pessoa.nome}" />
+				</p:selectOneMenu>
+
+
+				<p:outputLabel for="formaPgto" value="Forma de Pagamento:" />
+				<p:selectOneMenu id="formaPgto"
+					value="#{vendaBean.venda.formaPagamento}"
+					converter="omnifaces.SelectItemsConverter" filter="true"
+					required="true"
+					requiredMessage="O campo Forma de pagamento é obrigatório">
+					<f:selectItem noSelectionOption="true"
+						itemLabel="Selecione a forma de pagamento" />
+					<f:selectItems value="#{vendaBean.formasPagamentos}"
+						var="formaPgto" itemValue="#{formaPgto}"
+						itemLabel="#{formaPgto.codigo} - #{formaPgto.descricao}" />
+				</p:selectOneMenu>
+					<p:separator/>	<p:separator/>
+	<center>
+
+
+				<p:commandButton value="Salvar" actionListener="#{vendaBean.salvar}"
+					rendered="#{vendaBean.venda.tipoPagamento.descricao == 'A vista'}"
+					update=":mensagem :formulario:tabelaProduto :formulario:tabelaCesta :formulario:painelFinalizacao" />
+	
+
+		
+				<p:commandButton value="Salva/Parcelar"
+					actionListener="#{vendaBean.gerarParcela}"
+					rendered="#{vendaBean.venda.tipoPagamento.descricao != 'A vista'}"
+					update=":mensagem :formulario:tabelaProduto :formulario:tabelaCesta
+					 :formulario:painelFinalizacao :formularioDuplicatas" />
+					 
+	</center>
+				
+			</h:panelGrid>
+		
+		</h:form>
+	</p:dialog>
+
+<p:dialog  header="Duplicatas Geradas" widgetVar="dialogoDuplicatas"			
+	closeOnEscape="true" draggable="false" resizable="true"
+				modal="true" closable="false" showEffect="fade" appendTo="@(body)"
+				>
+<h:form id="formularioDuplicatas">
+		<p:panel>
+			<p:dataTable id="tabelaDuplicats"
+			 style="text-align: center"
+				emptyMessage="Nenhum registro encontrado." paginator="true"
+				value="#{vendaBean.duplicatasGeradas}" var="duplicata" rows="25"
+				paginatorPosition="bottom">
+
+				<p:column headerText="Código "
+				 style="width: 80px">
+				<h:outputText value="#{duplicata.codigo}" />
+				</p:column>
+
+				<p:column headerText="N° da Parcela" 
+					style="width: 80px;white-space:nomrap;text-align: center ">
+					<h:outputText value="#{duplicata.numeroParcela}" />
+				</p:column>
+				
+	<p:column headerText="Cliente" 
+					style="width: 280px;white-space:nomrap;text-align: center ">
+					<h:outputText value="#{duplicata.venda.cliente.pessoa.codigo} - #{duplicata.venda.cliente.pessoa.nome}" />
+				</p:column>
+				
+				
+				<p:column headerText="Data do Vencimento" 
+				     style="width: 80px">
+				     
+					<h:outputLabel value="#{duplicata.dataVencimento}" >
+						<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR"
+						timeZone="America/Sao_Paulo" />
+					</h:outputLabel>
+				</p:column>
+				
+				<p:column headerText="Data da Emissão" 
+				     style="width: 80px">
+				<h:outputLabel  value="#{duplicata.dataEmissao}"  >
+						<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR"
+						timeZone="America/Sao_Paulo" />
+					</h:outputLabel>
+				</p:column>
+				
+				<p:column headerText="Valor da Parcela" style="width: 80px">
+					<h:outputLabel value="#{duplicata.valorParcela}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputLabel>
+				</p:column>
+				<p:column headerText="Total da Compra" style="width: 80px">
+					<h:outputLabel value="#{duplicata.venda.valorTotal}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputLabel>
+				</p:column>
+				
+				<p:column headerText="Situação" 
+					style="width: 100px;white-space:nomrap;text-align: center ">
+					<h:outputText value="#{duplicata.status}" />
+				</p:column>
+				
+	<f:facet name="footer">
+	<p:separator/>
+		
+					<p:panelGrid >
+					<center>
+					
+		<p:commandButton value="Imprimir Lista de Duplicatas" 
+				actionListener="#{vendaBean.imprimirListaDuplicatasPorCodigoVenda}" >
+					</p:commandButton>
+						 <p:commandButton icon="ui-icon-print" value="Imprimir Nota" style="width: 200px;text-align:center"
+						actionListener="#{vendaBean.imprimirUltimaVenda}">
+						</p:commandButton>
+						 <p:commandButton icon="ui-icon-plus" value="Nova Venda" style="width: 200px;text-align:center"
+						actionListener="#{vendaBean.novo}"
+						update=":formulario:tabelaCesta :formulario:painelFinalizacao :formulario:tabelaProduto"
+	                    oncomplete="PF('dialogo').hide(); PF('dialogoDuplicatas').hide();">
+						</p:commandButton>
+						
+						 <p:commandButton icon="ui-icon-plus" value="Tela principal" style="width: 200px;text-align:center"
+						action="/pages/principal.xhtml">
+						</p:commandButton>
+						
+								</center>
+					</p:panelGrid>
+				
+	
+				</f:facet>
+				
+			</p:dataTable>
+
+
+		</p:panel>
+
+
+</h:form>
+
+</p:dialog>
+	
+	<p:dialog  header="Imprimir" widgetVar="dialogoImpressãoNota"			
+	closeOnEscape="true" draggable="false" resizable="true"
+				modal="true" closable="false" showEffect="fade" appendTo="@(body)"
+				>
+<h:form id="formularioImpressaoNota">
+		<p:panel>
+			 <p:commandButton icon="ui-icon-print" value="Imprimir Nota" style="width: 200px;text-align:center"
+						actionListener="#{vendaBean.imprimirUltimaVenda}">
+						</p:commandButton>
+							 <p:commandButton icon="ui-icon-close" value="Fechar" style="width: 200px;text-align:center"
+						actionListener="#{vendaBean.novo}">
+						</p:commandButton>
+					
+		</p:panel>
+		</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+
+</html>

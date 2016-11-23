@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Cadastro de Funcionários</title>
+</h:head>
+
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+				
+				<h:outputText style="color: red; font-size: 12px;" value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+			<h:form id="formListagem"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+
+				<p:panel header="Cadastro de Funcionários">
+					<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+						paginator="true" value="#{funcionarioBean.funcionarios}"
+						var="funcionario" rows="25">
+						<f:facet name="header">
+							<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+								actionListener="#{funcionarioBean.novo}" icon="fa fa-fw fa-plus-square"
+								update=":formCadastro:painel">
+								<f:actionListener
+									type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+							</p:commandButton>
+						</f:facet>
+
+		<p:column headerText="Código" 
+		style="width: 120px"
+		 filterBy="#{funcionario.codigo}"
+							sortBy="#{funcionario.codigo}">
+							<h:outputText value="#{funcionario.codigo}" />
+						</p:column>
+
+						<p:column headerText="Nome" style="width: 380px;text-align: center"
+						 filterBy="#{funcionario.pessoa.nome}"
+							sortBy="#{funcionario.pessoa.nome}">
+							<h:outputText value="#{funcionario.pessoa.nome}" />
+						</p:column>
+
+						<p:column headerText="CPF" 
+						style="width: 120px;text-align: center"
+						filterBy="#{funcionario.pessoa.cpf}"
+							sortBy="#{funcionario.pessoa.cpf}">
+							<h:outputText value="#{funcionario.pessoa.cpf}" />
+						</p:column>
+
+						<p:column headerText="Data da Admissão"
+style="width: 120px;text-align: center"
+							sortBy="#{funcionario.dataAdmissao}">
+							<h:outputText value="#{funcionario.dataAdmissao}">
+								<f:convertDateTime locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Ativo"  style="width: 50px;text-align: center"
+						 sortBy="#{funcionario.situacao}">
+							<p:selectBooleanCheckbox value="#{funcionario.situacao}"
+								disabled="true" />
+						</p:column>
+
+						<p:column headerText="Opções" style="width: 80px;text-align: center">
+							<center>
+							<p:commandButton icon="ui-icon-pencil"
+									actionListener="#{funcionarioBean.editar}"
+									update=":formListagem :formEdicao"
+									oncomplete="PF('dialogoEdicao').show();">
+									<f:attribute name="funcionarioSelecionado" value="#{funcionario}" />
+									<f:actionListener
+										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
+								
+								<p:commandButton icon="ui-icon-print"
+									actionListener="#{funcionarioBean.imprimirFuncionarioPorCodigo}">
+									<f:attribute name="funcionarioSelecionado" value="#{funcionario}" />
+								</p:commandButton>
+							</center>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+
+			<p:dialog header="Cadastro de funcionarios" widgetVar="dialogo"
+				closeOnEscape="true" draggable="false" resizable="true"
+				modal="true" closable="true" showEffect="fade" appendTo="@(body)">
+				<h:form id="formCadastro">
+					<h:panelGrid id="painel" columns="2">
+
+						<p:outputLabel  value="Funcionario:"  for="pessoa" />
+						<p:selectOneMenu id="pessoa" filter="true"  style="width: 240px"
+							value="#{funcionarioBean.funcionario.pessoa}" required="true"
+							requiredMessage="O campo 'Funcionario' é obrigatório!"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true" 
+								itemLabel="Selecione uma pessoa" />
+							<f:selectItems value="#{funcionarioBean.pessoas}" var="pessoa"
+								itemValue="#{pessoa}" itemLabel="#{pessoa.nome} - #{pessoa.cpf}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="carteiraTrabalho"
+							value="Carteira de Trabalho:" />
+						<p:inputText id="carteiraTrabalho" style="width: 152px"
+						maxlength="12"
+							value="#{funcionarioBean.funcionario.carteiraTrabalho}">
+							<f:validateBean />
+						</p:inputText>
+
+						<p:outputLabel for="tipoFuncionario" value="Nível Funcionário:" />
+						<p:selectOneMenu id="tipoFuncionario" filter="true"
+							filterMatchMode="startsWith" style="width: 160px"
+							value="#{funcionarioBean.funcionario.tipo}" 
+							required="true"  requiredMessage="Campo 'Nivel Funcionário' é obrigatório">
+
+							<f:selectItem itemValue="" itemLabel="Selecione um nível" />
+							
+							<f:selectItem itemValue="Gerente" itemLabel="Gerente" />
+							<f:selectItem itemValue="Financeiro" itemLabel="Financeiro" />
+							<f:selectItem itemValue="Caixa" itemLabel="Caixa" />
+							<f:selectItem itemValue="Atendente" itemLabel="Atendente" />
+							<f:selectItem itemValue="Estoquista" itemLabel="Estoquista" />
+							
+
+						</p:selectOneMenu>
+
+						<p:outputLabel for="dataContratacao" value="Data da contratação:" />
+						<p:calendar id="dataContratacao"
+							value="#{funcionarioBean.funcionario.dataAdmissao}"
+							placeholder="Automático" disabled="true" size="10" locale="pt_BR" />			
+
+						<p:outputLabel value="Senha de acesso:"  for="senhaFuncionario" />
+						<p:password id="senhaFuncionario" maxlength="15" size="10"
+							redisplay="true" value="#{funcionarioBean.funcionario.senha}" 
+							required="true"  requiredMessage="Campo 'Senha' é obrigatório">
+							<f:validateBean />
+						</p:password>
+						
+					
+
+<!-- 						<p:outputLabel for="situacao" value="Situação:" /> -->
+<!-- 						<p:selectBooleanCheckbox id="situacao" -->
+<!-- 							value="#{funcionarioBean.funcionario.situacao}" required="true" -->
+<!-- 							requiredMessage="O campo 'Situação' é obrigatório" /> -->
+
+					</h:panelGrid>
+<center>
+			<p:separator/>
+					<h:panelGrid columns="2">
+						<p:commandButton value="Salvar" icon="fa fa-fw fa-save"
+							actionListener="#{funcionarioBean.salvar}"
+							update=":formCadastro:painel :formListagem:tabela" />
+					</h:panelGrid>
+					</center>
+				</h:form>
+			</p:dialog>
+				<p:dialog header="Cadastro de funcionarios" widgetVar="dialogoEdicao"
+				closeOnEscape="true" draggable="false" resizable="true"
+				modal="true" closable="true" showEffect="fade" appendTo="@(body)">
+				<h:form id="formEdicao">
+					<h:panelGrid id="painelEdicao" columns="2">
+
+						<p:outputLabel  value="Funcionario:"  for="pessoa" />
+						<p:inputText id="pessoa"  style="width: 260px"
+							value="#{funcionarioBean.funcionario.pessoa.nome}" 
+				 readonly="true">
+						</p:inputText>
+
+						<p:outputLabel for="carteiraTrabalho"
+							value="Carteira de Trabalho:" />
+						<p:inputText id="carteiraTrabalho" style="width: 152px"
+							value="#{funcionarioBean.funcionario.carteiraTrabalho}">
+							<f:validateBean />
+						</p:inputText>
+
+						<p:outputLabel for="tipoFuncionario" value="Nível Funcionário:" />
+						<p:selectOneMenu id="tipoFuncionario" filter="true" readonly="true"
+							filterMatchMode="startsWith" style="width: 160px"
+							value="#{funcionarioBean.funcionario.tipo}" 
+							required="true"  requiredMessage="Campo 'Nivel Funcionário' é obrigatório">
+
+							<f:selectItem itemValue="" itemLabel="Selecione um nível" />
+							<f:selectItem itemValue="Gerente" itemLabel="Gerente" />
+							<f:selectItem itemValue="Financeiro" itemLabel="Financeiro" />
+							<f:selectItem itemValue="Caixa" itemLabel="Caixa" />
+							<f:selectItem itemValue="Atendente" itemLabel="Atendente" />
+							<f:selectItem itemValue="Estoquista" itemLabel="Estoquista" />
+
+						</p:selectOneMenu>
+
+						<p:outputLabel for="dataContratacao" value="Data da contratação:" />
+						<p:calendar id="dataContratacao"
+							value="#{funcionarioBean.funcionario.dataAdmissao}"
+							placeholder="Automático" disabled="true" size="10" locale="pt_BR" />
+
+						<p:outputLabel for="dataDemissao" value="Data da Demissão" />
+						<p:calendar id="dataDemissao"
+							value="#{funcionarioBean.funcionario.dataSaida}" size="10"
+							locale="pt_BR"   />
+
+						<p:outputLabel value="Senha de acesso:"  for="senhaFuncionario" />
+						<p:password id="senhaFuncionario" maxlength="15" size="10"
+					
+	placeholder="preenchimento automático!" readonly="true" 
+								redisplay="true" value="#{funcionarioBean.funcionario.senha}" 
+							required="true"  requiredMessage="Campo 'Senha' é obrigatório">
+							<f:validateBean />
+						</p:password>
+						
+							<p:outputLabel value="Nova Senha:"  for="senha" />
+						<p:password id="senha" maxlength="15" size="10"
+							redisplay="true" value="#{funcionarioBean.senhaNova}" 
+							required="false"  requiredMessage="Campo 'novaSenha' é obrigatório">
+							<f:validateBean />
+						</p:password>
+
+						<p:outputLabel for="situacao" value="Situação:" />
+						<p:selectBooleanCheckbox id="situacao"
+							value="#{funcionarioBean.funcionario.situacao}" required="true"
+							requiredMessage="O campo 'Situação' é obrigatório" />
+
+					</h:panelGrid>
+<center>
+			<p:separator/>
+					<h:panelGrid columns="1">
+		
+						<p:commandButton value="Salvar" icon="fa fa-fw fa-save"
+							actionListener="#{funcionarioBean.salvarEdicao}"
+							update=":formEdicao:painelEdicao :formListagem:tabela" />
+					</h:panelGrid>
+					</center>
+				</h:form>
+			</p:dialog>
+	
+	</ui:define>
+</ui:composition>
+</html>

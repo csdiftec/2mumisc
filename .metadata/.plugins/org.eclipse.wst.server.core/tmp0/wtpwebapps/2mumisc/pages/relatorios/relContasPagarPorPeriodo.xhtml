@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Relação de despesas</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+			<h:form id="formulario">
+
+
+				<p:panel header="Relatórios de despesas por periodo"  id="panelPesquisa"  style="border-color: darkgreen ;border-width: 2px">
+								<center>
+					<h:panelGrid columns="6">
+						<p:outputLabel value="Data inicial:" />
+						<p:calendar value="#{registroDespesasBean.registroDespesas.dataInicial}" />
+						<p:outputLabel value="Data final:" />
+						<p:calendar value="#{registroDespesasBean.registroDespesas.dataFinal}" />
+						<p:commandButton value="Pesquisar" icon="ui-icon-search"
+							actionListener="#{registroDespesasBean.buscaPorPeriodo}"
+							update=":formulario:tabelaRelContas" />
+						<p:commandButton icon="ui-icon-plus" value="Imprimir  por periodo"
+							style="width: 150px;" actionListener="#{registroDespesasBean.imprimirContaPagarPeriodo}" />
+
+					</h:panelGrid>
+				</center>
+						</p:panel>
+					<p:panel>
+					<p:dataTable id="tabelaRelContas" style="text-align: center;font: 11px"
+						emptyMessage="Nenhum registro encontrado." paginator="true"
+						rows="10" value="#{registroDespesasBean.listaRegistroDespesas}" var="conta">
+
+						<p:column headerText="Código da conta" style="text-align: center;width: 110px;"
+						 filterBy="#{conta.codigo}"
+							sortBy="#{conta.codigo}">
+							<h:outputText value="#{conta.codigo}" />
+						</p:column>
+						
+						<p:column headerText="numero da conta"  style="text-align:centert;width: 150px;"
+							filterBy="#{conta.codigoDespesa}" 
+							sortBy="#{conta.codigoDespesa}">
+							<h:outputText value="#{conta.codigoDespesa}" />
+						</p:column>
+							<p:column headerText="Descricao"  style="text-align:left;width: 300px;"
+							filterBy="#{conta.despesas.descricao}">
+							<h:outputText
+								value="#{conta.despesas.descricao}" />
+						</p:column>
+
+		
+					<p:column headerText="Data do vencimento" style="text-align: center;width: 120px;"
+											sortBy="#{conta.dataVencimento}">
+							<h:outputText value="#{conta.dataVencimento}">
+								<f:convertDateTime locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+									<p:column headerText="Valor atual" style="text-align: center;width: 100px;"
+									sortBy="#{conta.valorTotalAtual}">
+							<h:outputText value="R$ #{conta.valorTotalAtual}">
+								<f:convertNumber pattern="#,##0.00" />
+							</h:outputText>
+						</p:column>				
+
+						<p:column headerText="Opções" style="width: 60px" exportable="false">
+							<p:commandButton icon="ui-icon-print" style="width: 40px;" 
+								actionListener="#{registroDespesasBean.imprimirContaPagarPorCodigo}" update=":formulario">
+								<f:attribute name="registroDespesaSelecionado" value="#{conta}" />
+							</p:commandButton>
+						</p:column>
+  <f:facet name="footer">
+            <h:commandLink>
+                <p:graphicImage library="images"   name="icon_pdf.png"  width="24"/>
+                <p:dataExporter  type="pdf" target="tabelaRelCompras" fileName="ComprasPorPeriodoEmPDF" />
+            </h:commandLink>
+ 
+            <h:commandLink>
+                <p:graphicImage library="images"   name="icon_excel.png" width="24"/>
+                <p:dataExporter type="xls" target="tabelaRelCompras" fileName="ComprasPorPeriodoEmXLS"/>
+            </h:commandLink>
+ 
+        </f:facet>
+					</p:dataTable>
+
+
+				</p:panel>
+
+			</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

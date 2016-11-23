@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Cadastro de Fabricantes</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+		<f:metadata>
+			<f:viewParam name="fabricanteAcao" value="#{fabricanteBean.acao}" />
+			<f:viewParam name="fabricanteCod" value="#{fabricanteBean.codigo}" />
+			<f:event listener="#{fabricanteBean.carregarCadastro}"
+				type="preRenderView" />
+		</f:metadata>
+
+		<h:body>
+
+			<h:form id="formCadastro">
+				<h:panelGrid columns="2">
+
+					<p:outputLabel for="codigo" value="Código:" />
+					<p:inputText id="codigo"
+						value="#{fabricanteBean.fabricante.codigo}"
+						placeholder="preenchimento automático!" readonly="true" size="23" />
+
+					<p:outputLabel for="razaoSocial" value="Razão Social:" />
+					<p:inputText id="razaoSocial" required="true"
+						requiredMessage="Preencha a Razão Social!"
+						value="#{fabricanteBean.fabricante.razaoSocial}" maxlength="60"
+						size="55" />
+
+					<p:outputLabel for="nomeFantasia" value="Nome Fantasia:" />
+					<p:inputText id="nomeFantasia" required="true"
+						requiredMessage="Preencha o Nome Fantasia do fabricante!"
+						value="#{fabricanteBean.fabricante.nomeFantasia}" maxlength="60"
+						size="55" />
+
+					<p:outputLabel for="cnpj" value="CNPJ:" />
+					<p:inputMask id="cnpj" value="#{fabricanteBean.fabricante.cnpj}"
+						required="true" requiredMessage="Preencha o CNPJ do fabricante!"
+						size="20" mask="99.999.999/9999-99">
+						<f:validateBean />
+					</p:inputMask>
+
+					<p:outputLabel value="E-mail" />
+					<p:inputText value="#{fabricanteBean.fabricante.email}"
+						required="true" requiredMessage="Preencha o e-mail do fabricante!"
+						maxlength="60" size="50" />
+
+
+				</h:panelGrid>
+
+
+				<h:panelGrid columns="2">
+
+					<p:separator />
+					<p:separator />
+
+					<p:outputLabel value="Logradouro:" />
+					<p:inputText value="#{fabricanteBean.fabricante.endereco.rua}"
+						required="true"
+						requiredMessage="Preencha o logradouro do fabricante!"
+						maxlength="60" size="55" />
+
+					<p:outputLabel value="Número:" />
+					<p:inputText value="#{fabricanteBean.fabricante.endereco.numero}"
+						required="true" requiredMessage="Preencha o número do endereço!"
+						maxlength="4" size="5" />
+
+					<p:outputLabel value="Bairro:" />
+					<p:inputText value="#{fabricanteBean.fabricante.endereco.bairro}"
+						required="true" requiredMessage="Preencha o bairro!"
+						maxlength="60" size="30" />
+
+					<p:outputLabel value="CEP:" />
+					<p:inputMask value="#{fabricanteBean.fabricante.endereco.cep}"
+						size="9" mask="99999-999">
+						<f:validateBean />
+					</p:inputMask>
+
+					<p:outputLabel value="Complemento:" />
+					<p:inputText
+						value="#{fabricanteBean.fabricante.endereco.complemento}"
+						maxlength="50" size="50" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="4">
+
+					<p:outputLabel for="estado" value="Estado:" />
+					<p:selectOneMenu id="estado" filter="true"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{fabricanteBean.estado}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um estado" />
+						<f:selectItems value="#{fabricanteBean.estados}" var="estado"
+							itemValue="#{estado}" itemLabel="#{estado.nome}" />
+						<p:ajax listener="#{fabricanteBean.popular}"
+							update=":formCadastro:cidade" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="cidade" value="Cidade:" />
+					<p:selectOneMenu id="cidade" filter="true" required="true"
+						requiredMessage="Selecione um estado para escolher uma cidade!"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{fabricanteBean.fabricante.endereco.cidade}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma cidade" />
+						<f:selectItems value="#{fabricanteBean.cidades}" var="cidade"
+							itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+
+					<p:separator />
+					<p:separator style="width:485px" />
+
+					<p:outputLabel value="Autorização Anvisa:" />
+					<p:inputText value="#{fabricanteBean.fabricante.autorizacaoAnvisa}"
+						maxlength="7" size="25" />
+				</h:panelGrid>
+
+
+				<h:panelGrid columns="2">
+					<center>
+						<p:commandButton value="Salvar"
+							actionListener="#{fabricanteBean.editar}" />
+						<p:button value="Voltar" outcome="/pages/fabricante.xhtml" />
+					</center>
+				</h:panelGrid>
+
+			</h:form>
+
+		</h:body>
+	</ui:define>
+</ui:composition>
+</html>

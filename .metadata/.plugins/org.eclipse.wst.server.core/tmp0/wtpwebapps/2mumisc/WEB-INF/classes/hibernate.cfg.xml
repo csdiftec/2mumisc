@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+	<session-factory>
+
+		<!-- Configurações de Conexão com o Banco de Dados -->
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="connection.url">jdbc:mysql://localhost:3306/victoria?useSSL=false</property>
+		<property name="connection.username">root</property>
+		<property name="connection.password"></property>
+
+		<!-- Pool de Conexões -->
+		<property name="connection.pool_size">1</property>
+
+		<!-- SQL dialect -->
+		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+
+		<!-- Gerenciamento do Contexto das Sessões -->
+		<property name="current_session_context_class">thread</property>
+
+		<!-- Cache de Segundo Nível -->
+		<property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+
+		<!-- Mostra as SQLs Geradas -->
+		<property name="show_sql">true</property>
+		<property name="hibernate.format_sql">true</property>
+		<property name="use_sql_comments">true</property>
+		
+		<!-- Cria as tabelas do banco de dados -->
+		<property name="hbm2ddl.auto">update</property>
+
+		<!-- Mapeamento das entidades -->
+
+		<mapping class="br.com.diftecnologia.domain.AberturaOcorrencia" />
+		<mapping class="br.com.diftecnologia.domain.Caixa" />
+		<mapping class="br.com.diftecnologia.domain.Cidade" />
+		<mapping class="br.com.diftecnologia.domain.Cliente" />
+		<mapping class="br.com.diftecnologia.domain.Compra" />
+		<mapping class="br.com.diftecnologia.domain.Despesas" />
+		<mapping class="br.com.diftecnologia.domain.Duplicata" />
+		<mapping class="br.com.diftecnologia.domain.Endereco" />
+		<mapping class="br.com.diftecnologia.domain.Empresa" />
+		<mapping class="br.com.diftecnologia.domain.Estado" />
+		<mapping class="br.com.diftecnologia.domain.Fabricante" />
+		<mapping class="br.com.diftecnologia.domain.Fornecedor" />
+		<mapping class="br.com.diftecnologia.domain.FecharOcorrencia" />
+		<mapping class="br.com.diftecnologia.domain.FormaPagamento" />
+		<mapping class="br.com.diftecnologia.domain.Funcionario" />
+		<mapping class="br.com.diftecnologia.domain.Inventario" />
+		<mapping class="br.com.diftecnologia.domain.ItemCompra" />
+		<mapping class="br.com.diftecnologia.domain.ItemVenda" />
+		<mapping class="br.com.diftecnologia.domain.PagamentoDespesa" />
+		<mapping class="br.com.diftecnologia.domain.PagamentoDuplicataVenda" />
+		<mapping class="br.com.diftecnologia.domain.Pessoa" />
+		<mapping class="br.com.diftecnologia.domain.Produto" />
+		<mapping class="br.com.diftecnologia.domain.RegistroDespesas" />
+		<mapping class="br.com.diftecnologia.domain.RegistroLogin" />
+		<mapping class="br.com.diftecnologia.domain.Sexo" />
+		<mapping class="br.com.diftecnologia.domain.Telefone" />
+		<mapping class="br.com.diftecnologia.domain.TerminalAtendimento" />
+		<mapping class="br.com.diftecnologia.domain.TipoPagamento" />
+		<mapping class="br.com.diftecnologia.domain.UnidadeMedida" />
+		<mapping class="br.com.diftecnologia.domain.Venda" />
+		<mapping class="br.com.diftecnologia.domain.CadastroSerial" />
+		<mapping class="br.com.diftecnologia.domain.CadastroValidacaoSerial" />
+
+	</session-factory>
+
+</hibernate-configuration>

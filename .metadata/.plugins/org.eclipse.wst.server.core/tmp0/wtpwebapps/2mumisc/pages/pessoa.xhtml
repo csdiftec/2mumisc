@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Cadastro de Pessoa</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+		<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+				<h:outputText style="color: red; font-size: 12px;" value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+			<h:form id="formListagem"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+	
+		<p:panel header="Listagem de Pessoas">
+			<p:dataTable emptyMessage="Nenhum registro encontrado."
+				paginator="true" rows="25" editable="false" id="tabela"
+				 value="#{pessoaBean.pessoas}"	var="pessoa">
+						<f:facet name="header">
+							<p:commandButton value="Novo" oncomplete="PF('dialogo').show();" 
+								actionListener="#{pessoaBean.novo}" update="formCadastro"
+								icon="fa fa-fw fa-plus-square">
+								<f:actionListener
+									type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+							</p:commandButton>
+						</f:facet>
+
+						<p:column headerText="Código" sortBy="#{pessoa.codigo}"
+							style="width: 75px" filterBy="#{pessoa.codigo}">
+							<h:outputText value="#{pessoa.codigo}" />
+						</p:column>
+
+						<p:column headerText="Nome " 
+							style="width: 230px;text-align: left"
+							sortBy="#{pessoa.nome}"
+							filterBy="#{pessoa.nome}">
+							<h:outputText value="#{pessoa.nome}" />
+						</p:column>
+
+			<p:column headerText="Data de Nascimento" style="width: 120px;text-align: center">
+							<h:outputLabel value="#{pessoa.dataNascimento}">
+								<f:convertDateTime pattern="dd/MM/yy" locale="pt_BR"
+									timeZone="America/Sao_Paulo" />
+							</h:outputLabel>
+						</p:column>
+						
+	<p:column headerText="CPF" style="width: 120px;text-align: center">
+							<h:outputLabel value="#{pessoa.cpf}">
+							</h:outputLabel>
+						</p:column>
+		
+				<p:column headerText="Opções"
+							style="width: 50px;text-align: center">
+							<center>
+							
+								<p:commandButton icon="ui-icon-trash"
+									actionListener="#{pessoaBean.excluir}"
+									update=":formListagem:tabela">
+									<p:confirm header="Confirmação"
+										message="Deseja excluir o registro #{pessoa.nome}?"
+										icon="ui-icon-alert" />
+									<f:attribute name="pessoaSelecionada" value="#{pessoa}" />
+								</p:commandButton>
+								<p:commandButton icon="ui-icon-pencil"
+									actionListener="#{pessoaBean.editar}"
+									update="formCadastroEdit"
+									oncomplete="PF('dialogoEdit').show();">
+									<f:attribute name="pessoaSelecionada" value="#{pessoa}" />
+
+									<f:actionListener
+										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
+							</center>
+						</p:column>
+
+					</p:dataTable>
+					<!--xxxxxxxxxxxxxxxxxxxxxxFIM DATATABLExxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+					<p:confirmDialog global="true" closeOnEscape="true">
+						<p:commandButton value="Sim" type="button"
+							styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="Não" type="button"
+							styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+
+				</p:panel>
+			</h:form>
+
+<p:dialog header="Cadastro de Pessoas" widgetVar="dialogo"
+				closeOnEscape="true" draggable="false" resizable="true"
+				modal="true" closable="true"  appendTo="@(body)">
+				<h:form id="formCadastro">
+			<h:panelGrid columns="2">
+
+			<p:outputLabel for="codigo" value="Código:" />
+						<p:inputText id="codigo"
+							value="#{pessoaBean.pessoa.codigo}"
+							placeholder="preenchimento automático!" readonly="true" size="23" />
+
+						<p:outputLabel for="nome" value="Nome:" />
+						<p:inputText id="nome" requiredMessage="O campo 'Nome' é obrigatório"
+							value="#{pessoaBean.pessoa.nome}"   maxlength="60"
+							size="40"  required="true"/>
+
+				<p:outputLabel  for="dNascimento" value="Data  Nascimento: " />
+					<p:calendar id="dNascimento"   navigator="true" required="true"
+						requiredMessage="Selecione a data do nascimento"
+						 value="#{pessoaBean.pessoa.dataNascimento}" maxdate="pessoaBean.currentDate">
+					<f:convertDateTime pattern="dd/MM/yy" locale="pt"
+						timeZone="America/Sao_Paulo"  />
+								
+				</p:calendar>
+
+				<p:outputLabel value="CPF:"  for="cpf" />
+				<p:inputMask id="cpf" size="14" mask="999.999.999-99" 
+				value="#{pessoaBean.pessoa.cpf}"  required="true" 
+				requiredMessage="O campo 'CPF' é obrigatório">
+					<f:validateBean />
+				</p:inputMask>
+
+				<p:outputLabel value="RG:" />
+				<p:inputMask size="11" mask="99.999.999"
+				value="#{pessoaBean.pessoa.numeroRG}">
+					<f:validateBean />
+				</p:inputMask>
+
+	<p:outputLabel value="Orgão emissor:" />
+					<p:selectOneMenu value="#{pessoaBean.pessoa.orgaoEmissor}"
+						noSelectionOption="true" 		size="35" >
+						<f:selectItem itemValue="#{clienteBean.cliente.pessoa.orgaoEmissor}" 
+						 itemLabel="Selecione o Orgão" />
+						<f:selectItem itemValue="SSP"
+							itemLabel="SSP - Secretaria de Segurança Pública" />
+						<f:selectItem itemValue="PM" itemLabel="PM - Polícia Militar" />
+						<f:selectItem itemValue="PC" itemLabel="PC -Policia Civil" />
+						<f:selectItem itemValue="DIC"
+							itemLabel="DIC - Diretoria de Identificação Civil" />
+						<f:selectItem itemValue="CTPS"
+							itemLabel="CTPS - Carteira de Trabaho e Previdência Social" />
+						<f:selectItem itemValue="FGTS"
+							itemLabel="FGTS - Fundo de Garantia do Tempo de Serviço" />
+						<f:selectItem itemValue="M"
+							itemLabel="FGTS - Fundo de Garantia do Tempo de Serviço" />
+						<f:selectItem itemValue="FGTS"
+							itemLabel="IPF - Instituto Pereira Faustino" />
+						<f:selectItem itemValue="IML"
+							itemLabel="IML - Instituto Médico-Legal" />
+						<f:selectItem itemValue="MTE"
+							itemLabel="MTE - Ministério do Trabalho e Emprego" />
+						<f:selectItem itemValue="MMA"
+							itemLabel="MMA - Ministério da Marinha" />
+						<f:selectItem itemValue="MAE"
+							itemLabel="MAE - Ministério da Aeronáutica" />
+						<f:selectItem itemValue="MEX"
+							itemLabel="MEX - Ministério do Exército" />
+						<f:selectItem itemValue="SES"
+							itemLabel="SES - Carteira de Estrangeiro" />
+						<f:selectItem itemValue="SJS"
+							itemLabel="SJS - Secretaria da Justiça e Segurança" />
+						<f:selectItem itemValue="SJTS"
+							itemLabel="SJTS - Secretaria da Justiça do Trabalho e Segurança" />
+						<f:selectItem itemValue="CNT"
+							itemLabel="CNT - Carteira Nacional de Habilitação" />
+						<f:selectItem itemValue="ZZZ" itemLabel="ZZZ - inclusive exterior" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Data emissão:" />
+					<p:calendar id="dataEmissao" pattern="dd/MM/yy" mask="99/99/9999"
+						size="10" maxlength="10" locale="pt" style="margin-right: 15px"
+						value="#{pessoaBean.pessoa.dataEmissaoRG}" maxdate="pessoaBean.currentDate">
+					</p:calendar>
+
+								<p:outputLabel for="sexo" value="Sexo:" />
+					<p:selectOneMenu id="sexo"
+					converter="omnifaces.SelectItemsConverter"
+						value="#{pessoaBean.pessoa.sexo}"
+						required="true"
+						requiredMessage="Selecione o sexo "	>
+						<f:selectItem noSelectionOption="true"
+								itemLabel="Selecione o sexo."
+						itemDisabled="false" />
+						<f:selectItems value="#{pessoaBean.sexos}" var="sexo"
+							itemValue="#{sexo}" itemLabel="#{sexo.sigla}" />
+					</p:selectOneMenu>
+					
+				<p:separator />
+				<p:separator />
+	<p:outputLabel value="Logradouro:" for="logradouro" />
+						<p:inputText id="logradouro" value="#{pessoaBean.endereco.rua}" maxlength="60"
+							size="40"  required="true"
+							requiredMessage="O campo 'Logradouro' é obrigatório"/>
+
+						<p:outputLabel value="Número:"     />
+						<p:inputText id="numero" value="#{pessoaBean.endereco.numero}"
+							maxlength="4" size="5"/>
+
+						<p:outputLabel value="Bairro:"  for="bairro"/>
+						<p:inputText id="bairro"  value="#{pessoaBean.endereco.bairro}" 
+						requiredMessage="O campo 'Bairro' é obrigatório" required="true"
+							maxlength="60" size="40" />
+
+						<p:outputLabel value="CEP:" />
+						<p:inputMask value="#{pessoaBean.endereco.cep}" size="9"
+							mask="99999-999">
+							<f:validateBean />
+						</p:inputMask>
+
+						<p:outputLabel value="Complemento:" />
+						<p:inputText value="#{pessoaBean.endereco.complemento}"
+							maxlength="60" size="40" />
+
+
+
+
+						<p:outputLabel  value="Estado: "  for="estado" />
+						<p:selectOneMenu id="estado" filter="true"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{pessoaBean.estado}" required="true"
+							requiredMessage="O campo 'Estado' é Obrigatório.">
+						
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Selecione um estado." />
+							<f:selectItems value="#{pessoaBean.estados}" var="estado"
+								itemValue="#{estado}" itemLabel="#{estado.nome}" />
+							<p:ajax listener="#{pessoaBean.popular}"
+								update=":formCadastro:cidade" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="cidade" value="Cidade:" />
+						<p:selectOneMenu id="cidade" filter="true" required="true"
+							requiredMessage="O campo 'Cidade' é obrigatório."
+							converter="omnifaces.SelectItemsConverter"
+							value="#{pessoaBean.endereco.cidade}">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Selecione uma cidade." />
+							<f:selectItems value="#{pessoaBean.cidades}" var="cidade"
+								itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
+						</p:selectOneMenu>
+
+				<p:separator />
+				<p:separator />
+
+				<p:outputLabel value="E-mail:" />
+				<p:inputText value="#{pessoaBean.pessoa.email}" maxlength="60" size="40" />
+
+				<p:outputLabel value="Telefone :" size="25" />
+				<p:inputMask value="#{pessoaBean.pessoa.telefone}" size="20" mask="(99)99999999?9"/>
+
+			</h:panelGrid>		
+
+
+			
+<center>
+				<p:separator />
+			<h:panelGrid columns="1">
+							<p:commandButton value="Salvar" icon="fa fa-fw fa-save"
+								actionListener="#{pessoaBean.salvar}"
+								update=":formListagem  :formCadastro:cidade ">
+							</p:commandButton>
+
+							</h:panelGrid>
+					</center>
+				</h:form>
+			</p:dialog>
+			
+			
+<!-- 			xxxxxxxxxxxxxxxxxx EDITAR -->
+
+<p:dialog header="Cadastro de Pessoas" widgetVar="dialogoEdit"
+				closeOnEscape="true" draggable="false" resizable="true"
+				modal="true" closable="true"  appendTo="@(body)"
+				>
+				<h:form id="formCadastroEdit">
+			<h:panelGrid columns="2">
+
+			<p:outputLabel for="codigo" value="Código:" />
+						<p:inputText id="codigo"
+							value="#{pessoaBean.pessoa.codigo}"
+							placeholder="preenchimento automático!" readonly="true" size="23" />
+
+						<p:outputLabel for="nome" value="Nome:" />
+						<p:inputText id="nome" requiredMessage="O campo 'Nome' é obrigatório"
+							value="#{pessoaBean.pessoa.nome}" maxlength="60"
+							size="40"  required="true"/>
+
+				<p:outputLabel  for="dNascimento" value="Data  Nascimento: " />
+					<p:calendar id="dNascimento"   required="true"
+						requiredMessage="Selecione a data do nascimento"
+						 value="#{pessoaBean.pessoa.dataNascimento}" maxdate="pessoaBean.currentDate">
+					<f:convertDateTime pattern="dd/MM/yy"  locale="pt"
+						timeZone="America/Sao_Paulo"  />
+								
+				</p:calendar>
+
+				<p:outputLabel value="CPF:"  for="cpf" />
+				<p:inputMask id="cpf" size="14" mask="999.999.999-99" 
+				value="#{pessoaBean.pessoa.cpf}"  required="true" 
+				requiredMessage="O campo 'CPF' é obrigatório">
+					<f:validateBean />
+				</p:inputMask>
+
+				<p:outputLabel value="RG:" />
+				<p:inputMask size="11" mask="99.999.999"
+				value="#{pessoaBean.pessoa.numeroRG}">
+					<f:validateBean />
+				</p:inputMask>
+
+	<p:outputLabel value="Orgão emissor:" />
+					<p:selectOneMenu value="#{pessoaBean.pessoa.orgaoEmissor}"
+						noSelectionOption="true" 		size="35" >
+						<f:selectItem itemValue="#{clienteBean.cliente.pessoa.orgaoEmissor}" 
+						 itemLabel="Selecione o Orgão" />
+						<f:selectItem itemValue="SSP"
+							itemLabel="SSP - Secretaria de Segurança Pública" />
+						<f:selectItem itemValue="PM" itemLabel="PM - Polícia Militar" />
+						<f:selectItem itemValue="PC" itemLabel="PC -Policia Civil" />
+						<f:selectItem itemValue="DIC"
+							itemLabel="DIC - Diretoria de Identificação Civil" />
+						<f:selectItem itemValue="CTPS"
+							itemLabel="CTPS - Carteira de Trabaho e Previdência Social" />
+						<f:selectItem itemValue="FGTS"
+							itemLabel="FGTS - Fundo de Garantia do Tempo de Serviço" />
+						<f:selectItem itemValue="M"
+							itemLabel="FGTS - Fundo de Garantia do Tempo de Serviço" />
+						<f:selectItem itemValue="FGTS"
+							itemLabel="IPF - Instituto Pereira Faustino" />
+						<f:selectItem itemValue="IML"
+							itemLabel="IML - Instituto Médico-Legal" />
+						<f:selectItem itemValue="MTE"
+							itemLabel="MTE - Ministério do Trabalho e Emprego" />
+						<f:selectItem itemValue="MMA"
+							itemLabel="MMA - Ministério da Marinha" />
+						<f:selectItem itemValue="MAE"
+							itemLabel="MAE - Ministério da Aeronáutica" />
+						<f:selectItem itemValue="MEX"
+							itemLabel="MEX - Ministério do Exército" />
+						<f:selectItem itemValue="SES"
+							itemLabel="SES - Carteira de Estrangeiro" />
+						<f:selectItem itemValue="SJS"
+							itemLabel="SJS - Secretaria da Justiça e Segurança" />
+						<f:selectItem itemValue="SJTS"
+							itemLabel="SJTS - Secretaria da Justiça do Trabalho e Segurança" />
+						<f:selectItem itemValue="CNT"
+							itemLabel="CNT - Carteira Nacional de Habilitação" />
+						<f:selectItem itemValue="ZZZ" itemLabel="ZZZ - inclusive exterior" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel value="Data emissão:" />
+					<p:calendar id="dataEmissao" pattern="dd/MM/yyyy" mask="99/99/9999"
+						size="10" maxlength="10"  style="margin-right: 15px"
+						value="#{pessoaBean.pessoa.dataEmissaoRG}" maxdate="pessoaBean.currentDate"
+						locale="pt">
+					</p:calendar>
+
+								<p:outputLabel for="sexo" value="Sexo:" />
+					<p:selectOneMenu id="sexo"
+					converter="omnifaces.SelectItemsConverter"
+						value="#{pessoaBean.pessoa.sexo}"
+						required="true"
+						requiredMessage="Selecione o sexo "	>
+						<f:selectItem noSelectionOption="true"
+								itemLabel="Selecione o sexo."
+						itemDisabled="false" />
+						<f:selectItems value="#{pessoaBean.sexos}" var="sexo"
+							itemValue="#{sexo}" itemLabel="#{sexo.sigla}" />
+					</p:selectOneMenu>
+					
+				<p:separator />
+				<p:separator />
+	<p:outputLabel value="Logradouro:" for="logradouro" />
+						<p:inputText id="logradouro" value="#{pessoaBean.endereco.rua}" maxlength="60"
+							size="40"  required="true"
+							requiredMessage="O campo 'Logradouro' é obrigatório"/>
+
+						<p:outputLabel value="Número:"     />
+						<p:inputText id="numero" value="#{pessoaBean.endereco.numero}"
+							maxlength="4" size="5"/>
+
+						<p:outputLabel value="Bairro:"  for="bairro"/>
+						<p:inputText id="bairro"  value="#{pessoaBean.endereco.bairro}" 
+						requiredMessage="O campo 'Bairro' é obrigatório" required="true"
+							maxlength="60" size="40" />
+
+						<p:outputLabel value="CEP:" />
+						<p:inputMask value="#{pessoaBean.endereco.cep}" size="9"
+							mask="99999-999">
+							<f:validateBean />
+						</p:inputMask>
+
+						<p:outputLabel value="Complemento:" />
+						<p:inputText value="#{pessoaBean.endereco.complemento}"
+							maxlength="60" size="40" />
+
+
+
+
+						<p:outputLabel  value="Estado: "  for="estado" />
+						<p:selectOneMenu id="estado" filter="true"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{pessoaBean.estado}" required="true"
+							requiredMessage="O campo 'Estado' é Obrigatório.">
+						
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Selecione um estado." />
+							<f:selectItems value="#{pessoaBean.estados}" var="estado"
+								itemValue="#{estado}" itemLabel="#{estado.nome}" />
+							<p:ajax listener="#{pessoaBean.popular}"
+								update=":formCadastroEdit:cidade" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="cidade" value="Cidade:" />
+						<p:selectOneMenu id="cidade" filter="true" required="true"
+							requiredMessage="O campo 'Cidade' é obrigatório."
+							converter="omnifaces.SelectItemsConverter"
+							value="#{pessoaBean.endereco.cidade}">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Selecione uma cidade." />
+							<f:selectItems value="#{pessoaBean.cidades}" var="cidade"
+								itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
+						</p:selectOneMenu>
+
+				<p:separator />
+				<p:separator />
+
+				<p:outputLabel value="E-mail:" />
+				<p:inputText value="#{pessoaBean.pessoa.email}" maxlength="60" size="40" />
+
+				<p:outputLabel value="Telefone :" size="25" />
+				<p:inputMask value="#{pessoaBean.pessoa.telefone}" size="20" mask="(99)99999999?9"/>
+
+			</h:panelGrid>		
+
+
+			
+<center>
+				<p:separator />
+			<h:panelGrid columns="1">
+							<p:commandButton value="Salvar"
+								actionListener="#{pessoaBean.salvarEdicao}"
+								update=":formListagem  :formCadastro:cidade ">
+							</p:commandButton>
+
+							</h:panelGrid>
+					</center>
+				</h:form>
+			</p:dialog>
+
+
+	</ui:define>
+</ui:composition>
+
+</html>

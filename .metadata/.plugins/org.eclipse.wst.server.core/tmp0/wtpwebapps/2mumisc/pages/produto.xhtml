@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<link rel="shortcut icon" type="image/x-icon"
+		href="#{request.contextPath}/resources/images/favicon.ico" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Cadastro de Produtos</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+		<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+
+				<h:outputText style="color: red; font-size: 12px;"
+					value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+		<h:form id="formListagem"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+
+
+			<p:panel header="Listagem de Produtos">
+				<p:dataTable id="tabela" style="text-align: center;font: 11px "
+					emptyMessage="Nenhum registro encontrado." paginator="true"
+					rows="25" value="#{produtoBean.produtos}" var="produto">
+					<f:facet name="header">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							actionListener="#{produtoBean.novo}" update="formCadastro:painel"
+							icon="fa fa-fw fa-plus-square">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+
+					<p:column headerText="Código" style="width: 100px"
+						sortBy="#{produto.codigo}" filterBy="#{produto.codigo}">
+						<h:outputText value="#{produto.codigo}" />
+					</p:column>
+
+					<p:column headerText="Código barras" style="width: 120px"
+						sortBy="#{produto.codigoBarras}"
+						filterBy="#{produto.codigoBarras}">
+						<h:outputText value="#{produto.codigoBarras}" />
+					</p:column>
+
+					<p:column headerText="Descrição" style="width: 300px"
+						sortBy="#{produto.descricao}" filterBy="#{produto.descricao}">
+						<h:outputText value="#{produto.descricao}" />
+					</p:column>
+
+					<p:column headerText="Quantidade"
+						style="width: 90px;text-align: center">
+						<h:outputText value="#{produto.quantidadeEstoque}">
+							<f:convertNumber pattern="#0" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Preço" style="width: 90px;text-align: center">
+						<h:outputText value="#{produto.valor}">
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</h:outputText>
+					</p:column>
+
+
+
+					<p:column headerText="Opções"
+						style="width: 120px;text-align: center">
+						<center>
+							<p:commandButton icon="ui-icon-trash"
+								actionListener="#{produtoBean.excluir}"
+								update=":mensagem :formListagem:tabela">
+								<p:confirm header="Confirmação"
+									message="Deseja excluir o produto #{produto.descricao}?"
+									icon="ui-icon-alert" />
+								<f:attribute name="produtoSelecionado" value="#{produto}" />
+							</p:commandButton>
+
+							<p:commandButton icon="ui-icon-pencil"
+								actionListener="#{produtoBean.editar}"
+								update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
+								<f:attribute name="produtoSelecionado" value="#{produto}" />
+								<f:actionListener
+									type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+							</p:commandButton>
+
+							<p:commandButton icon="ui-icon-print"
+								actionListener="#{produtoBean.imprimirProdutoPorCodigo}">
+								<f:attribute name="produtoSelecionado" value="#{produto}" />
+
+							</p:commandButton>
+						</center>
+					</p:column>
+				</p:dataTable>
+
+				<p:confirmDialog global="true" closeOnEscape="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Cadastro de Produtos" widgetVar="dialogo"
+			closeOnEscape="true" draggable="false" resizable="true" modal="true"
+			closable="true" showEffect="fade" appendTo="@(body)">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2">
+
+					<p:outputLabel for="codigo" value="Código:" />
+					<p:inputText id="codigo" value="#{produtoBean.produto.codigo}"
+						placeholder="preenchimento automático!" readonly="true" size="20" />
+
+					<p:outputLabel for="codigoBarras" value="Código de Barras:" />
+					<p:inputText id="codigoBarras"
+						value="#{produtoBean.produto.codigoBarras}" maxlength="15"
+						size="20" required="true"
+						requiredMessage="O campo ''Codigo de barras' é obrigatório" />
+
+					<p:outputLabel for="descricao" value="Descrição:" />
+					<p:inputText id="descricao"
+						value="#{produtoBean.produto.descricao}" maxlength="60" size="75"
+						required="true"
+						requiredMessage="O campo ''Codigo de barras' é obrigatório" />
+
+					<p:outputLabel for="qtd" value="Quantidade:" />
+					<p:inputText id="qtd"
+						value="#{produtoBean.produto.quantidadeEstoque}" maxlength="4"
+						size="20" readonly="true" placeholder="preenchimento automático!" />
+
+					<p:outputLabel for="qtdCritica" value="Quantidade Crítica:" />
+					<p:inputText id="qtdCritica"
+						value="#{produtoBean.produto.quantidadeCritica}" maxlength="2"
+						size="20" />
+
+					<p:outputLabel for="valor" value="Preço:" />
+					<p:inputText id="valor" value="#{produtoBean.produto.valor}"
+						required="true" requiredMessage="O campo 'Preço' é obrigatório"
+						converterMessage="Informe um valor válido para o campo 'Preço''"
+						validatorMessage="Informe um valor entre 0,01 e 9999,99 para o campo 'Preço'"
+						maxlength="8" size="20">
+						<f:validateDoubleRange minimum="0.01" maximum="99999.99" />
+						<f:convertNumber pattern="#,##0.00" />
+					</p:inputText>
+
+
+					<p:outputLabel for="unidadeMedida" value="Unidade de Medida:" />
+					<p:selectOneMenu id="unidadeMedida" filter="true" size="20"
+						value="#{produtoBean.produto.unidadeMedida}"
+						converter="omnifaces.SelectItemsConverter" required="true"
+						requiredMessage="O campo 'Unidade de Medida' é obrigatório!">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma unidade" />
+						<f:selectItems value="#{produtoBean.unidadesMedida}"
+							var="unidadeMedida" itemValue="#{unidadeMedida}"
+							itemLabel="#{unidadeMedida.descricao} / #{unidadeMedida.sigla} " />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="situacao" value="Ativo:" />
+					<p:selectBooleanCheckbox id="situacao"
+						value="#{produtoBean.produto.situacao}" />
+
+				</h:panelGrid>
+				<p:separator />
+
+				<center>
+					<h:panelGrid columns="2">
+						<p:commandButton value="Salvar" icon="fa fa-fw fa-save"
+							actionListener="#{produtoBean.salvar}"
+							update=":formListagem:tabela" />
+
+					</h:panelGrid>
+				</center>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+
+</html>

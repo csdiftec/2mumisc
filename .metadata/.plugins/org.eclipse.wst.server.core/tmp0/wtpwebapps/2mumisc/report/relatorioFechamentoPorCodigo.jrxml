@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2016-11-08T21:14:50 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorioFechamentoPorCodigo" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="08c026e4-5d72-41f4-9e38-b4ce762e037a">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CsimumAdaptador"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="CODIGO_FECHAMENTO" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT victoria.terminal_atendimento.numero_terminal,
+	victoria.caixa.valor_total_venda,
+	victoria.caixa.valor_total_fechamento,
+	victoria.caixa.data_fechamento,
+	victoria.caixa.valor_inicial,
+	victoria.caixa.data_abertura,
+	victoria.funcionario.codigo as codigo_funcionario,
+	victoria.pessoa.nome,
+	victoria.caixa.codigo as codigo_caixa
+FROM victoria.caixa
+	INNER JOIN victoria.funcionario ON 
+	 victoria.caixa.funcionario_codigo = victoria.funcionario.codigo 
+	INNER JOIN victoria.pessoa ON 
+	 victoria.funcionario.pessoa_codigo = victoria.pessoa.codigo 
+	INNER JOIN victoria.terminal_atendimento ON 
+	 victoria.caixa.`terminalAtendimento_codigo` = victoria.terminal_atendimento.codigo 
+WHERE 
+	 victoria.caixa.codigo = $P{CODIGO_FECHAMENTO}]]>
+	</queryString>
+	<field name="numero_terminal" class="java.lang.Integer"/>
+	<field name="valor_total_venda" class="java.math.BigDecimal"/>
+	<field name="valor_total_fechamento" class="java.math.BigDecimal"/>
+	<field name="data_fechamento" class="java.sql.Timestamp"/>
+	<field name="valor_inicial" class="java.math.BigDecimal"/>
+	<field name="data_abertura" class="java.sql.Timestamp"/>
+	<field name="codigo_funcionario" class="java.lang.Long"/>
+	<field name="nome" class="java.lang.String"/>
+	<field name="codigo_caixa" class="java.lang.Long"/>
+	<background>
+		<band height="50"/>
+	</background>
+	<title>
+		<band height="76">
+			<staticText>
+				<reportElement x="415" y="10" width="50" height="20" uuid="c48cf850-449c-4434-b6bc-8357d23cccf2"/>
+				<box rightPadding="4"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/YYYY">
+				<reportElement x="465" y="10" width="84" height="20" uuid="a4bfdc2f-55e8-43a3-af20-33b3d7cf25e6"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center">
+				<reportElement x="0" y="0" width="65" height="60" uuid="b85f8bbe-d13e-4876-86b8-b6123514ebd5"/>
+				<imageExpression><![CDATA["invoice_logo.png"]]></imageExpression>
+			</image>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="465" y="30" width="84" height="20" uuid="ded9de77-2ee5-4c27-b4fe-8791dbe5dc41"/>
+				<textFieldExpression><![CDATA["INV0003"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="415" y="30" width="50" height="20" uuid="5fe6ae71-5dc4-40c8-9bc8-f24bbfc7c10e"/>
+				<box rightPadding="4"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Invoice #]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="65" y="0" width="350" height="25" uuid="0134540e-5581-404f-a725-f81b6f257739">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="16" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Relatorio do Fechamento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="95" y="25" width="205" height="15" uuid="ddca46fe-9a21-4411-bb96-8dcc8d569bee"/>
+				<text><![CDATA[Sistema CSimum - Controle de Estoque]]></text>
+			</staticText>
+			<line>
+				<reportElement x="-10" y="67" width="556" height="1" uuid="aefd54be-db0b-41ba-ac96-12bbd627f17b">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="70" y="47" width="65" height="20" forecolor="#000000" uuid="c69a2e3b-1bb1-485b-859b-254ee17889e5"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data Inicial:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="250" y="47" width="65" height="20" forecolor="#000000" uuid="ed81a1fa-8a6a-4608-a8b8-a2795c0976c6"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data Final:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="310" y="47" width="175" height="20" uuid="1ce5072a-c8c9-46a6-afb8-d27ddad7147f"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{data_fechamento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="130" y="47" width="120" height="20" uuid="d6e452c8-6b29-4f24-b948-684fe1de3447">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{data_abertura}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="88">
+			<textField pattern="¤ #,##0.00;¤ - #,##0.00" isBlankWhenNull="true">
+				<reportElement x="440" y="0" width="109" height="21" uuid="6e389acc-24c9-4551-b47c-4573f09032cf"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_inicial}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00;¤ - #,##0.00" isBlankWhenNull="true">
+				<reportElement x="440" y="22" width="109" height="19" uuid="77a07bdd-53a1-4c49-9661-cf55d514f82d"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_total_venda}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00;¤ - #,##0.00" isBlankWhenNull="true">
+				<reportElement x="440" y="41" width="109" height="20" uuid="16001ca7-7b4c-45fc-ac14-dd29a594125c"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_total_fechamento}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="100" y="21" width="200" height="20" uuid="5206f9fd-b2e6-453c-8cfc-98c3f06c2905">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero_terminal}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="100" y="1" width="200" height="20" uuid="3d5f0024-46d7-4625-afba-a6653d6a84b2"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_caixa}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="147" y="41" width="153" height="20" uuid="9d18fed4-1089-4fb2-8015-42a72b8ff7bb"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="100" y="41" width="40" height="20" uuid="1e591bdd-1f24-4ced-ab9a-38bbd0c057ee">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_funcionario}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="40" width="94" height="20" forecolor="#000000" uuid="b9f7785f-23a2-4bc2-9b41-e482fd877405"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Operador]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="20" width="94" height="20" forecolor="#000000" uuid="6bb1c891-f869-4655-98d5-b6ca8ea1a0e0"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[N° do Terminal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="0" width="95" height="20" forecolor="#000000" uuid="ad269d68-93f8-44ed-a38d-678f34589dff"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código do Caixa:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="310" y="1" width="130" height="20" forecolor="#000000" uuid="0f3ccd43-7575-4f58-aac8-6b78658d810e"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor de Inicio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="310" y="21" width="130" height="20" forecolor="#000000" uuid="ab62033c-1cd2-404c-aebc-c1e76effdf3b"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor Total da Venda:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="310" y="40" width="130" height="20" forecolor="#000000" uuid="2949afef-1eaa-44b5-b9f6-4b82d1722f6c"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total do Fechamento]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<summary>
+		<band height="50"/>
+	</summary>
+</jasperReport>

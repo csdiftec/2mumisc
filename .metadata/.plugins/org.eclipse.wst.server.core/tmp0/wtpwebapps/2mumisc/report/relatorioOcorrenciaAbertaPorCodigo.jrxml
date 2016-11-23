@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2016-11-08T21:16:12 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorioOcorrenciaAbertaPorCodigo" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="95de909e-c9c5-4bcd-8afd-599d09829f0d">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CsimumAdaptador"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="CODIGO_OCORRENCIA" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT testemunha.codigo AS codigo_funcionario,
+	caixa.valor_inicial,
+	caixa.data_abertura,
+	caixa.data_fechamento,
+	caixa.valor_total_fechamento,
+	caixa.valor_total_venda,
+	caixa.codigo as codigo_caixa,
+	pTestemunha.codigo as codigo_testemunha,
+	caixa.valor_inicial,
+	testemunha.senha,
+	abertura_ocorrencia.codigo AS codigo_ocorrencia,
+	abertura_ocorrencia.diferenca_registrada,
+	abertura_ocorrencia.data_abertura,
+	abertura_ocorrencia.observacao_abertura,
+		pTestemunha.nome as nome_testemunha,
+	pFuncCaixa.nome as nome_caixa
+FROM abertura_ocorrencia
+INNER JOIN caixa ON abertura_ocorrencia.caixa_codigo = caixa.codigo 
+INNER JOIN funcionario testemunha ON  abertura_ocorrencia.funcionario_testemunha_codigo = testemunha.codigo 
+INNER JOIN funcionario funcCaixa ON caixa.funcionario_codigo = funcCaixa.codigo 
+INNER JOIN pessoa pTestemunha ON  testemunha.pessoa_codigo = pTestemunha.codigo
+INNER JOIN pessoa pFuncCaixa ON  funcCaixa.pessoa_codigo = funcCaixa.codigo
+WHERE 
+	 abertura_ocorrencia.codigo = $P{CODIGO_OCORRENCIA}]]>
+	</queryString>
+	<field name="codigo_funcionario" class="java.lang.Long"/>
+	<field name="valor_inicial" class="java.math.BigDecimal"/>
+	<field name="data_abertura" class="java.sql.Timestamp"/>
+	<field name="data_fechamento" class="java.sql.Timestamp"/>
+	<field name="valor_total_fechamento" class="java.math.BigDecimal"/>
+	<field name="valor_total_venda" class="java.math.BigDecimal"/>
+	<field name="codigo_caixa" class="java.lang.Long"/>
+	<field name="codigo_testemunha" class="java.lang.Long"/>
+	<field name="COLUMN_9" class="java.math.BigDecimal"/>
+	<field name="senha" class="java.lang.String"/>
+	<field name="codigo_ocorrencia" class="java.lang.Long"/>
+	<field name="diferenca_registrada" class="java.math.BigDecimal"/>
+	<field name="COLUMN_13" class="java.sql.Date"/>
+	<field name="observacao_abertura" class="java.lang.String"/>
+	<field name="nome_testemunha" class="java.lang.String"/>
+	<field name="nome_caixa" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="8" splitType="Stretch">
+			<line>
+				<reportElement x="-40" y="0" width="615" height="1" uuid="5d073a38-c3ad-4c97-8e8d-97afea05570f">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="3"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="175">
+			<staticText>
+				<reportElement positionType="Float" x="4" y="97" width="73" height="22" forecolor="#000000" uuid="4a74d230-44dc-4863-9908-7277a144d341"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[D. Abertura]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="4" y="53" width="74" height="22" forecolor="#000000" uuid="23e01541-ba2f-4380-8296-6cbd4faf299a"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ocorrência:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="165" y="75" width="74" height="17" forecolor="#000000" uuid="c4f399e8-b09a-4d52-8075-fb65748f8ebf">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Operador:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="165" y="53" width="75" height="22" forecolor="#000000" uuid="5774eaed-f198-4bbc-bcb8-4b3fdaf0788a"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Testemunha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="5" y="119" width="73" height="22" forecolor="#000000" uuid="3e123079-231d-41e8-bde5-0470533dd6eb"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Observação:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="165" y="93" width="124" height="25" forecolor="#000000" uuid="e30dd29d-b9af-4ff7-ae61-ac787b34a19b"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor Inicial do Caixa:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="364" y="93" width="115" height="26" forecolor="#000000" uuid="dd31984d-dc29-4178-8d27-4e7624c56209"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor da Diferença:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement mode="Opaque" x="70" y="13" width="489" height="19" backcolor="#37D469" uuid="96c7fbde-3628-40c6-90a9-d2c895ea1a78"/>
+			</rectangle>
+			<image hAlign="Center">
+				<reportElement x="5" y="3" width="59" height="40" uuid="b0d03ad7-c81b-4a25-8f06-19bce1826be1"/>
+				<imageExpression><![CDATA["invoice_logo.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="224" y="14" width="204" height="18" forecolor="#FFFFFF" backcolor="#37D469" uuid="31243180-cc8a-48b2-a3be-147a2915a34c"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Sistema CSimum - Controle de Estoque]]></text>
+			</staticText>
+			<line>
+				<reportElement x="4" y="43" width="555" height="1" uuid="e694bbb1-6a3f-42a5-8f2d-fea4820b5a71">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="-36" y="163" width="615" height="3" uuid="a06fd853-c7bb-4661-91b5-7cd38306bdaf">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement x="78" y="76" width="87" height="22" uuid="8194d5b3-fca5-4065-b674-2869036dc3c1"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_caixa}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="78" y="97" width="62" height="22" uuid="f2049c49-718b-456f-8467-633852692bca">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{data_abertura}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤#,##0.00;¤-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="289" y="93" width="74" height="17" uuid="062e988b-5c19-4bbc-b073-8cc8732b71f6"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_inicial}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤#,##0.00;¤-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="479" y="93" width="81" height="25" uuid="d214e586-f159-4c67-ab74-8fb92094c1a0"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{diferenca_registrada}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="78" y="119" width="470" height="22" uuid="23883f51-922f-48ff-8144-cf41fe5958cb"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observacao_abertura}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="280" y="53" width="279" height="22" uuid="7cf002ef-8bd5-45ff-b968-2cc2cf8d0e44"/>
+				<textFieldExpression><![CDATA[$F{nome_testemunha}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="280" y="75" width="279" height="22" uuid="31b05182-365b-4920-894b-987e90c17692"/>
+				<textFieldExpression><![CDATA[$F{nome_caixa}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="240" y="75" width="40" height="18" uuid="708fec4a-a4c2-4bac-a02c-5aa8c04a26bc"/>
+				<textFieldExpression><![CDATA[$F{codigo_funcionario}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="240" y="53" width="40" height="22" uuid="876e007d-9218-42b8-b5b5-520090c1a86d"/>
+				<textFieldExpression><![CDATA[$F{codigo_testemunha}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="5" y="75" width="74" height="22" forecolor="#000000" uuid="80d728e9-5bfc-4ec8-8bf5-68595a3efc0e"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Caixa:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="79" y="53" width="86" height="22" uuid="6ab6526a-18fa-472b-81a5-542ebe8e4960"/>
+				<textFieldExpression><![CDATA[$F{codigo_ocorrencia}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

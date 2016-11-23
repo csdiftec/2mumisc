@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Despesas</title>
+</h:head>
+
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+		<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+
+				<h:outputText style="color: red; font-size: 12px;"
+					value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+		<h:form id="frmDespCad"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+
+			<p:toolbar>
+				<f:facet name="left">
+					<h:outputText value="Despesas a Pagar" />
+				</f:facet>
+			</p:toolbar>
+	
+			<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+				value="#{registroDespesasBean.listaRegistroDespesas}"				
+				var="cpc" rows="25" paginator="true">
+
+				<f:facet name="header">
+					<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+						actionListener="#{registroDespesasBean.novo}" icon="fa fa-fw fa-plus-square"
+						update=":formCadastro:pnlDespCadDados">
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+				</f:facet>
+
+				<p:column headerText="Numero da Conta"
+				style="width:30px; text-align:center;"
+					filterBy="#{cpc.codigoDespesa}" sortBy="#{cpc.codigoDespesa}">
+					<h:outputText value="#{cpc.codigoDespesa}" />
+				</p:column>
+
+				<p:column headerText="Tipo da Despesa"
+					style="width:35px; text-align:center;"
+					filterBy="#{cpc.despesas.descricao}"
+					sortBy="#{cpc.despesas.descricao}">
+					<h:outputText value="#{cpc.despesas.descricao}" />
+				</p:column>
+
+				<p:column headerText="Valor da Despesa"
+					style="width:17px; text-align:center;">
+					<h:outputText value="#{cpc.valorTotal}" >
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+				</p:column>
+
+<!-- 				<p:column headerText="Observação" -->
+<!-- 					style="width:50px; text-align:center;" filterBy="#{cpc.observacoes}" -->
+<!-- 					sortBy="#{cpc.observacoes}"> -->
+<!-- 					<h:outputText value="#{cpc.observacoes}" /> -->
+<!-- 				</p:column> -->
+				<p:column headerText="Data do Vencimento"
+					style="width:20px; text-align:center;"
+					filterBy="#{cpc.dataVencimento}" sortBy="#{cpc.dataVencimento}">
+					<h:outputText value="#{cpc.dataVencimento}">
+						<f:convertDateTime pattern="dd/MM/YYYY" locale="pt_BR"
+							timeZone="America/Sao_Paulo" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Valor Atual da Despesa"
+					style="width:20px; text-align:center">
+					<h:outputText value="#{cpc.valorTotalAtual}" >
+<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Opções" exportable="false"
+					style="width: 20px; text-align: center;">
+					<!-- xxxxxxxxxxxxxxxxxx -->
+					<p:commandButton oncomplete="PF('dialogoEdit').show();"
+						actionListener="#{registroDespesasBean.editar}"
+						icon="ui-icon-pencil"
+						update=":formCadastroEdit:pnlDespCadDadosEdit">
+						<f:attribute name="registroSelecionado" value="#{cpc}" />
+					</p:commandButton>
+
+					<p:commandButton 
+						oncomplete="PF('dialogoPagamento').show();"
+						actionListener="#{registroDespesasBean.editar}"
+						icon="ui-icon-calculator"
+						update=":formCadastroPagamento:pnlDespPagamento">
+						<f:attribute name="registroSelecionado" value="#{cpc}" />
+					</p:commandButton>
+					
+						<p:commandButton  icon="ui-icon-print"
+						actionListener="#{registroDespesasBean.imprimirContaPagarPorCodigo}">
+						<f:attribute name="registroDespesaSelecionado" value="#{cpc}" />
+					</p:commandButton>
+
+				</p:column>
+				<!-- xxxxxxxxxxxxxxxxxxxx -->
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog header="Conta a Pagar" widgetVar="dialogo"
+			closeOnEscape="true" draggable="false" resizable="true" modal="true"
+			closable="true" showEffect="fade" appendTo="@(body)">
+			<h:form id="formCadastro">
+				<h:panelGrid id="pnlDespCadDados" columns="2">
+
+
+					<p:outputLabel value="Código da da conta:" />
+					<p:inputText maxlength="20" size="20"
+						value="#{registroDespesasBean.registroDespesas.codigoDespesa}">
+					</p:inputText>
+
+					<p:outputLabel value="Data do Vencimento:" />
+					<p:calendar size="20"
+						value="#{registroDespesasBean.registroDespesas.dataVencimento}" />
+
+					<p:outputLabel for=" tipoD" value="Descricão da Despesa:" />
+					<p:selectOneMenu id="tipoD" size="25" widh="50"
+						value="#{registroDespesasBean.registroDespesas.despesas}"
+						converter="omnifaces.SelectItemsConverter" filter="true">
+						<f:selectItems value="#{registroDespesasBean.listaDespesas}"
+							var="tipoDesp" itemValue="#{tipoDesp}"
+							itemLabel="#{tipoDesp.descricao}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Valor Total:" />
+					<p:inputText maxlength="15" size="20"
+						value="#{registroDespesasBean.registroDespesas.valorTotal}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</p:inputText>
+
+					<p:outputLabel value="Observação:" />
+					<p:inputText maxlength="100" size="50"
+						value="#{registroDespesasBean.registroDespesas.observacoes}"
+						title="Campo Obrigatorio">
+					</p:inputText>
+				</h:panelGrid>
+				<p:separator />
+				<center>
+					<h:panelGrid>
+						<p:commandButton value="Salvar" icon="fa fa-fw fa-save"
+							actionListener="#{registroDespesasBean.salvar}"
+							update=":frmDespCad" />
+					</h:panelGrid>
+				</center>
+
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Conta a Pagar" widgetVar="dialogoEdit"
+			closeOnEscape="true" draggable="false" resizable="true" modal="true"
+			closable="true" showEffect="fade" appendTo="@(body)">
+			<h:form id="formCadastroEdit">
+				<h:panelGrid id="pnlDespCadDadosEdit" columns="2">
+
+
+					<p:outputLabel value="Código da Conta:" />
+					<p:inputText maxlength="20" size="20" readonly="true"
+						value="#{registroDespesasBean.registroDespesas.codigoDespesa}">
+					</p:inputText>
+
+					<p:outputLabel value="Data do Vencimento:" />
+					<p:inputText size="20" readonly="true"
+						value="#{registroDespesasBean.registroDespesas.dataVencimento}">
+						<f:convertDateTime pattern="dd/MM/YYYY" locale="pt_BR"
+							timeZone="America/Sao_Paulo" />
+					</p:inputText>
+
+					<p:outputLabel value="Valor Total:" />
+					<p:inputText maxlength="15" size="20" readonly="true"
+						value="#{registroDespesasBean.registroDespesas.valorTotal}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</p:inputText>
+
+					<p:separator />
+					<p:separator />
+
+					<p:outputLabel for=" tipoD" value="Descricão da Despesa:" />
+					<p:selectOneMenu id="tipoD" size="25" widh="50" readonly="true"
+						value="#{registroDespesasBean.registroDespesas.despesas}"
+						converter="omnifaces.SelectItemsConverter" filter="true">
+						<f:selectItems value="#{registroDespesasBean.listaDespesas}"
+							var="tipoDesp" itemValue="#{tipoDesp}"
+							itemLabel="#{tipoDesp.descricao}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Observação:" />
+					<p:inputText maxlength="100" size="50"
+						value="#{registroDespesasBean.registroDespesas.observacoes}"
+						title="Campo Obrigatorio">
+					</p:inputText>
+				</h:panelGrid>
+				<p:separator />
+				<center>
+					<h:panelGrid>
+						<p:commandButton value="Salvar" icon="fa fa-fw fa-save"
+							actionListener="#{registroDespesasBean.salvar}"
+							update=":frmDespCad" />
+					</h:panelGrid>
+				</center>
+
+			</h:form>
+		</p:dialog>
+		<!-- 	xxxxxxxxxxxxxPAGAMENTOxxxxxxxxxx -->
+		<p:dialog header="Cadastro dos pagamentos"
+			widgetVar="dialogoPagamento" closeOnEscape="true" draggable="false"
+			resizable="false" modal="true" closable="true" showEffect="fade"
+			appendTo="@(body)">
+			<h:form id="formCadastroPagamento">
+
+				<h:panelGrid id="pnlDespPagamento" columns="2">
+
+					<p:outputLabel value="Data de Lançamento:" />
+					<p:inputText readonly="true"
+						value="#{registroDespesasBean.registroDespesas.dataRegistro}">
+						<f:convertDateTime pattern="dd/MM/YYYY" locale="pt_BR"
+							timeZone="America/Sao_Paulo" />
+					</p:inputText>
+
+
+					<p:outputLabel value="Código da da conta:" />
+					<p:inputText maxlength="50" size="20" readonly="true"
+						value="#{registroDespesasBean.registroDespesas.codigoDespesa}">
+					</p:inputText>
+
+					<p:outputLabel value="Data do Vencimento:" />
+					<p:inputText size="20" readonly="true"
+						value="#{registroDespesasBean.registroDespesas.dataVencimento}">
+						<f:convertDateTime pattern="dd/MM/YYYY" locale="pt_BR"
+							timeZone="America/Sao_Paulo" />
+					</p:inputText>
+
+
+					<p:outputLabel value="Descrição da despesa:" />
+					<p:inputText maxlength="50" size="20" readonly="true"
+						value="#{registroDespesasBean.registroDespesas.despesas.descricao}">
+					</p:inputText>
+
+					<p:outputLabel value="Valor Total:" />
+					<p:inputText maxlength="15" readonly="true" size="20"
+						value="#{registroDespesasBean.registroDespesas.valorTotal}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</p:inputText>
+
+					<p:outputLabel value="Observação:" />
+					<p:inputText maxlength="100" size="50"
+						value="#{registroDespesasBean.registroDespesas.observacoes}"
+						title="Campo Obrigatorio">
+					</p:inputText>
+
+					<p:separator />
+					<p:separator />
+
+					<p:outputLabel for="juros" value="Juros:" />
+					<p:inputText id="juros" onfocus="this.value=' ';"
+						value="#{registroDespesasBean.registroDespesas.valorJuros}"
+						maxlength="4" size="10" required="true"
+						requiredMessage="O campo 'Juros' é obrigatório">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</p:inputText>
+
+					<p:outputLabel for="desconto" value="Desconto:" />
+					<p:inputText id="desconto" onfocus="this.value=' ';"
+						value="#{registroDespesasBean.registroDespesas.valorDesconto}"
+						maxlength="4" size="10" required="true"
+						requiredMessage="O campo ''Valor Pago' é obrigatório">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</p:inputText>
+
+					<p:outputLabel for="valorPago" value="Valor Pago:" />
+					<p:inputText id="valorPago" maxlength="15" size="10"
+						onfocus="this.value=' ';"
+						value="#{registroDespesasBean.registroDespesas.valorPago}"
+						required="true"
+						requiredMessage="O campo ''Valor Pago' é obrigatório">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</p:inputText>
+
+					<p:outputLabel value="Valor total atual:" for="valorTotalAtual" />
+					<p:inputText id="valorTotalAtual"
+						value="#{registroDespesasBean.registroDespesas.valorTotalAtual}"
+						maxlength="4" size="10" placeholder="0,00" readonly="true">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</p:inputText>
+				</h:panelGrid>
+				<p:separator />
+				<center>
+					<h:panelGrid columns="4">
+
+
+
+						<p:commandButton value="Salvar" icon="fa fa-fw fa-save"
+							actionListener="#{registroDespesasBean.salvarPagamento}"
+							update=":frmDespCad:tabela " />
+
+						<p:commandButton value="Cancelar"
+							actionListener="#{registroDespesasBean.zerarValores}"
+							oncomplete="PF('dialogo').hide();"
+							update=":formCadastroPagamento:pnlDespPagamento">
+							<f:attribute name="registroSelecionado"
+								value="#{registroDespesas}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton value="Calcular"
+							actionListener="#{registroDespesasBean.calcular}"
+							update="valorTotalAtual" />
+
+
+					</h:panelGrid>
+				</center>
+			</h:form>
+		</p:dialog>
+
+
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,933 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:complexType name="compraDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="produtoDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="genericDomain">
+    <xs:sequence>
+      <xs:element name="codigo" type="xs:long" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="inventarioDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="enderecoDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="genericDAO">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="fabricanteDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="endereco">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="bairro" type="xs:string" minOccurs="0"/>
+          <xs:element name="cep" type="xs:string" minOccurs="0"/>
+          <xs:element name="cidade" type="cidade" minOccurs="0"/>
+          <xs:element name="complemento" type="xs:string" minOccurs="0"/>
+          <xs:element name="numero" type="xs:int" minOccurs="0"/>
+          <xs:element name="rua" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cidade">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="codigoIBGE" type="xs:int" minOccurs="0"/>
+          <xs:element name="estado" type="estado" minOccurs="0"/>
+          <xs:element name="nome" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="estado">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="codigoIBGE" type="xs:byte" minOccurs="0"/>
+          <xs:element name="nome" type="xs:string" minOccurs="0"/>
+          <xs:element name="sigla" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="registroDespesas">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="dataRegistro" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="funcionario" type="funcionario" minOccurs="0"/>
+          <xs:element name="observacoes" type="xs:string" minOccurs="0"/>
+          <xs:element name="valorTotal" type="xs:decimal" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="funcionario">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="carteiraTrabalho" type="xs:string" minOccurs="0"/>
+          <xs:element name="dataAdmissao" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="dataSaida" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="pessoa" type="pessoa" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pessoa">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="cpf" type="xs:string" minOccurs="0"/>
+          <xs:element name="dataEmissaoRG" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="dataNascimento" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="email" type="xs:string" minOccurs="0"/>
+          <xs:element name="endereco" type="endereco" minOccurs="0"/>
+          <xs:element name="nome" type="xs:string" minOccurs="0"/>
+          <xs:element name="numeroRG" type="xs:string" minOccurs="0"/>
+          <xs:element name="orgaoEmissor" type="xs:string" minOccurs="0"/>
+          <xs:element name="sexo" type="sexo" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="sexo">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="sigla" type="xs:unsignedShort"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="estadoBean">
+    <xs:sequence>
+      <xs:element name="estado" type="estado" minOccurs="0"/>
+      <xs:element name="estados" type="estado" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="inventario">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="fimInventario" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="funcionario" type="funcionario" minOccurs="0"/>
+          <xs:element name="inicioInventario" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="motivo" type="xs:string" minOccurs="0"/>
+          <xs:element name="novaQuantidade" type="xs:int" minOccurs="0"/>
+          <xs:element name="produto" type="produto" minOccurs="0"/>
+          <xs:element name="quantidadeAtual" type="xs:int" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="produto">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="codigoBarras" type="xs:long" minOccurs="0"/>
+          <xs:element name="descricao" type="xs:string" minOccurs="0"/>
+          <xs:element name="fabricante" type="fabricante" minOccurs="0"/>
+          <xs:element name="funcionario" type="funcionario" minOccurs="0"/>
+          <xs:element name="quantidadeCritica" type="xs:short" minOccurs="0"/>
+          <xs:element name="quantidadeEstoque" type="xs:int" minOccurs="0"/>
+          <xs:element name="situacao" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="unidadeMedida" type="unidadeMedida" minOccurs="0"/>
+          <xs:element name="valor" type="xs:decimal" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="fabricante">
+    <xs:complexContent>
+      <xs:extension base="empresa">
+        <xs:sequence>
+          <xs:element name="autorizacaoAnvisa" type="xs:int" minOccurs="0"/>
+          <xs:element name="telefone" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="empresa">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="cnpj" type="xs:long" minOccurs="0"/>
+          <xs:element name="dataCadastro" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="email" type="xs:string" minOccurs="0"/>
+          <xs:element name="endereco" type="endereco" minOccurs="0"/>
+          <xs:element name="funcionario" type="funcionario" minOccurs="0"/>
+          <xs:element name="nomeFantasia" type="xs:string" minOccurs="0"/>
+          <xs:element name="razaoSocial" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="unidadeMedida">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="descricao" type="xs:string" minOccurs="0"/>
+          <xs:element name="sigla" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="hibernateContexto">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="terminalAtendimentoDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="despesasDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cliente">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="dataCadastro" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="funcionario" type="funcionario" minOccurs="0"/>
+          <xs:element name="liberado" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="pessoa" type="pessoa" minOccurs="0"/>
+          <xs:element name="status" type="xs:boolean" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="fornecedorBean">
+    <xs:sequence>
+      <xs:element name="cidades" type="cidade" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="estado" type="estado" minOccurs="0"/>
+      <xs:element name="estados" type="estado" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="fornecedor" type="fornecedor" minOccurs="0"/>
+      <xs:element name="fornecedores" type="fornecedor" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="telefone" type="telefone" minOccurs="0"/>
+      <xs:element name="telefones" type="telefone" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="fornecedor">
+    <xs:complexContent>
+      <xs:extension base="empresa">
+        <xs:sequence>
+          <xs:element name="responsavelLegal" type="xs:string" minOccurs="0"/>
+          <xs:element name="telefone" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="telefone">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="fabricante" type="fabricante" minOccurs="0"/>
+          <xs:element name="fornecedor" type="fornecedor" minOccurs="0"/>
+          <xs:element name="numeroTelefone" type="xs:string" minOccurs="0"/>
+          <xs:element name="pessoa" type="pessoa" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="sexoDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="itemVenda">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="porcentagemDoDesconto" type="xs:short" minOccurs="0"/>
+          <xs:element name="produto" type="produto" minOccurs="0"/>
+          <xs:element name="quantidade" type="xs:short" minOccurs="0"/>
+          <xs:element name="valorComDesconto" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="valorDoDesconto" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="valorParcial" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="venda" type="venda" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="venda">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="cliente" type="cliente" minOccurs="0"/>
+          <xs:element name="dataVenda" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="formaPagamento" type="formaPagamento" minOccurs="0"/>
+          <xs:element name="funcionario" type="funcionario" minOccurs="0"/>
+          <xs:element name="numeroDocumentoFiscal" type="xs:int" minOccurs="0"/>
+          <xs:element name="tipoPagamento" type="tipoPagamento" minOccurs="0"/>
+          <xs:element name="valorTotal" type="xs:decimal" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="formaPagamento">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="descricao" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tipoPagamento">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="descricao" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abrirOcorrenciaDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="usuarioDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="registroLoginDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="fabricanteBean">
+    <xs:sequence>
+      <xs:element name="cidades" type="cidade" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="estado" type="estado" minOccurs="0"/>
+      <xs:element name="estados" type="estado" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="fabricante" type="fabricante" minOccurs="0"/>
+      <xs:element name="fabricantes" type="fabricante" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="telefone" type="telefone" minOccurs="0"/>
+      <xs:element name="telefones" type="telefone" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="enderecoBean">
+    <xs:sequence>
+      <xs:element name="cidades" type="cidade" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="endereco" type="endereco" minOccurs="0"/>
+      <xs:element name="enderecos" type="endereco" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="estado" type="estado" minOccurs="0"/>
+      <xs:element name="estados" type="estado" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="registroDespesaDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pagamentoDuplicata">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="dataPagamento" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="duplicata" type="duplicata" minOccurs="0"/>
+          <xs:element name="funcionario" type="funcionario" minOccurs="0"/>
+          <xs:element name="porcentagemDoDesconto" type="xs:short" minOccurs="0"/>
+          <xs:element name="valorJuros" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="valorPago" type="xs:decimal" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="duplicata">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="compra" type="compra" minOccurs="0"/>
+          <xs:element name="dataEmissao" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="dataVencimento" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="numeroParcela" type="xs:short" minOccurs="0"/>
+          <xs:element name="status" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="totalParcelas" type="xs:short" minOccurs="0"/>
+          <xs:element name="valorParcela" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="venda" type="venda" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="compra">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="dataCompra" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="formaPagamento" type="formaPagamento" minOccurs="0"/>
+          <xs:element name="fornecedor" type="fornecedor" minOccurs="0"/>
+          <xs:element name="funcionario" type="funcionario" minOccurs="0"/>
+          <xs:element name="numeroDocumentoFiscal" type="xs:int" minOccurs="0"/>
+          <xs:element name="tipoPagamento" type="tipoPagamento" minOccurs="0"/>
+          <xs:element name="valorTotal" type="xs:decimal" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pagamentoDuplicataDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="usuarioDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cidadeDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="telefoneDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="clienteDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="fabricanteDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="usuario">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="pessoa" type="pessoa" minOccurs="0"/>
+          <xs:element name="senha" type="xs:string" minOccurs="0"/>
+          <xs:element name="situacao" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="tipo" type="xs:unsignedShort"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="sexoDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="fecharOcorrenciaDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="despesasBean">
+    <xs:sequence>
+      <xs:element name="despesas" type="despesas" minOccurs="0"/>
+      <xs:element name="despesass" type="despesas" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="despesas">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="descricao" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pagamentoDespesaDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="itemDespesaDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pagamentoDespesa">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="dataPagamento" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="funcionario" type="funcionario" minOccurs="0"/>
+          <xs:element name="registroDespesa" type="registroDespesas" minOccurs="0"/>
+          <xs:element name="valorPago" type="xs:decimal" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="caixaDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="registroDespesaDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="caixa">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="dataAbertura" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="dataFechamento" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="funcionario" type="funcionario" minOccurs="0"/>
+          <xs:element name="termnalAtendimento" type="terminalAtendimento" minOccurs="0"/>
+          <xs:element name="valorFinal" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="valorInicial" type="xs:decimal" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="terminalAtendimento">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="numeroTerminal" type="xs:byte" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="caixaDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="itemCompraDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="itemDespesaDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="clienteDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abrirOcorrencia">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="caixa" type="caixa" minOccurs="0"/>
+          <xs:element name="dataAbertura" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="diferencaRegistrada" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="observacao" type="xs:string" minOccurs="0"/>
+          <xs:element name="status" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="testemunha" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="duplicataDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="funcionarioDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pagamentoDespesaDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="cidadeBean">
+    <xs:sequence>
+      <xs:element name="cidade" type="cidade" minOccurs="0"/>
+      <xs:element name="cidades" type="cidade" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="estados" type="estado" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="produtoDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="produtoBean">
+    <xs:sequence>
+      <xs:element name="fabricantes" type="fabricante" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="produto" type="produto" minOccurs="0"/>
+      <xs:element name="produtos" type="produto" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="unidadesMedida" type="unidadeMedida" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="itemCompra">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="compra" type="compra" minOccurs="0"/>
+          <xs:element name="porcentagemDoDesconto" type="xs:short" minOccurs="0"/>
+          <xs:element name="produto" type="produto" minOccurs="0"/>
+          <xs:element name="quantidade" type="xs:short" minOccurs="0"/>
+          <xs:element name="valorComDesconto" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="valorDoDesconto" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="valorParcial" type="xs:decimal" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="compraDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="funcionarioDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="itemVendaDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="duplicataDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="vendaDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="terminalAtendimentoDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="vendaDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="hibernateUtilTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="pessoaDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="fornecedorDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="inventarioDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="enderecoDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="pessoaBean">
+    <xs:sequence>
+      <xs:element name="cidades" type="cidade" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="endereco" type="endereco" minOccurs="0"/>
+      <xs:element name="estado" type="estado" minOccurs="0"/>
+      <xs:element name="estados" type="estado" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="pessoa" type="pessoa" minOccurs="0"/>
+      <xs:element name="pessoas" type="pessoa" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="sexos" type="sexo" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="unidadeMedidaBean">
+    <xs:sequence>
+      <xs:element name="unidade" type="unidadeMedida" minOccurs="0"/>
+      <xs:element name="unidades" type="unidadeMedida" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="telefoneDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="registroLoginDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="abrirOcorrenciaDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="tipoPagamentoDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="fecharOcorrenciaDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="unidadeMedidaDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="formaPagamentoDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="fornecedorDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="itemVendaDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tipoPagamentoBean">
+    <xs:sequence>
+      <xs:element name="tipoPagamento" type="tipoPagamento" minOccurs="0"/>
+      <xs:element name="tiposPagamento" type="tipoPagamento" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="itemDespesa">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="despesas" type="despesas" minOccurs="0"/>
+          <xs:element name="registroDespesa" type="registroDespesas" minOccurs="0"/>
+          <xs:element name="valorParcial" type="xs:decimal" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pagamentoDuplicataDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cidadeDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pessoaDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="formaPagamentoDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="itemCompraDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="registroLoginBean">
+    <xs:sequence>
+      <xs:element name="registroLogin" type="registroLogin" minOccurs="0"/>
+      <xs:element name="registrosLogin" type="registroLogin" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="registroLogin">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="dataLogin" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="usuario" type="usuario" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="fecharOcorrencia">
+    <xs:complexContent>
+      <xs:extension base="genericDomain">
+        <xs:sequence>
+          <xs:element name="abrirOcorrencia" type="abrirOcorrencia" minOccurs="0"/>
+          <xs:element name="dataFechamento" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="observacoes" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="estadoDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="hibernateUtil">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="unidadeMedidaDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="estadoDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="formaPagamentoBean">
+    <xs:sequence>
+      <xs:element name="formaPagamento" type="formaPagamento" minOccurs="0"/>
+      <xs:element name="formasPagamento" type="formaPagamento" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="despesasDAOTest">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="tipoPagamentoDAO">
+    <xs:complexContent>
+      <xs:extension base="genericDAO">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>
+

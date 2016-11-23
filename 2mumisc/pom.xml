@@ -24,6 +24,7 @@
 						<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				
 				<version>3.3</version>
 				
 				<configuration>
@@ -171,6 +172,16 @@
     <artifactId>iogi</artifactId>
     <version>0.9.2</version>
 </dependency>
-		
+<!-- HEROKU -->
+		<dependency>
+      <groupId>com.sparkjava</groupId>
+      <artifactId>spark-core</artifactId>
+      <version>2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sparkjava</groupId>
+      <artifactId>spark-template-freemarker</artifactId>
+      <version>2.0.0</version>
+    </dependency>
 	</dependencies>
 </project>

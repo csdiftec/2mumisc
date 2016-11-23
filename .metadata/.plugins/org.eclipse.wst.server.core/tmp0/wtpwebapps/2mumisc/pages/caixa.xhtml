@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Caixa</title>
+</h:head>
+
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+		<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+
+				<h:outputText style="color: red; font-size: 12px;"
+					value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+		<h:form id="frmMenu"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+
+			<center>
+				<h:panelGrid style="text-align:center;" columns="2">
+
+
+					<p:commandButton value="Sincronizar Caixa" icon="ui-icon-pencil"
+						actionListener="#{caixaBean.contaQtdTerminaisAbertos}"
+						update=":formAberturaCaixa :formListagem :frmMenu">
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+
+
+
+				</h:panelGrid>
+
+			</center>
+		</h:form>
+		<p:dialog header="Abertura de Caixa" widgetVar="dialogo"
+			closeOnEscape="true" draggable="false" resizable="false" modal="true"
+			closable="true" showEffect="fade" appendTo="@(body)">
+			<h:form id="formAberturaCaixa">
+				<div align="center">
+
+					<h:panelGrid style="text-align:center;" columns="1">
+
+
+						<p:outputLabel value="Caixa" />
+						<p:outputLabel value="#{caixaBean.terminal.numeroTerminal}" />
+
+						<p:outputLabel value="#{caixaBean.terminal.tituloStatus}" />
+
+						<p:outputLabel value="Data: "
+							rendered="#{caixaBean.botaoAberturaCaixa}" />
+						<h:outputText value="#{caixaBean.caixa.dataAbertura}"
+							rendered="#{caixaBean.botaoAberturaCaixa}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm" locale="pt_BR"
+								timeZone="America/Sao_Paulo" />
+						</h:outputText>
+
+						<p:outputLabel for="valorInicial" value="Valor de inicio: R$"
+							rendered="#{caixaBean.botaoAberturaCaixa}" />
+						<h:inputText id="valorInicial" style="text-align:center;"
+							size="17" onfocus="this.value=' ';"
+							rendered="#{caixaBean.botaoAberturaCaixa}" maxlength="10"
+							required="true"
+							requiredMessage="O campo 'Valor Inicial' não pode ser vazio"
+							value="#{caixaBean.caixa.valorInicial}">
+
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+
+						</h:inputText>
+					</h:panelGrid>
+					<p:separator />
+
+					<p:commandButton value="Caixa "
+						rendered="#{caixaBean.botaoAberturaCaixa}"
+						actionListener="#{caixaBean.verificaSituacaoCaixa}"
+						update=":mensagem :formAberturaCaixa  :frmMenuPrincipal:plnMenuPrincipal :frmMenu :formListagem" />
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Fechamento de Caixa" widgetVar="dialogoFechamento"
+			closeOnEscape="true" draggable="false" resizable="false" modal="true"
+			closable="true" showEffect="fade" appendTo="@(body)">
+
+			<h:form id="formListagem">
+
+				<p:panel header="Finalização">
+					<center>
+						<p:separator />
+						<h:panelGrid id="painelFinalizacao" columns="2">
+							<p:outputLabel value="Valor de Entrada:" />
+							<h:outputText value="#{caixaBean.fechamentoCaixa.valorInicial}">
+								<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+							</h:outputText>
+
+							<p:outputLabel value="Data da Abertura:" />
+							<h:outputText value="#{caixaBean.fechamentoCaixa.dataAbertura}">
+								<f:convertDateTime locale="pt_BR" />
+							</h:outputText>
+							<p:outputLabel value="Numero do Terminal :" />
+							<h:outputText
+								value="#{caixaBean.fechamentoCaixa.terminalAtendimento.numeroTerminal}" />
+
+							<p:outputLabel value="Total das Vendas: " />
+							<h:outputText
+								value="#{caixaBean.fechamentoCaixa.valorTotalVenda}" />
+
+							<p:outputLabel value="Total do Fechamento: " />
+							<h:outputText
+								value="#{caixaBean.fechamentoCaixa.valorTotalFechamento}" />
+
+						</h:panelGrid>
+						<p:separator />
+						<h:panelGrid id="painelBotoesFinalizacao" columns="3">
+							<p:commandButton value="Nova Venda"
+								action="/pages/venda.xhtml?faces-redirect=true"
+								icon="ui-icon-cart" update=":formAberturaCaixa :formListagem ">
+								<f:actionListener
+									type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+							</p:commandButton>
+
+							<p:commandButton value="Finalizar Caixa" icon="fa fa-fw fa-save"
+								actionListener="#{caixaBean.salvarFechamento}"
+								update=" :frmMenu" />
+
+						</h:panelGrid>
+						<p:separator />
+					</center>
+				</p:panel>
+
+
+
+
+				<p:panel>
+					<p:dataTable id="tabelaFechamento"
+						emptyMessage="Nenhum registro encontrado." paginator="true"
+						rows="5" value="#{caixaBean.vendas}" var="venda">
+
+						<p:column headerText="Código da Venda" style="width: 120px">
+
+							<h:outputText value="#{venda.codigo}" />
+						</p:column>
+
+						<p:column headerText="CPF -  Cliente" style="width: 300px">
+
+							<h:outputText
+								value="#{venda.cliente.pessoa.cpf} - #{venda.cliente.pessoa.nome}" />
+						</p:column>
+
+						<p:column headerText="Numero da Nota" style="width: 180px">
+							<h:outputText value="#{venda.numeroDocumentoFiscal}" />
+						</p:column>
+
+						<p:column headerText="Valor Total" style="width: 120px">
+							<h:outputText value="R$ #{venda.valorTotal}">
+								<f:convertNumber pattern="#,##0.00" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Data da Venda" style="width: 120px">
+							<h:outputText value="#{venda.dataVenda}">
+								<f:convertDateTime locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+
+			</h:form>
+
+		</p:dialog>
+
+
+		<p:dialog header="Abrir Ocorrência, "
+			widgetVar="dialogoAberturaOcorrencia" closeOnEscape="true"
+			draggable="false" resizable="true" modal="true" closable="true"
+			showEffect="fade" appendTo="@(body)">
+
+			<h:form id="formAberturaOcorrencia">
+				<center>
+					<h:panelGrid columns="2">
+
+						<p:outputLabel value="Data da abertura:" />
+						<p:inputText readonly="true" size="22" style="text-align:center"
+							value="#{caixaBean.ocorrencia.dataAbertura}">
+							<f:convertDateTime locale="pt_BR" />
+						</p:inputText>
+
+
+						<p:outputLabel value="Valor da Diferença:R$" />
+						<p:inputText size="22" maxlength="9"
+							value="#{caixaBean.ocorrencia.diferencaRegistrada}">
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</p:inputText>
+
+						<p:outputLabel for="funcionario" value="Testemunha:" />
+						<p:selectOneMenu id="funcionario"
+							value="#{caixaBean.ocorrencia.funcionario_testemunha}"
+							converter="omnifaces.SelectItemsConverter" filter="true"
+							filterMatchMode="contains" required="true"
+							requiredMessage="O campo 'Testemunha' é obrigatório">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Selecione um funcionário" />
+							<f:selectItems value="#{caixaBean.funcionarios}"
+								var="funcionario" itemValue="#{funcionario}"
+								itemLabel="#{funcionario.codigo}  - #{funcionario.pessoa.nome}" />
+						</p:selectOneMenu>
+
+
+						<p:outputLabel value="Observação:" />
+						<p:inputText maxlength="100" size="50"
+							value="#{caixaBean.ocorrencia.observacaoAbertura}" />
+					</h:panelGrid>
+					<p:separator />
+					<h:panelGrid columns="2">
+
+						<p:commandButton value="Salvar Ocorrência" icon="fa fa-fw fa-save"
+							actionListener="#{caixaBean.salvarOcorrencia}"
+							update=":mensagem :formListagem :formAberturaOcorrencia">
+						</p:commandButton>
+
+					</h:panelGrid>
+				</center>
+			</h:form>
+
+
+		</p:dialog>
+		<p:dialog header="Abrir Ocorrencia" widgetVar="dialogoAbertura"
+			closeOnEscape="true" draggable="false" resizable="true" modal="true"
+			closable="false" showEffect="fade" appendTo="@(body)">
+			<h:form id="formularioAberturaOcorrencia">
+				<p:panel>
+
+					<p:commandButton value="Abrir Ocorrência" icon="ui-icon-pencil"
+						oncomplete="PF('dialogoAberturaOcorrencia').show();"
+						actionListener="#{caixaBean.novaOcorrencia}"
+						update=":mensagem">
+					</p:commandButton>
+
+					<p:commandButton icon="ui-icon-close" value="Fechar"
+						style="width: 200px;text-align:center"
+						actionListener="#{caixaBean.novo}"
+						oncomplete="PF('dialogoAbertura').hide();"
+						update=":mensagem :formListagem :formularioAberturaOcorrencia :formAberturaCaixa">
+					</p:commandButton>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog header="Imprimir Ocorrencia"
+			widgetVar="dialogoImprimirOcorrencia" closeOnEscape="true"
+			draggable="false" resizable="true" modal="true" closable="false"
+			showEffect="fade" appendTo="@(body)">
+			<h:form id="formularioImpressaoOcorrencia">
+				<p:panel>
+					<p:commandButton value="Imprimir" icon="ui-icon-print"
+						style="width: 200px;text-align:center"
+						actionListener="#{caixaBean.ImprimirUltimaOcorrencia}"
+						update=":mensagem :formListagem :formularioAberturaOcorrencia :formAberturaCaixa">
+					</p:commandButton>
+
+					<p:commandButton icon="ui-icon-close" value="Fechar"
+						style="width: 200px;text-align:center"
+						actionListener="#{caixaBean.novo}"
+						oncomplete="PF('dialogoImprimirOcorrencia).hide();"
+						update=":mensagem :formListagem :formularioAberturaOcorrencia :formAberturaCaixa">
+					</p:commandButton>
+
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+</html>

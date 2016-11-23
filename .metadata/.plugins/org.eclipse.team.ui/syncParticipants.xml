@@ -1,2 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<syncparticipants/>
+<syncparticipants>
+<participant displayName="Git (2mumisc, 2mumisc, 2mumisc)" id="org.eclipse.egit.ui.modelCompareParticipant" secondary_id="1479936010952">
+<data forceFetch="false" root="false">
+<org.eclipse.team.ui.MODEL_PARTICIPANT_SETTINGS org.eclipse.team.ui.MODEL_PARTICIPANT_DESCRIPTION="2mumisc, 2mumisc, 2mumisc" startupAction="none">
+<org.eclipse.team.ui.MODEL_PARTICIPANT_REFRESH_SCHEDULE org.eclipse.team.ui.CTX_REFRESHSCHEDULE_ENABLED="false" org.eclipse.team.ui.CTX_REFRESHSCHEDULE_INTERVAL="3600" org.eclipse.team.ui.CTX_REFRESHSCHEDULE_RUNONCE="false"/>
+<org.eclipse.team.ui.MODEL_PARTICIPANT_MAPPINGS modelProviderId="org.eclipse.jdt.ui.modelProvider">
+<mappings>
+<resources resourcePath="/2mumisc" resourceType="4"/>
+</mappings>
+</org.eclipse.team.ui.MODEL_PARTICIPANT_MAPPINGS>
+<org.eclipse.team.ui.MODEL_PARTICIPANT_MAPPINGS modelProviderId="org.eclipse.wst.jsdt.ui.modelProvider">
+<mappings>
+<resources resourcePath="/2mumisc" resourceType="4"/>
+</mappings>
+</org.eclipse.team.ui.MODEL_PARTICIPANT_MAPPINGS>
+<org.eclipse.team.ui.MODEL_PARTICIPANT_MAPPINGS modelProviderId="org.eclipse.core.resources.modelProvider">
+<mappings>
+<resources resourcePath="/2mumisc" resourceType="4"/>
+</mappings>
+</org.eclipse.team.ui.MODEL_PARTICIPANT_MAPPINGS>
+</org.eclipse.team.ui.MODEL_PARTICIPANT_SETTINGS>
+<gitSynchronizeData container="C:/Users/Ewerthon/git/2mumisc/RemoteSystemsTempFiles" dstRev="78bab0ffd22eac824980d6b1b9cf3b88aa57798f" inludeLocal="true" srcRev="HEAD">
+<includedPaths>
+<path path="C:/Users/Ewerthon/git/2mumisc/2mumisc"/>
+</includedPaths>
+</gitSynchronizeData>
+</data>
+</participant>
+</syncparticipants>

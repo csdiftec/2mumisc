@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2016-11-08T21:46:38 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorioProdutoNaQuantidadeCritica" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="feaccb2b-9c3d-499b-a9ae-d7edc7717a3f">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CsimumAdaptador"/>
+	<queryString>
+		<![CDATA[SELECT victoria.unidade_medida.descricao,
+	victoria.unidade_medida.codigo,
+	victoria.produto.codigo_barras,
+	victoria.produto.descricao,
+	victoria.produto.quantidade_critica,
+	victoria.produto.quantidade_estoque,
+	victoria.produto.valor
+FROM victoria.produto
+	INNER JOIN victoria.unidade_medida ON 
+	 victoria.produto.`unidadeMedida_codigo` = victoria.unidade_medida.codigo
+	 WHERE victoria.produto.quantidade_critica >= victoria.produto.quantidade_estoque]]>
+	</queryString>
+	<field name="codigo_barras" class="java.lang.Long"/>
+	<field name="descricao" class="java.lang.String"/>
+	<field name="codigo" class="java.lang.Long"/>
+	<field name="COLUMN_4" class="java.lang.String"/>
+	<field name="quantidade_critica" class="java.lang.Integer"/>
+	<field name="quantidade_estoque" class="java.lang.Double"/>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="44" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Opaque" x="66" y="10" width="489" height="19" backcolor="#37D469" uuid="5ab76908-8596-424d-9490-c7e3125ad086"/>
+			</rectangle>
+			<image hAlign="Center">
+				<reportElement x="1" y="0" width="59" height="40" uuid="f27315eb-1d56-4c9c-9375-7f49e70bff5f"/>
+				<imageExpression><![CDATA["invoice_logo.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="66" y="11" width="490" height="18" forecolor="#FFFFFF" backcolor="#37D469" uuid="16bec8e4-cd45-4409-97a2-217f4adda3cb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sistema CSimum - Lista de Produtos na Quantidade Critica]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="25" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="100" height="20" forecolor="#FFFFFF" backcolor="#37D469" uuid="10430b95-2c16-4837-929f-d67a8a65a391"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cód. de Barras]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="100" y="0" width="220" height="20" forecolor="#FFFFFF" backcolor="#37D469" uuid="483da0a6-68e5-49cf-b0f7-649f2899292f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descricao]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="370" y="0" width="60" height="20" forecolor="#FFFFFF" backcolor="#37D469" uuid="9509402d-5a62-4177-abd7-e7a5f2fed4d7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estoque]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="430" y="0" width="70" height="20" forecolor="#FFFFFF" backcolor="#37D469" uuid="adc573ff-474b-43e2-b02a-c795dbf3daf0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qtd. Critica]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="500" y="0" width="55" height="20" forecolor="#FFFFFF" backcolor="#37D469" uuid="0fd47f3e-a30c-450b-b591-8411b788e6a2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Preço Un.]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="20" width="555" height="1" forecolor="#666666" uuid="6f9ab7fd-6820-4806-a762-0fd461ec0aee"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="320" y="0" width="50" height="20" forecolor="#FFFFFF" backcolor="#37D469" uuid="d755afd9-4077-4ec4-a435-6d884212c87b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Medida]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="100" height="20" uuid="290fcd8a-182e-4877-910b-8c615f985bdf"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_barras}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="320" y="0" width="50" height="20" uuid="eb1356a7-b461-4cf4-bf5a-4be991e77f01"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###;#,##0.###-">
+				<reportElement x="370" y="0" width="60" height="20" uuid="3fa6233e-fe5b-4851-92c5-65f5422100fd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{quantidade_estoque}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="430" y="0" width="70" height="20" uuid="154ccdca-3cbe-46d5-af36-e400b757c6ba"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{quantidade_critica}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤#,##0.00;¤-#,##0.00">
+				<reportElement x="500" y="0" width="54" height="20" uuid="91376a75-b40f-4b8c-84db-d5197edd559d">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="0" width="219" height="20" uuid="4970ae67-744f-4ccc-8dcb-56a10d97e2e4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COLUMN_4}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<lastPageFooter>
+		<band height="27">
+			<textField>
+				<reportElement mode="Opaque" x="1" y="0" width="514" height="20" backcolor="#E6E6E6" uuid="57a1088a-0142-4bca-baf6-55d428f2f295"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="2" y="0" width="100" height="20" uuid="db001e4b-bf33-43f3-a36c-3dc501107eb2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="0" width="40" height="20" backcolor="#E6E6E6" uuid="7c11f633-f88b-4021-9868-0f3393176b30"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+</jasperReport>

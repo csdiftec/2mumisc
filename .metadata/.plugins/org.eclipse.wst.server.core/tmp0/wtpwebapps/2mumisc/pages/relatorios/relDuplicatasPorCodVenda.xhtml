@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Relação de vendas</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+		<h:body>
+			<h:form id="formulario">
+
+
+				<p:panel header="Relatórios de Duplicatas por periodo"  id="panelPesquisa"  style="border-color: darkgreen ;border-width: 2px">
+								<center>
+					<h:panelGrid columns="6">
+						<p:outputLabel value="Data inicial:" />
+						<p:calendar value="#{vendaBean.venda.dataInicial}" pattern="dd/MM/yyyy"
+				locale="pt_BR"/>
+						<p:outputLabel value="Data final:" />
+						<p:calendar value="#{vendaBean.venda.dataFinal}" pattern="dd/MM/yyyy"
+				locale="pt_BR"/>
+						<p:commandButton value="Pesquisar" icon="ui-icon-search"
+							actionListener="#{vendaBean.buscaVendaParceladaPorPeriodo}"
+							update=":formulario:tabelaRelVendas" />
+							
+					</h:panelGrid>
+				</center>
+					</p:panel>
+					<p:panel>
+					<p:dataTable id="tabelaRelVendas"
+						emptyMessage="Nenhum registro encontrado." paginator="true"
+						rows="10" value="#{vendaBean.listaVendasParceladas}" var="venda">
+
+						<p:column headerText="Código da Venda" style="text-align: center;width: 110px;"
+						filterBy="#{venda.codigo}"
+							sortBy="#{venda.codigo}">
+							<h:outputText value="#{venda.codigo}" />
+						</p:column>
+
+						<p:column headerText="Cliente"   style="text-align:left;width: 300px;"
+							filterBy="#{venda.cliente.pessoa.nome}">
+							<h:outputText
+								value="#{venda.cliente.pessoa.nome}" />
+						</p:column>
+
+						<p:column headerText="Numero da Nota"  style="text-align:centert;width: 150px;"
+							filterBy="#{venda.numeroDocumentoFiscal}"
+							sortBy="#{venda.numeroDocumentoFiscal}">
+							<h:outputText value="#{venda.numeroDocumentoFiscal}" />
+						</p:column>
+
+						<p:column headerText="Valor Total" style="text-align: center;width: 100px;"
+						sortBy="#{venda.valorTotal}">
+							<h:outputText value="R$ #{venda.valorTotal}">
+								<f:convertNumber pattern="#,##0.00" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Data da Venda" style="text-align: center;width: 120px;"
+						sortBy="#{venda.dataVenda}">
+							<h:outputText value="#{venda.dataVenda}">
+								<f:convertDateTime locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+
+							<p:column headerText="Opções" style="width: 50px;text-algn: center" exportable="false">
+							<p:commandButton icon="ui-icon-print" style="width: 40px;text-algn: center" 
+								actionListener="#{vendaBean.imprimirDuplicataPorVenda}" 
+								update=":formulario">
+								<f:attribute name="vendaSelecionada" value="#{venda}" />
+							</p:commandButton>
+						</p:column>
+						
+  <f:facet name="footer">
+            <h:commandLink>
+                <p:graphicImage library="images"   name="icon_pdf.png"  width="24"/>
+                <p:dataExporter  type="pdf" target="tabelaRelVendas" fileName="VendasPorPeriodoEmPDF" />
+            </h:commandLink>
+ 
+            <h:commandLink>
+                <p:graphicImage library="images"   name="icon_excel.png" width="24"/>
+                <p:dataExporter type="xls" target="tabelaRelVendas" fileName="VendasPorPeriodoEmXLS"/>
+            </h:commandLink>
+ 
+        </f:facet>
+					</p:dataTable>
+
+
+				</p:panel>
+
+			</h:form>
+
+		</h:body>
+	</ui:define>
+</ui:composition>
+</html>

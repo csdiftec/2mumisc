@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Relação de pagamento de duplicatas </title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+		<h:body>
+			<h:form id="formulario">
+
+
+				<p:panel header="Relatórios de pagamentos  ">
+
+
+						<center>
+							<h:panelGrid columns="6">
+								<p:outputLabel value="Data inicial:" />
+								<p:calendar value="#{duplicataBean.duplicata.dataInicial}" />
+								<p:outputLabel value="Data final:" />
+								
+								<p:calendar value="#{duplicataBean.duplicata.dataFinal}" />
+						
+								<p:commandButton value="Pesquisar" icon="ui-icon-search"
+									actionListener="#{duplicataBean.duplicata.buscaPorPeriodoPagamentoDuplicata}"
+									update=":formulario:tabelaRelPagamentosDuplicatas" />
+
+								<p:commandButton icon="ui-icon-plus"
+									value="Imprimir  por periodo" style="width: 150px;"
+									actionListener="#{duplicata.adicionar}" />
+
+							</h:panelGrid>
+						</center>
+					</p:panel>
+					<p:panel>
+					<p:dataTable id="tabelaRelPagamentosDuplicatas"
+						emptyMessage="Nenhum registro encontrado." paginator="true"
+						rows="10" value="#{duplicataBean.listaPagamentosDespesas}" var="pgto">
+
+						<p:column headerText="Código do pagamento" filterBy="#{pgto.codigo}"
+							sortBy="#{pgto.codigo}">
+							<h:outputText value="#{pgto.codigo}" />
+						</p:column>
+
+						<p:column headerText="Codigo da despesa"
+							filterBy="#{pgto.registroDespesa.codigoDespesa}">
+							<h:outputText
+								value="#{pgto.registroDespesa.codigoDespesa}" />
+						</p:column>
+
+						<p:column headerText="Descricão"
+							filterBy="#{pgto.registroDespesa.despesas.descricao}"
+							sortBy="#{pgto.registroDespesa.despesas.descricao}">
+							<h:outputText value="#{pgto.registroDespesa.despesas.descricao}" />
+						</p:column>
+						
+												<p:column headerText="Valor do desconto" sortBy="#{pgto.valorDesconto}">
+							<h:outputText value="R$ #{pgto.valorDesconto}">
+								<f:convertNumber pattern="#,##0.00" />
+							</h:outputText>
+						</p:column>
+																		<p:column headerText="Valor do juros" sortBy="#{pgto.valorJuros}">
+							<h:outputText value="R$ #{pgto.valorJuros}">
+								<f:convertNumber pattern="#,##0.00" />
+							</h:outputText>
+						</p:column>
+																					<p:column headerText="Valor pago" sortBy="#{pgto.valorPago}">
+							<h:outputText value="R$ #{pgto.valorPago}">
+								<f:convertNumber pattern="#,##0.00" />
+							</h:outputText>
+						</p:column>
+						
+
+						<p:column headerText="Data do pagamento" sortBy="#{pgto.dataPagamento}">
+							<h:outputText value="#{pgto.dataPagamento}">
+								<f:convertDateTime locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Opções" style="width: 60px"
+							exportable="false">
+							<p:commandButton icon="ui-icon-plus" style="width: 40px;"
+								actionListener="#{vendaBean.adicionar}" update=":formulario">
+								<f:attribute name="produtoSelecionado" value="#{produto}" />
+							</p:commandButton>
+						</p:column>
+						<f:facet name="footer">
+							<h:commandLink>
+								<p:graphicImage library="images" name="icon_pdf.png" width="24" />
+								<p:dataExporter type="pdf" target="tabelaRelPagamentosDuplicatas"
+									fileName="PagamentosPorDuplicatasEmPDF" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage library="images" name="icon_excel.png"
+									width="24" />
+								<p:dataExporter type="xls" target="tabelaRelPagamentosDuplicatas"
+									fileName="PagamentosPorDuplicatasEmXLS" />
+							</h:commandLink>
+
+						</f:facet>
+					</p:dataTable>
+
+
+				</p:panel>
+
+			</h:form>
+
+		</h:body>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.ico"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Cadastro de Forma de Pagamento</title>
+</h:head>
+
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+				
+				<h:outputText style="color: red; font-size: 12px;" value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+			<h:form id="formListagem"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+
+				<p:panel header="Listagem das formas de pagamento">
+					<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+						paginator="true" rows="5"
+						value="#{formaPagamentoBean.formasPagamento}" var="formaPagamento">
+						<f:facet name="header">
+							<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+								actionListener="#{formaPagamentoBean.novo}" icon="fa fa-fw fa-plus-square"
+								update="formCadastro:painel" >
+										<f:actionListener
+										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
+						</f:facet>
+
+						<p:column headerText="Descrição" filterStyle="width: 50%"
+							sortBy="#{formaPagamento.descricao}"
+							filterBy="#{formaPagamento.descricao}">
+							<h:outputText value="#{formaPagamento.descricao}" />
+						</p:column>
+
+						<p:column headerText="Opções" style="width:15%">
+							<center>
+								<p:commandButton icon="ui-icon-trash"
+									actionListener="#{formaPagamentoBean.excluir}"
+									update=":formListagem:tabela">
+									<p:confirm header="Confirmação"
+										message="Deseja excluir a forma de pagamento '#{formaPagamento.descricao}'?"
+										icon="ui-icon-alert" />
+									<f:attribute name="formaSelecionada" value="#{formaPagamento}" />
+								</p:commandButton>
+
+								<p:commandButton icon="ui-icon-pencil"
+									actionListener="#{formaPagamentoBean.editar}"
+									update=":formCadastro:painel"
+									oncomplete="PF('dialogo').show();">
+									<f:attribute name="formaSelecionada" value="#{formaPagamento}" />
+									<f:actionListener
+										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
+							</center>
+						</p:column>
+
+					</p:dataTable>
+
+					<p:confirmDialog global="true" closeOnEscape="true">
+						<center>
+							<p:commandButton value="Sim" type="button"
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+							<p:commandButton value="Não" type="button"
+								styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+						</center>
+					</p:confirmDialog>
+
+				</p:panel>
+			</h:form>
+
+			<p:dialog header="Cadastro de formas de pagamento"
+				widgetVar="dialogo" closeOnEscape="true" draggable="false"
+				resizable="false" modal="true" closable="true" showEffect="fade"
+				appendTo="@(body)" >
+				<h:form id="formCadastro">
+					<h:panelGrid id="painel" columns="2">
+
+						<p:outputLabel for="codigo" value="Código:" />
+						<p:inputText id="codigo"
+							value="#{formaPagamentoBean.formaPagamento.codigo}"
+							placeholder="preenchimento automático!" readonly="true" size="23" />
+
+						<p:outputLabel for="descricao" value="Descrição:" />
+						<p:inputText id="descricao" rendered="true" requiredMessage="O campo  'Descrição' é obrigatório"
+							value="#{formaPagamentoBean.formaPagamento.descricao}"
+							maxlength="15" size="23" />
+
+					</h:panelGrid>
+
+					<center>
+						<h:panelGrid columns="2">
+							<p:commandButton value="Salvar" icon="fa fa-fw fa-save"
+								actionListener="#{formaPagamentoBean.salvar}"
+								update=":formListagem:tabela" />
+					
+						</h:panelGrid>
+					</center>
+				</h:form>
+			</p:dialog>
+
+	</ui:define>
+</ui:composition>
+</html>

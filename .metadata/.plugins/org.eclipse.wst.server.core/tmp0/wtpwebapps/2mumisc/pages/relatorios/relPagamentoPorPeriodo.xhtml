@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Relação de vendas por tipo de pagamento</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+		<h:form id="formulario">
+
+
+			<p:panel header="Relatórios de pagamentos  de despesas"
+				id="panelPesquisa"
+				style="border-color: darkgreen ;border-width: 2px">
+
+
+				<center>
+					<h:panelGrid columns="6">
+						<p:outputLabel value="Data inicial:" />
+						<p:calendar
+							value="#{registroDespesasBean.registroDespesas.dataInicial}" />
+						<p:outputLabel value="Data final:" />
+
+						<p:calendar
+							value="#{registroDespesasBean.registroDespesas.dataFinal}" />
+						<p:commandButton value="Pesquisar" icon="ui-icon-search"
+							actionListener="#{registroDespesasBean.buscaPorPeriodoPagamento}"
+							update=":formulario:tabelaRelPagamentosDespesas" />
+
+						<p:commandButton icon="ui-icon-plus" value="Imprimir  por periodo"
+							style="width: 150px;"
+							actionListener="#{registroDespesasBean.imprimirPagamentoDespesaPeriodo}" />
+
+					</h:panelGrid>
+				</center>
+			</p:panel>
+			<p:panel>
+				<p:dataTable id="tabelaRelPagamentosDespesas"
+					emptyMessage="Nenhum registro encontrado." paginator="true"
+					rows="10" value="#{registroDespesasBean.listaPagamentosDespesas}"
+					var="pgto">
+
+					<!-- 						<p:column headerText="Código" style="text-align: center;width: 150px;" -->
+					<!-- 						filterBy="#{pgto.codigo}" -->
+					<!-- 							sortBy="#{pgto.codigo}"> -->
+					<!-- 							<h:outputText value="#{pgto.codigo}" /> -->
+					<!-- 						</p:column> -->
+
+					<p:column headerText="Codigo da despesa"
+						style="text-align: center;width: 195px;"
+						filterBy="#{pgto.registroDespesa.codigoDespesa}">
+						<h:outputText value="#{pgto.registroDespesa.codigoDespesa}" />
+					</p:column>
+
+					<p:column headerText="Descricão"
+						style="text-align:left;width: 230px;"
+						filterBy="#{pgto.registroDespesa.despesas.descricao}"
+						sortBy="#{pgto.registroDespesa.despesas.descricao}">
+						<h:outputText value="#{pgto.registroDespesa.despesas.descricao}" />
+					</p:column>
+
+					<p:column headerText="Valor do desconto"
+						style="text-align: center;width: 90px;font: 09px"
+						sortBy="#{pgto.valorDesconto}">
+						<h:outputText value="R$ #{pgto.valorDesconto}">
+							<f:convertNumber pattern="#,##0.00" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Valor do juros"
+						style="text-align:center; width:90px; font: 09px"
+						sortBy="#{pgto.valorJuros}">
+						<h:outputText value="R$ #{pgto.valorJuros}">
+							<f:convertNumber pattern="#,##0.00" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Valor pago"
+						style="text-align: center;width: 90px;font: 09px"
+						sortBy="#{pgto.valorPago}">
+						<h:outputText value="R$ #{pgto.valorPago}">
+							<f:convertNumber pattern="#,##0.00" />
+						</h:outputText>
+					</p:column>
+
+
+					<p:column headerText="Data do pagamento"
+						style="text-align: center;width: 90px;"
+						sortBy="#{pgto.dataPagamento}">
+						<h:outputText value="#{pgto.dataPagamento}">
+							<f:convertDateTime locale="pt_BR" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Opções" style="width: 55px"
+						exportable="false">
+						<p:commandButton icon="ui-icon-print" style="text-align: center;width: 35px;"
+							actionListener="#{registroDespesasBean.imprimirContaPagarPorCodigoPagamento}"
+							update=":formulario">
+							<f:attribute name="registroDespesaSelecionado" value="#{pgto}" />
+						</p:commandButton>
+					</p:column>
+					<f:facet name="footer">
+						<h:commandLink>
+							<p:graphicImage library="images" name="icon_pdf.png" width="24" />
+							<p:dataExporter type="pdf" target="tabelaRelPagamentosDespesas"
+								fileName="PagamentosPorDespesasEmPDF" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage library="images" name="icon_excel.png" width="24" />
+							<p:dataExporter type="xls" target="tabelaRelPagamentosDespesas"
+								fileName="PagamentosPorDespesasEmXLS" />
+						</h:commandLink>
+
+					</f:facet>
+				</p:dataTable>
+
+
+			</p:panel>
+
+		</h:form>
+
+
+	</ui:define>
+</ui:composition>
+</html>

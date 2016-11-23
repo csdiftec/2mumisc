@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Cadastro de Clientes</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+		<f:metadata>
+			<f:viewParam name="clienteAcao" value="#{clienteBean.acao}" />
+			<f:viewParam name="clienteCod" value="#{clienteBean.codigo}" />
+			<f:event listener="#{clienteBean.carregarCadastro}"
+				type="preRenderView" />
+		</f:metadata>
+
+		<h:body>
+
+			<h:form id="formCadastro">
+				<h:panelGrid icolumns="2">
+
+					<p:outputLabel value="Código:" />
+					<p:inputText id="codigo" value="#{clienteBean.cliente.codigo}"
+						placeholder="preenchimento automático!" readonly="true" size="23" />
+
+					<p:outputLabel for="pessoa" value="Nome:" />
+					<p:selectOneMenu id="pessoa" filter="true"
+						value="#{clienteBean.cliente.pessoa}" required="true"
+						requiredMessage="O campo 'Nome' é obrigatório!"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma pessoa" />
+						<f:selectItems value="#{clienteBean.pessoas}" var="pessoa"
+							itemValue="#{pessoa}" itemLabel="#{pessoa.nome} - #{pessoa.cpf}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel  value="E-mail:" />
+					<p:inputText id="email" maxlength="100"
+						value="#{clienteBean.cliente.pessoa.email}" size="50" />
+
+					<p:outputLabel for="sexo" value="Sexo:" />
+					<p:selectOneMenu id="sexo"
+					converter="omnifaces.SelectItemsConverter"
+						value="#{clienteBean.cliente.pessoa.sexo}"
+						required="true"
+						requiredMessage="Selecione o sexo !"	>
+						<f:selectItem noSelectionOption="true"
+						itemLabel="#{clienteBean.cliente.pessoa.sexo}"
+						itemDisabled="false" />
+						<f:selectItems value="#{clienteBean.sexos}" var="sexo"
+							itemValue="#{sexo}" itemLabel="#{sexo.sigla}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="cpf" value="CPF:" />
+					<p:inputMask id="cpf" required="true"
+						requiredMessage="O campo 'CPF' é obrigatório!"
+						value="#{clienteBean.cliente.pessoa.cpf}" size="16"
+						mask="999.999.999-99">
+						<f:validateBean />
+					</p:inputMask>
+
+					<p:outputLabel value="RG:" />
+					<p:inputText id="rg" value="#{clienteBean.cliente.pessoa.numeroRG}"
+						maxlength="15" size="16">
+						<f:validateBean />
+					</p:inputText>
+
+					<p:outputLabel value="Orgão emissor:" />
+					<p:selectOneMenu value="#{clienteBean.cliente.pessoa.orgaoEmissor}"
+						noSelectionOption="true">
+						<f:selectItem itemValue="#{clienteBean.cliente.pessoa.orgaoEmissor}" 
+						 itemLabel="Selecione o Orgão" />
+						<f:selectItem itemValue="SSP"
+							itemLabel="SSP - Secretaria de Segurança Pública" />
+						<f:selectItem itemValue="PM" itemLabel="PM - Polícia Militar" />
+						<f:selectItem itemValue="PC" itemLabel="PC -Policia Civil" />
+						<f:selectItem itemValue="DIC"
+							itemLabel="DIC - Diretoria de Identificação Civil" />
+						<f:selectItem itemValue="CTPS"
+							itemLabel="CTPS - Carteira de Trabaho e Previdência Social" />
+						<f:selectItem itemValue="FGTS"
+							itemLabel="FGTS - Fundo de Garantia do Tempo de Serviço" />
+						<f:selectItem itemValue="M"
+							itemLabel="FGTS - Fundo de Garantia do Tempo de Serviço" />
+						<f:selectItem itemValue="FGTS"
+							itemLabel="IPF - Instituto Pereira Faustino" />
+						<f:selectItem itemValue="IML"
+							itemLabel="IML - Instituto Médico-Legal" />
+						<f:selectItem itemValue="MTE"
+							itemLabel="MTE - Ministério do Trabalho e Emprego" />
+						<f:selectItem itemValue="MMA"
+							itemLabel="MMA - Ministério da Marinha" />
+						<f:selectItem itemValue="MAE"
+							itemLabel="MAE - Ministério da Aeronáutica" />
+						<f:selectItem itemValue="MEX"
+							itemLabel="MEX - Ministério do Exército" />
+						<f:selectItem itemValue="SES"
+							itemLabel="SES - Carteira de Estrangeiro" />
+						<f:selectItem itemValue="SJS"
+							itemLabel="SJS - Secretaria da Justiça e Segurança" />
+						<f:selectItem itemValue="SJTS"
+							itemLabel="SJTS - Secretaria da Justiça do Trabalho e Segurança" />
+						<f:selectItem itemValue="CNT"
+							itemLabel="CNT - Carteira Nacional de Habilitação" />
+						<f:selectItem itemValue="ZZZ" itemLabel="ZZZ - inclusive exterior" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Data emissão:" />
+					<p:calendar id="dataEmissao" pattern="dd/MM/yyyy" mask="99/99/9999"
+						size="10" maxlength="10" locale="pt" style="margin-right: 15px"
+						value="#{clienteBean.cliente.pessoa.dataEmissaoRG}">
+					</p:calendar>
+
+					<p:outputLabel for="dataNascimento" value="Data de nascimento:" />
+					<p:calendar id="dataNascimento" pattern="dd/MM/yyyy"
+						mask="99/99/9999" size="10" maxlength="10" locale="pt"
+						style="margin-right: 15px"
+						value="#{clienteBean.cliente.pessoa.dataNascimento}"
+						required="true" requiredMessage="Preencha a data de nascimento!">
+					</p:calendar>
+
+					<p:separator />
+					<p:separator />
+
+					<p:outputLabel for="logradouro" value="Logradouro:" />
+					<p:inputText id="logradouro"
+						value="#{clienteBean.cliente.pessoa.endereco.rua}" maxlength="60"
+						required="true"
+						requiredMessage="O campo 'Logradouro' é obrigatório!" size="55" />
+
+					<p:outputLabel for="numero" value="Número:" />
+					<p:inputText id="numero"
+						value="#{clienteBean.cliente.pessoa.endereco.numero}"
+						maxlength="4" required="true"
+						requiredMessage="O campo 'Número' é obrigatório!" 
+						size="15" />
+
+					<p:outputLabel value="Complemento:" />
+					<p:inputText
+						value="#{clienteBean.cliente.pessoa.endereco.complemento}"
+						maxlength="50" size="55" />
+
+					<p:outputLabel for="bairro" value="Bairro" />
+					<p:inputText id="bairro"
+						value="#{clienteBean.cliente.pessoa.endereco.bairro}"
+						maxlength="60" required="true"
+						requiredMessage="O campo 'Bairro' é obrigatório" size="55" />
+
+					<p:outputLabel value="CEP:" />
+					<p:inputMask mask="99999-999" size="15"
+						value="#{clienteBean.cliente.pessoa.endereco.cep}">
+						<f:validateBean />
+					</p:inputMask>
+
+					<p:outputLabel for="estado" value="Estado:" />
+					<p:selectOneMenu id="estado" filter="true"
+						converter="omnifaces.SelectItemsConverter"
+					requiredMessage="Selecione um estado para escolher uma cidade!"
+						value="#{clienteBean.estado}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um estado" />
+						<f:selectItems value="#{clienteBean.estados}" var="estado"
+							itemValue="#{estado}" itemLabel="#{estado.nome}" />
+						<p:ajax listener="#{clienteBean.popular}"
+							update=":formCadastro:cidade" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="cidade" value="Cidade:" />
+					<p:selectOneMenu id="cidade" filter="true" required="true"
+						requiredMessage="Selecione um estado para escolher uma cidade!"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{clienteBean.cliente.pessoa.endereco.cidade}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma cidade" />
+						<f:selectItems value="#{clienteBean.cidades}" var="cidade"
+							itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
+					</p:selectOneMenu>
+
+					<p:separator />
+					<p:separator />
+
+					<p:outputLabel for="dataAdmissao" value="Data do cadastro:" />
+					<p:calendar id="dataAdmissao"
+						value="#{clienteBean.cliente.dataCadastro}"
+						placeholder="Automático" disabled="true" size="10" 
+						locale="pt_BR" 		
+						requiredMessage="O campo 'data Admissão' é obrigatório"/>
+
+					<p:outputLabel for="situacao" value="Situação:" />
+					<p:selectBooleanCheckbox id="situacao"
+						value="#{clienteBean.cliente.status}" required="true"
+						requiredMessage="O campo 'Situação' é obrigatório" />
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+			
+						<p:commandButton value="Salvar"	actionListener="#{clienteBean.editar}" />
+						<p:commandButton  value="Voltar" outcome="/pages/cliente.xhtml" />
+
+				</h:panelGrid>
+			</h:form>
+
+		</h:body>
+	</ui:define>
+</ui:composition>
+</html>

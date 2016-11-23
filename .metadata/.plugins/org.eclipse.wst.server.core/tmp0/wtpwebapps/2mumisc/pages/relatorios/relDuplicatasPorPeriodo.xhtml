@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Relação de duplicatas  por Codigo Venda</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+		<h:body>
+			<h:form id="formulario">
+
+		<p:panel>
+					<p:dataTable id="tabelaRelDuplicatas"
+						emptyMessage="Nenhum registro encontrado." paginator="true"
+						rows="10" value="#{vendaBean.listaVendasParceladas}" var="venda">
+
+						<p:column headerText="Código da venda" filterBy="#{venda.codigo}"
+							sortBy="#{venda.codigo}">
+							<h:outputText value="#{venda.codigo}" />
+						</p:column>
+
+						<p:column headerText="Codigo  -  Cliente"
+							filterBy="#{venda.cliente.pessoa.nome}">
+							<h:outputText
+								value="#{venda.cliente.codigo} - #{venda.cliente.pessoa.nome}" />
+						</p:column>
+
+						<p:column headerText="Numero da Venda"
+							filterBy="#{venda.numeroDocumentoFiscal}"
+							sortBy="#{venda.numeroDocumentoFiscal}">
+							<h:outputText value="#{venda.numeroDocumentoFiscal}" />
+						</p:column>
+
+
+												<p:column headerText="Valor Total Venda" sortBy="#{venda.valorTotal}">
+							<h:outputText value="R$ #{venda.valorTotal}">
+								<f:convertNumber pattern="#,##0.00" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Data da Venda" sortBy="#{venda.dataVenda}">
+							<h:outputText value="#{venda.dataVenda}">
+								<f:convertDateTime locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Opções" style="width: 60px" exportable="false">
+							<p:commandButton icon="ui-icon-print" style="width: 40px;" 
+								actionListener="#{duplicataBean.imprimirRelatorioDuplicataPorCodVenda}" >
+								<f:attribute name="vendaSelecionada" value="#{venda}" />
+							</p:commandButton>
+						</p:column>
+  <f:facet name="footer">
+            <h:commandLink>
+                <p:graphicImage library="images"   name="icon_pdf.png"  width="24"/>
+                <p:dataExporter  type="pdf" target="tabelaRelDuplicatas" fileName="DuplicatasPorClientePeriodoEmPDF" />
+            </h:commandLink>
+ 
+            <h:commandLink>
+                <p:graphicImage library="images"   name="icon_excel.png" width="24"/>
+                <p:dataExporter type="xls" target="tabelaRelDuplicatas" fileName="DuplicatasPorClientePeriodoEmXLS"/>
+            </h:commandLink>
+ 
+        </f:facet>
+					</p:dataTable>
+
+
+				</p:panel>
+
+			</h:form>
+
+		</h:body>
+	</ui:define>
+</ui:composition>
+</html>

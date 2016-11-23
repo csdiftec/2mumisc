@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Compras</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+		<!-- Trecho que é carregado somente se não estiver logado! -->
+		<center>
+			<h:panelGrid id="paneLogin" columns="1"
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}">
+
+				<h:outputText style="color: red; font-size: 12px;"
+					value="Você não está logado ou foi desconectado por falta de movimentação no sistema!" />
+			</h:panelGrid>
+		</center>
+		<center>
+			<p:link
+				rendered="#{autenticacaoBean.funcionarioLogado.senha == null}"
+				outcome="/pages/autenticacao.xhtml" styleClass="link"
+				style="font-size: 12px; font-style: italic; color: blue"
+				value="Para entrar novamente, clique aqui">
+			</p:link>
+		</center>
+
+		<!-- ###FIM do Trecho que é carregado somente se não estiver logado! -->
+
+		<h:form id="formulario"
+			rendered="#{autenticacaoBean.funcionarioLogado.senha != null}">
+
+			<p:panel header="Produtos">
+				<p:dataTable id="tabelaProduto" style="text-align: center"
+					emptyMessage="Nenhum registro encontrado." paginator="true"
+					value="#{compraBean.produtos}" var="produto" rows="5"
+					paginatorPosition="bottom">
+
+					<p:column headerText="Código de Barras" style="width: 120px"
+						filterBy="#{produto.codigoBarras}"
+						sortBy="#{produto.codigoBarras}">
+						<h:outputText value="#{produto.codigoBarras}" />
+					</p:column>
+
+					<p:column headerText="Descrição" filterBy="#{produto.descricao}"
+						style="width: 350px;white-space:nomrap;text-align: left "
+						sortBy="#{produto.descricao}">
+						<h:outputText value="#{produto.descricao}" />
+					</p:column>
+
+					<p:column headerText="Quantidade"
+						style="width: 120px"
+						sortBy="#{produto.quantidadeEstoque}">
+						<h:outputText value="#{produto.quantidadeEstoque}">
+							<f:convertNumber locale="pt_BR" minFractionDigits="0" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Unidade de Medida">
+						<h:outputText value="#{produto.unidadeMedida.descricao}" />
+					</p:column>
+
+					<p:column headerText="Preço" sortBy="#{produto.valor}">
+						<h:outputText value="#{produto.valor}">
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-plus" style="width: 80px;"
+							actionListener="#{compraBean.adicionar}"
+							update=":formulario:tabelaCesta :formulario:painelFinalizacao :formulario:tabelaProduto">
+							<f:attribute name="produtoSelecionado" value="#{produto}" />
+						</p:commandButton>
+					</p:column>
+					<f:facet name="footer">
+
+						<p:outputLabel value="Desconto em Porcentagem "
+							Style="float:right" />
+						<p:inputText value="#{compraBean.porcentagemDesconto}"
+							style="width: 100px;white-space: normal" />
+					</f:facet>
+				</p:dataTable>
+
+
+			</p:panel>
+
+
+
+			<p:panel header="Cesta de Compras">
+				<p:dataTable id="tabelaCesta"
+					emptyMessage="Nenhum registro encontrado." paginator="true"
+					value="#{compraBean.itensCompra}" var="itemCompra" rows="5"
+					paginatorPosition="bottom" style="text-align: center;font: 14px ">
+
+					<p:column headerText="Código de Barras" style="width: 110px"
+						filterBy="#{itemCompra.produto.codigoBarras}"
+						sortBy="#{itemCompra.produto.codigoBarras}">
+						<h:outputText value="#{itemCompra.produto.codigoBarras}" />
+					</p:column>
+
+					<p:column headerText="Descrição"
+						style="width: 250px;white-space:nomrap;text-align: left ">
+						<h:outputText value="#{itemCompra.produto.descricao}" />
+					</p:column>
+
+					<p:column headerText="Preço Unitário" style="width: 50px">
+						<h:outputText value="#{itemCompra.produto.valor}">
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Qtde." style="width: 30px">
+						<h:outputLabel value="#{itemCompra.quantidade}" />
+					</p:column>
+
+					<p:column headerText="Preço Parcial" style="width: 50px">
+						<h:outputLabel value="#{itemCompra.valorParcial}">
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</h:outputLabel>
+					</p:column>
+					<p:column headerText="Porcentagem Desconto" style="width: 70px">
+						<h:outputLabel value="#{itemCompra.porcentagemDoDesconto}" />
+					</p:column>
+
+
+					<p:column headerText="Valor do Desconto" style="width: 60px">
+						<h:outputLabel value="#{itemCompra.valorDoDesconto}">
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</h:outputLabel>
+					</p:column>
+
+					<p:column headerText="Preço com Desconto" style="width: 60px">
+						<h:outputLabel value="#{itemCompra.valorComDesconto}">
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</h:outputLabel>
+
+					</p:column>
+
+
+					<p:column headerText="Opções" style="width: 30px">
+						<p:commandButton icon="ui-icon-minus" style="width:40px"
+							actionListener="#{compraBean.remover}"
+							update=":formulario:tabelaCesta :formulario:painelFinalizacao">
+							<f:attribute name="itemSelecionado" value="#{itemCompra}" />
+						</p:commandButton>
+
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+
+			<p:panel header="Finalização">
+					<center>
+				<h:panelGrid id="painelFinalizacao" columns="4">
+					<p:outputLabel value="Total: R$" />
+					<h:outputText value="#{compraBean.compra.valorTotal}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+			
+					<p:commandButton value="Finalizar"
+						actionListener="#{compraBean.finalizar}"
+						update=":mensagem :formularioFinalizar:painelFinalizar"
+						oncomplete="PF('dialogo').show();">
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+				
+				</h:panelGrid>
+					</center>
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Finalizar Compra" widgetVar="dialogo"
+	closeOnEscape="true" draggable="false" resizable="true" modal="true"
+			closable="true" showEffect="fade" appendTo="@(body)">
+			<h:form id="formularioFinalizar">
+				<h:panelGrid id="painelFinalizar" columns="2">
+
+					<p:outputLabel value="Numero da Nota: " for="numeroNota" />
+
+					<p:inputText value="#{compraBean.compra.numeroDocumentoFiscal}"
+						id="numeroNota" required="true" maxlength="48" size="50"
+						requiredMessage="O  campo 'Numero da Nota' é obrigatório" />
+
+
+
+					<p:outputLabel value="Horário: " />
+					<p:inputText value="#{compraBean.compra.dataCompra}" readonly="true">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" locale="pt_BR"
+							timeZone="America/Sao_Paulo" />
+					</p:inputText>
+
+					<p:outputLabel value="Total: R$" />
+					<p:inputText value="#{compraBean.compra.valorTotal}" readonly="true">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</p:inputText>
+
+
+					<p:outputLabel for="fornecedorF" value="Fornecedor:" />
+					<p:selectOneMenu id="fornecedorF"  style="width: 250px;"
+						value="#{compraBean.compra.fornecedor}"
+						converter="omnifaces.SelectItemsConverter" filter="true"
+						filterMatchMode="contains" required="true"
+						requiredMessage="O campo Fornecedor é obrigatório">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um fornecedor" />
+						<f:selectItems value="#{compraBean.fornecedores}" var="fornecedor"
+							itemValue="#{fornecedor}"
+							itemLabel="#{fornecedor.codigo} - #{fornecedor.nomeFantasia}" />
+					</p:selectOneMenu>
+
+
+
+					<p:outputLabel for="formaPgto" value="Forma de Pagamento:" />
+					<p:selectOneMenu id="formaPgto" style="width: 250px;"
+						value="#{compraBean.compra.formaPagamento}"
+						converter="omnifaces.SelectItemsConverter" filter="true"
+						required="true"
+						requiredMessage="O campo Forma de pagamento é obrigatório">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione a forma de pagamento" />
+						<f:selectItems value="#{compraBean.formasPagamentos}"
+							var="formaPgto" itemValue="#{formaPgto}"
+							itemLabel="#{formaPgto.descricao}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+				<p:separator />
+				<center>
+					<h:panelGrid columns="2">
+
+						<p:commandButton value="Salvar"
+							actionListener="#{compraBean.salvar}"
+							update=":mensagem :formulario:tabelaProduto :formulario:tabelaCesta :formulario:painelFinalizacao">
+						</p:commandButton>
+					</h:panelGrid>
+				</center>
+			</h:form>
+		</p:dialog>
+	<p:dialog  header="Imprimir" widgetVar="dialogoImpressãoNota"			
+	closeOnEscape="true" draggable="false" resizable="true"
+				modal="true" closable="false" showEffect="fade" appendTo="@(body)"
+				>
+<h:form id="formularioImpressaoNota">
+		<p:panel>
+			 <p:commandButton icon="ui-icon-print" value="Imprimir Nota" style="width: 200px;text-align:center"
+						actionListener="#{compraBean.imprimirUltimaCompraCodigo}">
+						</p:commandButton>
+							 <p:commandButton icon="ui-icon-close" value="Fechar" style="width: 200px;text-align:center"
+						actionListener="#{compraBean.novo}" 
+									update=":mensagem :formulario:tabelaProduto :formulario:tabelaCesta :formulario:painelFinalizacao">
+															</p:commandButton>
+					
+		</p:panel>
+		</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>
+</html>

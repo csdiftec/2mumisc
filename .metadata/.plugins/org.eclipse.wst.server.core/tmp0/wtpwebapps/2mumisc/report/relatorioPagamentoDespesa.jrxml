@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2016-11-08T21:16:12 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorioPagamentoDespesa" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="95de909e-c9c5-4bcd-8afd-599d09829f0d">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CsimumAdaptador"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="COD_REGISTRO_PGTO" class="java.lang.Long"/>
+	<parameter name="DATA_INICIAL" class="java.sql.Date"/>
+	<parameter name="DATA_FINAL" class="java.sql.Date"/>
+	<queryString>
+		<![CDATA[SELECT victoria.registro_despesa.codigo,
+	victoria.registro_despesa.`codigo_Despesa`,
+	victoria.registro_despesa.data_registro,
+	victoria.registro_despesa.data_vencimento,
+	victoria.registro_despesa.observacoes,
+	victoria.registro_despesa.valor_total,
+	victoria.registro_despesa.valor_total_atual,
+	victoria.registro_despesa.despesas_codigo,
+	victoria.registro_despesa.funcionario_codigo,
+	victoria.despesas.descricao AS descricao_despesa,
+	victoria.pessoa.nome,
+	victoria.pagamento_despesa.data_pagamento,
+	victoria.pagamento_despesa.valor_desconto,
+	victoria.pagamento_despesa.valor_juros,
+	victoria.pagamento_despesa.valor_pago,
+	victoria.pagamento_despesa.funcionario_codigo AS cod_funcionario_pgto,
+	victoria.pagamento_despesa.`registroDespesas_codigo`,
+	victoria.pagamento_despesa.codigo AS cod_pagamento,
+	victoria.funcionario.codigo AS funcionario_codigo,
+	victoria.pessoa.cpf
+FROM victoria.pagamento_despesa
+	INNER JOIN victoria.registro_despesa ON 
+	 victoria.pagamento_despesa.`registroDespesas_codigo` = victoria.registro_despesa.codigo 
+	INNER JOIN victoria.despesas ON 
+	 victoria.registro_despesa.despesas_codigo = victoria.despesas.codigo 
+	INNER JOIN victoria.funcionario ON 
+	 victoria.registro_despesa.funcionario_codigo = victoria.funcionario.codigo 
+	 AND victoria.pagamento_despesa.funcionario_codigo = victoria.funcionario.codigo 
+	INNER JOIN victoria.pessoa ON 
+	 victoria.funcionario.pessoa_codigo = victoria.pessoa.codigo 
+WHERE 
+	 victoria.pagamento_despesa.data_pagamento BETWEEN $P{DATA_INICIAL} AND $P{DATA_FINAL} 
+	 AND victoria.registro_despesa.codigo = $P{COD_REGISTRO_PGTO}]]>
+	</queryString>
+	<field name="codigo" class="java.lang.Long"/>
+	<field name="codigo_Despesa" class="java.lang.Long"/>
+	<field name="data_registro" class="java.sql.Timestamp"/>
+	<field name="data_vencimento" class="java.sql.Timestamp"/>
+	<field name="observacoes" class="java.lang.String"/>
+	<field name="valor_total" class="java.math.BigDecimal"/>
+	<field name="valor_total_atual" class="java.math.BigDecimal"/>
+	<field name="despesas_codigo" class="java.lang.Long"/>
+	<field name="funcionario_codigo" class="java.lang.Long"/>
+	<field name="descricao_despesa" class="java.lang.String"/>
+	<field name="nome" class="java.lang.String"/>
+	<field name="data_pagamento" class="java.sql.Timestamp"/>
+	<field name="valor_desconto" class="java.math.BigDecimal"/>
+	<field name="valor_juros" class="java.math.BigDecimal"/>
+	<field name="valor_pago" class="java.math.BigDecimal"/>
+	<field name="cod_funcionario_pgto" class="java.lang.Long"/>
+	<field name="registroDespesas_codigo" class="java.lang.Long"/>
+	<field name="cod_pagamento" class="java.lang.Long"/>
+	<field name="COLUMN_19" class="java.lang.Long"/>
+	<field name="cpf" class="java.lang.String"/>
+	<background>
+		<band height="17" splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="166" splitType="Stretch">
+			<line>
+				<reportElement x="-30" y="0" width="658" height="1" uuid="5d073a38-c3ad-4c97-8e8d-97afea05570f">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="4" y="90" width="66" height="20" forecolor="#000000" uuid="4a74d230-44dc-4863-9908-7277a144d341"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CPF:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="4" y="50" width="80" height="20" forecolor="#000000" uuid="23e01541-ba2f-4380-8296-6cbd4faf299a"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cód. Despesa:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="4" y="70" width="66" height="20" forecolor="#000000" uuid="c4f399e8-b09a-4d52-8075-fb65748f8ebf"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="165" y="50" width="100" height="20" forecolor="#000000" uuid="5774eaed-f198-4bbc-bcb8-4b3fdaf0788a"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[N° Dococumento:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="165" y="90" width="85" height="20" forecolor="#000000" uuid="e30dd29d-b9af-4ff7-ae61-ac787b34a19b"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vencimento:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="4" y="110" width="72" height="18" forecolor="#000000" uuid="52485ae9-7ba7-41eb-9315-8ae0a829280f"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Observação:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="84" y="130" width="387" height="1" uuid="c86ccc1b-da09-4d01-8952-78cdc1911d29">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<rectangle>
+				<reportElement mode="Opaque" x="70" y="10" width="489" height="19" backcolor="#37D469" uuid="96c7fbde-3628-40c6-90a9-d2c895ea1a78"/>
+			</rectangle>
+			<image hAlign="Center">
+				<reportElement x="5" y="0" width="59" height="40" uuid="b0d03ad7-c81b-4a25-8f06-19bce1826be1"/>
+				<imageExpression><![CDATA["invoice_logo.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="70" y="11" width="484" height="18" forecolor="#FFFFFF" backcolor="#37D469" uuid="31243180-cc8a-48b2-a3be-147a2915a34c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Sistema CSimum - Controle de Estoque - Despesa]]></text>
+			</staticText>
+			<line>
+				<reportElement x="4" y="40" width="555" height="1" uuid="e694bbb1-6a3f-42a5-8f2d-fea4820b5a71">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="360" y="90" width="111" height="20" forecolor="#000000" uuid="07fc05cf-5754-4925-9591-7898917a74c6"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total das Parcelas:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="-15" y="165" width="658" height="1" uuid="2281251f-eb39-4b64-8c4b-611588f06d72">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<textField pattern="dd/MM/yyyy h:mm:ss a z">
+				<reportElement x="423" y="-18" width="131" height="18" forecolor="#000000" uuid="cea0b1e0-a377-4bde-aad7-6e3609c14569"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="265" y="50" width="290" height="20" uuid="94fa3013-ebf2-464d-8cd8-723192e70c3f"/>
+				<textFieldExpression><![CDATA[$F{codigo_Despesa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MM/dd/yyyy" isBlankWhenNull="true">
+				<reportElement x="250" y="90" width="81" height="20" uuid="798cab22-4ac5-45ed-9f82-30e48be3072f"/>
+				<textFieldExpression><![CDATA[$F{data_vencimento}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="84" y="110" width="471" height="20" uuid="6922820c-81bd-48f4-adfd-6c282c5e982a"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observacoes}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="165" y="70" width="215" height="20" uuid="ecd67192-48a8-4ccd-afd4-0bbec45c3c8e"/>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="84" y="70" width="81" height="20" uuid="e247b435-4559-4111-a628-80bc0d1ca5b4"/>
+				<textFieldExpression><![CDATA[$F{cod_funcionario_pgto}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MM/dd/yyyy">
+				<reportElement x="471" y="70" width="84" height="20" uuid="0e56cf84-c7f7-409e-b50c-6ccccc332442"/>
+				<textFieldExpression><![CDATA[$F{data_registro}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="360" y="70" width="111" height="20" uuid="c959855c-6ca0-4641-a1d4-58af962df583"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data do Registro:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="84" y="50" width="81" height="20" uuid="1d73cec3-6acd-4214-a2ad-ec5d61115456"/>
+				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤#,##0.00;¤-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="471" y="90" width="84" height="20" uuid="b4d952f6-b408-467b-b352-c3746924c475"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_total}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="84" y="90" width="81" height="20" uuid="fd296607-b893-47a7-a7db-3063adfaca69"/>
+				<textFieldExpression><![CDATA[$F{cpf}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="170" splitType="Stretch">
+			<staticText>
+				<reportElement x="164" y="69" width="120" height="20" uuid="eaa57c23-02c9-4873-b063-c376bbf64974"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data do Registro:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="164" y="89" width="120" height="20" uuid="83ba4888-50e3-47d0-bc0e-e34236cd86f7"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor do Desconto:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="69" width="99" height="20" uuid="6829adbc-0826-4b56-9ca1-7e74f9e38233"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor do Juros:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="89" width="99" height="20" uuid="70ebcf49-17f0-479c-81ba-2c360e09f306"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor Pago:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="164" y="49" width="64" height="20" forecolor="#000000" uuid="2c459417-6588-4e7d-b705-fd770793ab00"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="4" y="89" width="80" height="20" forecolor="#000000" uuid="1b3f92c3-0c58-4482-8821-bdc03f3ef122"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vencimento:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="4" y="69" width="80" height="20" forecolor="#000000" uuid="c231b7eb-7fcb-4c04-8018-934ed1126585"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cod. Pgto:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="4" y="48" width="80" height="20" forecolor="#000000" uuid="9547fd8f-a8e6-41d6-957f-0e7097d3ef60"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[N° Documento:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="-1" y="40" width="555" height="1" uuid="44219f33-2b97-46f7-ab79-f662832421bf">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<rectangle>
+				<reportElement mode="Opaque" x="65" y="10" width="489" height="19" backcolor="#37D469" uuid="6ff9bd75-edac-4499-b6ab-838c024cc928"/>
+			</rectangle>
+			<image hAlign="Center">
+				<reportElement x="0" y="0" width="59" height="40" uuid="02013ed7-e74d-45de-ba82-3271f5adf740"/>
+				<imageExpression><![CDATA["invoice_logo.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="70" y="10" width="484" height="18" forecolor="#FFFFFF" backcolor="#37D469" uuid="cdaf632a-6a49-451a-a157-319217a64995"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11"/>
+				</textElement>
+				<text><![CDATA[Sistema CSimum - Comprovante de Pagamento da Despesa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="110" width="99" height="22" uuid="74da1837-ee16-4189-897e-b14cdd2e2374"/>
+				<textElement>
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor da Despesa:]]></text>
+			</staticText>
+			<textField pattern="MM/dd/yyyy" isBlankWhenNull="true">
+				<reportElement x="280" y="69" width="104" height="20" uuid="998750c0-6784-4122-8312-740db24e1fd6"/>
+				<textFieldExpression><![CDATA[$F{data_registro}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MM/dd/yyyy" isBlankWhenNull="true">
+				<reportElement x="82" y="90" width="81" height="19" uuid="0dddf68c-2234-4a50-a9d4-4905e3db21e7"/>
+				<textFieldExpression><![CDATA[$F{data_vencimento}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="228" y="49" width="52" height="19" uuid="0b37b82c-3131-4aa5-8a22-1819a47c6b90"/>
+				<textFieldExpression><![CDATA[$F{cod_funcionario_pgto}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="280" y="49" width="276" height="20" uuid="9a69cc72-ca49-4d4a-8188-4104f81f11f2"/>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤#,##0.00;¤-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="280" y="90" width="104" height="18" uuid="6387e5c5-0780-496f-b1f8-0d2dac3bb615"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_desconto}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤#,##0.00;¤-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="479" y="90" width="70" height="19" uuid="9ebeabcd-e7b4-49b0-9be3-96cee9e3f3d8"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_pago}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="84" y="49" width="81" height="19" uuid="e9f63a23-0c82-4ab9-a717-ab18ceaa9f5d"/>
+				<textFieldExpression><![CDATA[$F{codigo_Despesa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤#,##0.00;¤-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="480" y="111" width="76" height="21" uuid="83ec0cb3-a370-4077-ade2-74fb6f21a3c6"/>
+				<textFieldExpression><![CDATA[$F{valor_total}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤#,##0.00;¤-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="480" y="69" width="76" height="21" uuid="1adb42e8-2841-4929-b621-f3beab7f3db1"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_juros}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="380" y="140" width="93" height="22" uuid="928bff42-da52-40a1-bed4-d3f840e8eb38"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor Atual:]]></text>
+			</staticText>
+			<textField pattern="¤#,##0.00;¤-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="481" y="140" width="74" height="22" uuid="458f2ac2-c883-418e-949c-e7b0badba987"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_total_atual}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="80" y="69" width="85" height="20" uuid="2166f51e-3027-4807-b5d8-bb0e3d2d962f"/>
+				<textFieldExpression><![CDATA[$F{cod_pagamento}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="-40" y="162" width="658" height="1" uuid="a06fd853-c7bb-4661-91b5-7cd38306bdaf">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+		</band>
+	</detail>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

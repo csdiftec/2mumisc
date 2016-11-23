@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Relação de produtos por  periodo</title>
+</h:head>
+
+<ui:composition template="/templates/modelo.xhtml">
+	<ui:define name="conteudo">
+
+		<h:body>
+			<h:form id="formulario">
+
+
+				<p:panel header="Relatórios de produtos por periodo e vendedor" >
+		
+
+				
+			<p:panel header="Pesquisa" id="panelPesquisa"  style="border-color: darkgreen ;border-width: 2px">
+								
+								
+									<center>
+					<h:panelGrid columns="6">
+						<p:outputLabel value="Data inicial:" />
+						<p:calendar value="#{vendaBean.venda.dataInicial}" />
+						<p:outputLabel value="Data final:" />
+						<p:calendar value="#{vendaBean.venda.dataFinal}" />
+						<p:commandButton value="Pesquisar" icon="ui-icon-search"
+							actionListener="#{vendaBean.buscaProdutoPorPeriodo}"
+							update=":formulario:tabelaRelProdutosVendidos" />
+							
+						<p:commandButton icon="ui-icon-plus" value="Imprimir  por periodo"
+							style="width: 150px;" actionListener="#{vendaBean.imprimirProdutoVendidoPeriodo}" />
+
+					</h:panelGrid>
+				</center>
+		</p:panel>
+					<p:dataTable id="tabelaRelProdutosVendidos" style="text-align: center;font: 11px"
+						emptyMessage="Nenhum registro encontrado." paginator="true"
+						rows="10" value="#{vendaBean.itensVenda}" var="itensVenda">
+
+						<p:column headerText="Código Barra" style="text-align: center;width: 150px;"
+						filterBy="#{itensVenda.produto.codigoBarras}"
+							sortBy="#{itensVenda.produto.codigoBarras}">
+							<h:outputText value="#{itensVenda.produto.codigoBarras}" />
+						</p:column>
+
+						<p:column headerText="Vendedor" style="text-align:left;width: 320px;"
+							filterBy="#{itensVenda.funcionarioVenda.pessoa.nome}">
+							<h:outputText
+								value="#{itensVenda.venda.funcionarioVenda.pessoa.nome}" />
+						</p:column>
+
+						<p:column headerText="Numero da Nota" style="text-align: center;width: 170px;"
+							filterBy="#{itensVenda.venda.numeroDocumentoFiscal}"
+							sortBy="#{itensVenda.vendanumeroDocumentoFiscal}">
+							<h:outputText value="#{itensVenda.venda.numeroDocumentoFiscal}" />
+						</p:column>
+
+						<p:column headerText="Valor Produto" style="text-align: center;width: 90px;"
+						sortBy="#{itensVenda.produto.valor}">
+							<h:outputText value="R$ #{itensVenda.produto.valor}">
+								<f:convertNumber pattern="#,##0.00" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Data da Venda" style="text-align: center;width: 90px;"
+						sortBy="#{itensVenda.venda.dataVenda}">
+							<h:outputText value="#{itensVenda.venda.dataVenda}">
+								<f:convertDateTime locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Opções" style="width: 60px" exportable="false">
+							<p:commandButton icon="ui-icon-plus" style="width: 40px;" 
+								actionListener="#{vendaBean.imprimirProdutoCodigo}" update=":formulario">
+								<f:attribute name="itemSelecionado" value="#{itensVenda}" />
+							</p:commandButton>
+						</p:column>
+  <f:facet name="footer">
+            <h:commandLink>
+                <p:graphicImage library="images"   name="icon_pdf.png"  width="24"/>
+                <p:dataExporter  type="pdf" target="tabelaRelProdutosVendidos" fileName="ProdutosVendidoEmPDF" />
+            </h:commandLink>
+ 
+            <h:commandLink>
+                <p:graphicImage library="images"   name="icon_excel.png" width="24"/>
+                <p:dataExporter type="xls" target="tabelaRelProdutosVendidos" fileName="ProdutosVendidoEmXLS"/>
+            </h:commandLink>
+ 
+        </f:facet>
+					</p:dataTable>
+
+
+				</p:panel>
+
+			</h:form>
+
+		</h:body>
+	</ui:define>
+</ui:composition>
+</html>
