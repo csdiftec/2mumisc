@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-web: java $JAVA_OPTS -cp target/classes:target/dependency/* 2mumisc
-=======
-web: java $JAVA_OPTS -cp target/classes:target/dependency/* 2mumisc
->>>>>>> branch 'master' of https://github.com/csdiftec/2mumisc.git
+ web: java $JAVA_OPTS -cp target/classes:target/dependency/*
+ java.runtime.version=1.8
+maven.version=3.3.3
